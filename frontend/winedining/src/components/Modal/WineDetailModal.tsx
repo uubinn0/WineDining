@@ -27,6 +27,7 @@ const WineDetailModal = ({ isOpen, onClose, wine }: WineDetailModalProps) => {
             <p>산도: {wine.acidic}</p>
             <p>바디: {wine.body}</p>
           </div>
+          <button>좋아요 버튼</button>
         </div>
       </div>
     </div>

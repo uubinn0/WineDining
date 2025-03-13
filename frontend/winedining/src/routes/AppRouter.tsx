@@ -6,6 +6,7 @@ import MyPage from "../pages/MyPage";
 import WineList from "../pages/WineList";
 import WineSellerList from "../pages/WineSellerList";
 import WishList from "../pages/WishList";
+import ErrorPage from "../pages/ErrorPage";
 
 const AppRouter = () => {
   return (
@@ -18,6 +19,7 @@ const AppRouter = () => {
         <Route path="/winelist" element={<WineList />} />
         <Route path="/winesellerlist" element={<WineSellerList />} />
         <Route path="/wishlist" element={<WishList />} />
+        <Route path="*" element={<ErrorPage />}></Route>
       </Routes>
     </BrowserRouter>
   );
