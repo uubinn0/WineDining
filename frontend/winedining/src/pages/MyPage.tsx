@@ -19,9 +19,9 @@ function MyPage() {
       <h1>여기는 나의 페이지 공간입니다.</h1>
 
       <EditModal isOpen={isModalOpen} onClose={closeModal}></EditModal>
-      <button onClick={() => navigate("/winesellerlist")}>와인셀러리스트</button>
-      <button onClick={() => navigate("/wishlist")}>위시리스트</button>
-      <button onClick={() => navigate("/test")}>와인취향테스트하기</button>
+      <button onClick={() => navigate("/winesellerlist")}>MY WINE SELLER</button>
+      <button onClick={() => navigate("/wishlist")}>WISH LIST</button>
+      <button onClick={() => navigate("/test")}>WINE TEST</button>
     </div>
   );
 }

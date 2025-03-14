@@ -7,8 +7,10 @@ function Login() {
   return (
     <div>
       <h1>여기는 앱 초기 화면인 로그인 공간입니다.</h1>
+      <h3>카카오 로그인</h3>
+      <h3>구글로 시작하기</h3>
       <button onClick={() => navigate("/home")}>홈으로 이동하기</button>
-      <button onClick={() => navigate("/test")}>와인 취향 확인하러가기</button>
+      <button onClick={() => navigate("/test")}>WINE MBTI TEST</button>
     </div>
   );
 }
