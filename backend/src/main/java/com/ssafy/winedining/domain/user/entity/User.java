@@ -1,41 +1,27 @@
 package com.ssafy.winedining.domain.user.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Getter
-@NoArgsConstructor
-public class User {
 
+@Entity
+@Table(name = "users")
+@Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String name;
+    private String nickname;
     private String email;
-    private String picture;
-
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
-    @Builder
-    public User(String name, String email, String picture, Role role) {
-        this.name = name;
-        this.email = email;
-        this.picture = picture;
-        this.role = role;
-    }
-
-    public User update(String name, String picture) {
-        this.name = name;
-        this.picture = picture;
-        return this;
-    }
-
-    public String getRoleKey() {
-        return this.role.getKey();
-    }
+    private String oauth_id;
+    private String login_type;
+    private String ageGroup;
+    private String gender;
 }
