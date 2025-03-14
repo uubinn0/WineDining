@@ -1,6 +1,10 @@
 import React from "react";
 import { Wine } from "../../types/wine";
 
+/* 추가 작업해야 할 내용 
+- 상세 페이지에서 좋아요 버튼 있게 할래? 아니면 빼버릴까?
+*/
+
 interface WineDetailModalProps {
   isOpen: boolean;
   onClose: () => void;

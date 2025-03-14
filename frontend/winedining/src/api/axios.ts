@@ -12,4 +12,6 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// 좋아요 받아오는 api
+
 export default api;

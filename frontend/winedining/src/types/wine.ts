@@ -1,6 +1,6 @@
 // 와인 데이터 타입
 export interface Wine {
-  id?: number;
+  id: number;
   name: string;
   type: string;
   country: string;
