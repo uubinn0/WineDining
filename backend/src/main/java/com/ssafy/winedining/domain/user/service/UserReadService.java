@@ -23,7 +23,7 @@ public class UserReadService {
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
     }
 
-    public User findUserByIdOrElseThrow(Long userId) {
+    public User findUserByIdOrElseThrow(Integer userId) {
 
         return userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
