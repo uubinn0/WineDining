@@ -50,7 +50,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .subject(email)
                 .issuedAt(now)
-                .expiration(expiryDate)
+                .expiration(expiryDate)  // JJWT 0.12.x에서는 expiration()
                 .signWith(key)
                 .compact();
     }
@@ -66,10 +66,10 @@ public class JwtUtil {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .verifyWith(key)    // setSigningKey() 대신 verifyWith()
+                .verifyWith(key)
                 .build()
-                .parseSignedClaims(token)      // parseClaimsJws() 대신 parseSignedClaims()
-                .getPayload();                 // getBody() 대신 getPayload()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     public boolean validateToken(String token) {
