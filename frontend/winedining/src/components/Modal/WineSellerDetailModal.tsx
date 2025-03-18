@@ -7,8 +7,7 @@ interface WineSellerDetailModalProps {
   wine: Wine;
 }
 
-/* 이 곳은 내가 기록 남긴 와인을 보는 모달임*/
-
+/* 이 곳은 내가 기록 남긴 와인을 보는 모달임 */
 const WineSellerDetailModal = ({ isOpen, onClose, wine }: WineSellerDetailModalProps) => {
   if (!isOpen) return null;
 
@@ -19,17 +18,25 @@ const WineSellerDetailModal = ({ isOpen, onClose, wine }: WineSellerDetailModalP
           ✕
         </button>
         <div style={styles.content}>
-          <h2>{wine.name}</h2>
+          <h2>
+            {wine.kr_name} ({wine.en_name})
+          </h2>
+          <img src={wine.image || "/sample_image/wine_sample.jpg"} alt={wine.kr_name} style={styles.image} />
+
           <div style={styles.details}>
             <p>종류: {wine.type}</p>
             <p>국가: {wine.country}</p>
-            <p>가격: {wine.price.toLocaleString()}원</p>
-            <p>연도: {wine.year}</p>
-            <p>당도: {wine.sweet}</p>
-            <p>산도: {wine.acidic}</p>
+            <p>포도 품종: {wine.grape}</p>
+            <p>가격: {wine.price ? `${wine.price.toLocaleString()}원` : "가격 정보 없음"}</p>
+            <p>당도: {wine.sweetness}</p>
+            <p>산도: {wine.acidity}</p>
             <p>바디: {wine.body}</p>
+            <p>타닌: {wine.tannin || "해당 없음"}</p>
+            <p>도수: {wine.alcohol_content ? `${wine.alcohol_content}%` : "정보 없음"}</p>
+            <p>추천 음식: {wine.pairing ? wine.pairing.join(", ") : "추천 없음"}</p>
           </div>
-          <button>좋아요 버튼</button>
+
+          <button style={styles.likeButton}>❤️ 좋아요</button>
         </div>
       </div>
     </div>
@@ -70,9 +77,27 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   content: {
     marginTop: "20px",
+    textAlign: "center",
+  },
+  image: {
+    width: "100%",
+    maxHeight: "300px",
+    objectFit: "cover",
+    borderRadius: "8px",
   },
   details: {
     marginTop: "20px",
+    textAlign: "left",
+  },
+  likeButton: {
+    marginTop: "15px",
+    padding: "10px",
+    fontSize: "16px",
+    borderRadius: "5px",
+    backgroundColor: "#ff4d4d",
+    color: "white",
+    border: "none",
+    cursor: "pointer",
   },
 };
 

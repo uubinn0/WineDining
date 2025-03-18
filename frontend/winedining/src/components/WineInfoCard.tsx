@@ -14,44 +14,131 @@ const WineInfoCard = ({ wine, onClick }: WineInfoCardProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const wishList = useSelector((state: RootState) => state.wish.wishes);
 
-  const isInWishList = wishList.some((wish: Wish) => wish.wine.id === wine.id);
+  const isInWishList = wishList.some((wish: Wish) => wish.wine.wine_id === wine.wine_id);
 
   const handleWishToggle = () => {
-    if (!wine.id) return;
+    if (!wine.wine_id) return;
 
     if (isInWishList) {
-      dispatch(removeFromWishList(wine.id));
+      dispatch(removeFromWishList(wine.wine_id));
     } else {
-      dispatch(addToWishList(wine.id));
+      dispatch(addToWishList(wine.wine_id));
     }
   };
 
   return (
     <div style={styles.card}>
-      <h3>{wine.name}</h3>
-      <button onClick={() => onClick(wine)}>자세히</button>
-      <button onClick={handleWishToggle}>{isInWishList ? "삭제" : "담기"}</button>
-      <p>종류: {wine.type}</p>
-      <p>국가: {wine.country}</p>
-      <p>가격: {wine.price.toLocaleString()}원</p>
-      <p>연도: {wine.year}</p>
-      <p>당도: {wine.sweet}</p>
-      <p>산도: {wine.acidic}</p>
-      <p>바디: {wine.body}</p>
+      {/* 와인 이미지 */}
+      <div style={styles.imageContainer}>
+        <img
+          src={wine.image !== "no_image" ? wine.image : "/sample_image/default_wine.jpg"}
+          alt={wine.kr_name}
+          style={styles.image}
+        />
+        {/* 좋아요 버튼 */}
+        <button onClick={handleWishToggle} style={styles.heartButton}>
+          {isInWishList ? "❤️" : "🤍"}
+        </button>
+      </div>
+
+      {/* 와인 정보 */}
+      <div style={styles.info}>
+        <p style={styles.name}>{wine.kr_name}</p>
+        <p style={styles.country}>
+          {wine.country} / {wine.grape}
+        </p>
+      </div>
+
+      {/* 버튼 영역 */}
+      <div style={styles.buttonWrapper}>
+        <button
+          style={{
+            ...styles.addButton,
+            backgroundColor: isInWishList ? "#9262d5" : "#5a1a5e",
+          }}
+          onClick={handleWishToggle}
+        >
+          {isInWishList ? "담김" : "담기"}
+        </button>
+        <button style={styles.detailButton} onClick={() => onClick(wine)}>
+          자세히
+        </button>
+      </div>
     </div>
   );
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
   card: {
-    border: "1px solid #ddd",
+    display: "flex",
+    alignItems: "center",
+    backgroundColor: "#2a0e35",
     borderRadius: "8px",
-    padding: "16px",
-    margin: "8px",
-    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    padding: "10px",
+    width: "320px",
+    color: "white",
+    border: "2px solid #5a1a5e",
+    position: "relative",
+  },
+  imageContainer: {
+    position: "relative",
+    marginRight: "10px",
+  },
+  image: {
+    width: "50px",
+    height: "80px",
+    objectFit: "cover",
+    borderRadius: "4px",
     backgroundColor: "#fff",
+  },
+  heartButton: {
+    position: "absolute",
+    bottom: "-5px",
+    left: "50%",
+    transform: "translateX(-50%)",
+    background: "none",
+    border: "none",
+    fontSize: "14px",
     cursor: "pointer",
-    transition: "transform 0.2s ease",
+  },
+  info: {
+    flexGrow: 1,
+    textAlign: "left",
+  },
+  name: {
+    fontSize: "14px",
+    fontWeight: "bold",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    maxWidth: "130px",
+  },
+  country: {
+    fontSize: "12px",
+    color: "#f4e4ff",
+  },
+  buttonWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "5px",
+  },
+  addButton: {
+    backgroundColor: "#5a1a5e",
+    color: "white",
+    border: "none",
+    padding: "5px 10px",
+    fontSize: "12px",
+    borderRadius: "4px",
+    cursor: "pointer",
+  },
+  detailButton: {
+    backgroundColor: "#fff",
+    color: "#2a0e35",
+    border: "none",
+    padding: "5px 10px",
+    fontSize: "12px",
+    borderRadius: "4px",
+    cursor: "pointer",
   },
 };
 
