@@ -16,7 +16,7 @@ services:
 
   backend:
     build: ./backend
-    image: ${BACKEND_IMAGE}
+    image: ${BACKEND_IMAGE}:${IMAGE_TAG}
     container_name: winedining-backend
     env_file:
       - .env
@@ -28,7 +28,7 @@ services:
 
   frontend:
     build: ./frontend/winedining
-    image: ${FRONTEND_IMAGE}
+    image: ${FRONTEND_IMAGE}:${IMAGE_TAG}
     container_name: winedining-frontend
     depends_on:
       - backend
@@ -38,7 +38,7 @@ services:
 
   nginx:
     build: ./nginx
-    image: ${NGINX_IMAGE}
+    image: ${NGINX_IMAGE}:${IMAGE_TAG}
     container_name: winedining-nginx
     ports:
       - "80:80"
