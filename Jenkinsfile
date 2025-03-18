@@ -67,7 +67,7 @@ pipeline {
                             docker compose pull &&
                             docker compose up -d &&
                             # docker image prune -f
-                            docker rm -f ${DEPLOY_PATH}/.env
+                            rm -f ${DEPLOY_PATH}/.env
                             "
                             '''
                         }
