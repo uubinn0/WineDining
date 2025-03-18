@@ -38,6 +38,8 @@ services:
 
   nginx:
     build: ./nginx
+    args:
+      IMAGE_TAG: ${IMAGE_TAG}
     image: ${NGINX_IMAGE}:${IMAGE_TAG}
     container_name: winedining-nginx
     ports:
