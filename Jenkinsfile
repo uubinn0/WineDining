@@ -66,7 +66,7 @@ pipeline {
                             docker compose down --remove-orphans &&
                             docker compose pull &&
                             docker compose up -d &&
-                            docker image prune -f
+                            # docker image prune -f
                             docker rm -f ${DEPLOY_PATH}/.env
                             "
                             '''
