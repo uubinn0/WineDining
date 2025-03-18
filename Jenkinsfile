@@ -9,7 +9,7 @@ pipeline {
         DOCKER_HUB_REPO_FRONTEND = "rlatmddbsk75/winedining-frontend"
         // 예: BUILD_NUMBER 또는 GIT_COMMIT를 활용하여 버전을 만들 수 있습니다.
         IMAGE_TAG = "${env.BUILD_NUMBER}"
-    }
+        }
 
     stages {
         stage('Checkout') {
@@ -46,16 +46,17 @@ pipeline {
                 sh 'docker compose down'
                 sh 'docker compose up -d'
                 sh 'docker image prune -f'
+                }
             }
         }
-    }
     
     post {
         success {
             echo '빌드, 태깅, 배포 성공!'
-        }
+            }
         failure {
             echo '문제가 발생했습니다. 로그를 확인하세요.'
+            }
         }
     }
 }
