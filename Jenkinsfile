@@ -22,9 +22,14 @@ pipeline {
 
         stage('Update Env File') {
             steps {
-                sh 'ls -al'
-                sh 'sed "s/^IMAGE_TAG=.*/IMAGE_TAG=${IMAGE_TAG}/" .env > updated.env'
-                sh 'cat updated.env'
+                withCredentials([file(credentialsId: 'jenkins-env', variable: 'ENV_FILE')]) {
+                    // 현재 작업 디렉토리 확인 및 Credential로 불러온 .env 파일 내용 출력
+                    sh 'ls -al'
+                    sh 'cat $ENV_FILE'
+                    // .env 파일의 IMAGE_TAG 값을 현재 빌드 번호로 업데이트하여 updated.env 파일 생성
+                    sh 'sed "s/^IMAGE_TAG=.*/IMAGE_TAG=${IMAGE_TAG}/" $ENV_FILE > updated.env'
+                    sh 'cat updated.env'
+                }
             }
         }
 
