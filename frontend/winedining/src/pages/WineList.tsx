@@ -13,6 +13,7 @@ const WineList = () => {
   const { wines, status, error } = useSelector((state: RootState) => state.wine);
   const [selectedWine, setSelectedWine] = useState<Wine | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     if (status === "idle") dispatch(fetchWines());
@@ -28,22 +29,58 @@ const WineList = () => {
     setSelectedWine(null);
   };
 
+  const filteredWines = wines.filter((wine) => wine.kr_name.toLowerCase().includes(searchTerm.trim().toLowerCase()));
+
   if (status === "loading") {
-    return <div>로딩 중</div>;
+    return <div style={styles.loading}>로딩 중...</div>;
   }
 
   if (status === "failed") {
-    return <div>오류 {error} </div>;
+    return <div style={styles.error}>오류 발생: {error}</div>;
   }
 
   return (
     <div style={styles.container}>
-      <button onClick={() => navigate("/home")}>홈으로가기</button>
-      <h2>🍷 와인 리스트</h2>
+      <button onClick={() => navigate("/home")}>◀️</button>
+      <h2 style={styles.title}>⚡ WINE LIST ⚡</h2>
 
-      <div style={styles.grid}>
-        {wines.map((wine) => (
-          <WineInfoCard key={wine.id} wine={wine} onClick={handleWineClick} />
+      {/* 검색창 */}
+      <div style={styles.searchBar}>
+        <input
+          type="text"
+          placeholder="러시안잭 소비뇽 블랑"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={styles.searchInput}
+        />
+      </div>
+
+      {/* 필터 아이콘 */}
+      <div style={styles.filterSection}>
+        <span role="img" aria-label="종류">
+          🍷 종류
+        </span>
+        <span role="img" aria-label="품종">
+          🍇 품종
+        </span>
+        <span role="img" aria-label="맛">
+          🌊 맛
+        </span>
+        <span role="img" aria-label="국가">
+          📍 국가
+        </span>
+        <span role="img" aria-label="가격">
+          💲 가격
+        </span>
+        <span role="img" aria-label="페어링">
+          🍽 페어링
+        </span>
+      </div>
+
+      {/* 와인 리스트 */}
+      <div style={styles.list}>
+        {filteredWines.map((wine) => (
+          <WineInfoCard key={wine.wine_id} wine={wine} onClick={handleWineClick} />
         ))}
       </div>
 
@@ -52,21 +89,60 @@ const WineList = () => {
   );
 };
 
-// style 명시해줘야 한다넹? 타입 스크립트에서는?
-// 위나 아래 둘 중 편한거 쓰면 될듯 (모르면 물어보삼)
-// const styles: Record<string, React.CSSProperties> = { /* 스타일 객체 */ };
-
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
+    backgroundColor: "#2a0e35",
+    color: "white",
+    minHeight: "100vh",
     padding: "20px",
+    fontFamily: "'Press Start 2P', cursive",
     textAlign: "center",
   },
-
-  /* 와인 리스트 두개 씩 정렬 */
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-    gap: "16px",
+  title: {
+    fontSize: "22px",
+    marginBottom: "10px",
+    textTransform: "uppercase",
+  },
+  searchBar: {
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: "10px",
+  },
+  searchInput: {
+    width: "90%",
+    maxWidth: "300px",
+    padding: "10px",
+    fontSize: "14px",
+    borderRadius: "8px",
+    border: "none",
+    outline: "none",
+    textAlign: "center",
+    backgroundColor: "#5a1a5e",
+    color: "white",
+  },
+  filterSection: {
+    display: "flex",
+    justifyContent: "space-around",
+    padding: "10px",
+    fontSize: "12px",
+    backgroundColor: "#3b0b40",
+    borderRadius: "10px",
+    marginBottom: "15px",
+  },
+  list: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "10px",
+  },
+  loading: {
+    fontSize: "16px",
+    textAlign: "center",
+    marginTop: "20px",
+  },
+  error: {
+    fontSize: "16px",
+    color: "#ff4d4d",
+    textAlign: "center",
     marginTop: "20px",
   },
 };
