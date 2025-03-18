@@ -17,14 +17,13 @@ services:
   backend:
     image: ${BACKEND_IMAGE}:${IMAGE_TAG}
     container_name: winedining-backend
-    env_file:
-      - .env
     environment:
       # 데이터베이스 연결 설정
       DB_HOST: winedining-postgres
       DB_USERNAME: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
-      SPRING_DATASOURCE_DRIVER_CLASS_NAME: "org.postgresql.Driver"
+    env_file:
+      - .env
     depends_on:
       - postgres
     restart: unless-stopped
