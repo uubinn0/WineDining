@@ -52,7 +52,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([file(credentialsId: 'jenkins-env', variable: 'ENV_FILE')]) {
-                        sshagent(['ssh-ec2-key']) {
+                        sshagent(['ec2-ssh-key']) {
                             sh '''
                             # 환경변수 파일 및 docker-compose.yml 파일을 EC2로 전송
                             scp -o StrictHostKeyChecking=no ${ENV_FILE} ${DEPLOY_HOST}:${DEPLOY_PATH}/.env
