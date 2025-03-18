@@ -24,9 +24,6 @@ RUN npm run build
 # NGINX LTS 버전 사용
 FROM nginx:1.26-alpine
 
-# Nginx 설정 복사
-# COPY nginx-front.conf /etc/nginx/nginx.conf
-
 # React 빌드 산출물 복사
 COPY --from=builder /app/build /usr/share/nginx/html
 
