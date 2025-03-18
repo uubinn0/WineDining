@@ -7,12 +7,14 @@ import WineList from "../pages/WineList";
 import WineSellerList from "../pages/WineSellerList";
 import WishList from "../pages/WishList";
 import ErrorPage from "../pages/ErrorPage";
+import LoginTest from "../pages/LoginTest";
 
 const AppRouter = () => {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/logintest" element={<LoginTest />}></Route>
         <Route path="/home" element={<Home />} />
         <Route path="/test" element={<Test />} />
         <Route path="/mypage" element={<MyPage />} />
