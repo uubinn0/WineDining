@@ -22,6 +22,7 @@ pipeline {
 
         stage('Update Env File') {
             steps {
+                sh 'ls -al'
                 sh 'sed "s/^IMAGE_TAG=.*/IMAGE_TAG=${IMAGE_TAG}/" .env > updated.env'
                 sh 'cat updated.env'
             }
