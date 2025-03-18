@@ -37,10 +37,7 @@ services:
       - winedining-network
 
   nginx:
-    build: ./nginx
-    args:
-      IMAGE_TAG: ${IMAGE_TAG}
-    image: ${NGINX_IMAGE}:${IMAGE_TAG}
+    image: nginx:1.26-alpine
     container_name: winedining-nginx
     ports:
       - "80:80"
