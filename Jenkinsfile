@@ -9,7 +9,7 @@ pipeline {
         DOCKER_HUB_REPO_FRONTEND = "rlatmddbsk75/winedining-frontend"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
 
-        DEPLOY_HOST = "ubuntu@j12b202.p.ssafy.io." // EC2 서버의 IP 주소
+        DEPLOY_HOST = "ubuntu@j12b202.p.ssafy.io" // EC2 서버의 IP 주소
         DEPLOY_PATH = "/home/ubuntu/winedining"       // EC2 내부 배포 경로
     }
 
