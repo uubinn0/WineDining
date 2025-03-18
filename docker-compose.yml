@@ -19,7 +19,7 @@ services:
     container_name: winedining-backend
     environment:
       # 데이터베이스 연결 설정
-      DB_HOST: winedining-postgres
+      # DB_HOST: winedining-postgres
       DB_USERNAME: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
     env_file:
