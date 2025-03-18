@@ -37,7 +37,9 @@ services:
       - winedining-network
 
   nginx:
-    build: ./nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
     image: ${NGINX_IMAGE}:${IMAGE_TAG}
     container_name: winedining-nginx
     ports:
