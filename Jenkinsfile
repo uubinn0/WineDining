@@ -55,19 +55,19 @@ pipeline {
                         sshagent(['ec2-ssh-key']) {
                             sh '''
                             # 환경변수 파일 및 docker-compose.yml 파일을 EC2로 전송
-                            # scp -o StrictHostKeyChecking=no  ${DEPLOY_HOST}:${DEPLOY_PATH}/.env
+                            scp -o StrictHostKeyChecking=no  ${DEPLOY_HOST}:${DEPLOY_PATH}/.env
                             scp -o StrictHostKeyChecking=no docker-compose.yml ${DEPLOY_HOST}:${DEPLOY_PATH}/docker-compose.yml
 
                             # EC2에서 Docker Compose 실행하여 최신 컨테이너 배포
                             ssh -o StrictHostKeyChecking=no ${DEPLOY_HOST} "
                             cd ${DEPLOY_PATH} &&
                             export IMAGE_TAG=${IMAGE_TAG} &&
-                            docker login -u '${DOCKER_HUB_USERNAME}' &&
+                            # docker login -u '${DOCKER_HUB_USERNAME}' &&
                             docker compose down --remove-orphans &&
                             docker compose pull &&
-                            docker compose up -d &&
-                            # docker image prune -f
-                            rm -f ${DEPLOY_PATH}/.env
+                            docker compose up -d
+                            # docker image prune -f &&
+                            # rm -f ${DEPLOY_PATH}/.env
                             "
                             '''
                         }
