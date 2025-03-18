@@ -67,6 +67,9 @@ pipeline {
                     withCredentials([file(credentialsId: 'jenkins-env', variable: 'ENV_FILE')]) {
                         sshagent(['ec2-ssh-key']) {
                             sh '''
+                            # 먼저 기존의 .env 파일 삭제 (권한 문제 방지)
+                            ssh -o StrictHostKeyChecking=no ${DEPLOY_HOST} "rm -f ${DEPLOY_PATH}/.env"
+
                             # 환경변수 파일 및 docker-compose.yml 파일을 EC2로 전송
                             scp -o StrictHostKeyChecking=no updated.env  ${DEPLOY_HOST}:${DEPLOY_PATH}/.env
                             scp -o StrictHostKeyChecking=no docker-compose.yml ${DEPLOY_HOST}:${DEPLOY_PATH}/docker-compose.yml
