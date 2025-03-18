@@ -47,9 +47,20 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                // sh 'docker compose down'
-                sh 'docker compose up -d'
-                sh 'docker image prune -f'
+                script {
+                    withCredentials([file(credentialsId: 'jenkins-env', variable: 'ENV_FILE')]) {
+                        // Jenkins의 Secret File을 현재 작업공간으로 복사
+                        sh 'cp $ENV_FILE ./.env'
+
+                        // Docker compose 실행
+                        // sh 'docker compose down'
+                        sh 'docker compose up -d'
+                        sh 'docker image prune -f'
+
+                        // .env 파일 삭제 (보안 유지)
+                        sh 'rm ./.env'
+                    }
+                }
             }
         }
     }
