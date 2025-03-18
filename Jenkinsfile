@@ -4,6 +4,7 @@ pipeline {
     environment {
         BACKEND_IMAGE = "rlatmddbsk75/winedining-backend"
         FRONTEND_IMAGE = "rlatmddbsk75/winedining-frontend"
+        NGINX_IMAGE = "rlatmddbsk75/winedining-nginx"
         DOCKER_HUB_USERNAME = "rlatmddbsk75"
         DOCKER_HUB_REPO_BACKEND = "rlatmddbsk75/winedining-backend"
         DOCKER_HUB_REPO_FRONTEND = "rlatmddbsk75/winedining-frontend"
@@ -49,6 +50,14 @@ pipeline {
             }
         }
 
+        stage('Build Nginx Docker Image') {
+            steps {
+                dir('nginx') {
+                    sh "docker build -t ${NGINX_IMAGE}:${IMAGE_TAG} ."
+                }
+            }
+        }
+
         stage('Tag and Push Docker Images') {
             steps {
                 withDockerRegistry([credentialsId: 'dockerhub-token', url: '']) {
@@ -57,6 +66,9 @@ pipeline {
 
                     sh "docker tag ${FRONTEND_IMAGE}:${IMAGE_TAG} ${DOCKER_HUB_REPO_FRONTEND}:${IMAGE_TAG}"
                     sh "docker push ${DOCKER_HUB_REPO_FRONTEND}:${IMAGE_TAG}"
+
+                    sh "docker tag ${NGINX_IMAGE}:${IMAGE_TAG} ${DOCKER_HUB_USERNAME}/${NGINX_IMAGE}:${IMAGE_TAG}"
+                    sh "docker push ${DOCKER_HUB_USERNAME}/${NGINX_IMAGE}:${IMAGE_TAG}"
                 }
             }
         }

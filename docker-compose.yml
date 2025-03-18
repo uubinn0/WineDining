@@ -15,7 +15,6 @@ services:
       - winedining-network
 
   backend:
-    build: ./backend
     image: ${BACKEND_IMAGE}:${IMAGE_TAG}
     container_name: winedining-backend
     env_file:
@@ -27,7 +26,6 @@ services:
       - winedining-network
 
   frontend:
-    build: ./frontend/winedining
     image: ${FRONTEND_IMAGE}:${IMAGE_TAG}
     container_name: winedining-frontend
     depends_on:
@@ -37,9 +35,6 @@ services:
       - winedining-network
 
   nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
     image: ${NGINX_IMAGE}:${IMAGE_TAG}
     container_name: winedining-nginx
     ports:
