@@ -55,7 +55,7 @@ pipeline {
                         sshagent(['ec2-ssh-key']) {
                             sh '''
                             # 환경변수 파일 및 docker-compose.yml 파일을 EC2로 전송
-                            scp -o StrictHostKeyChecking=no ${ENV_FILE} ${DEPLOY_HOST}:${DEPLOY_PATH}/.env
+                            # scp -o StrictHostKeyChecking=no  ${DEPLOY_HOST}:${DEPLOY_PATH}/.env
                             scp -o StrictHostKeyChecking=no docker-compose.yml ${DEPLOY_HOST}:${DEPLOY_PATH}/docker-compose.yml
 
                             # EC2에서 Docker Compose 실행하여 최신 컨테이너 배포
