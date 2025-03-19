@@ -8,6 +8,7 @@ import WineSellerList from "../pages/WineSellerList";
 import WishList from "../pages/WishList";
 import ErrorPage from "../pages/ErrorPage";
 import LoginTest from "../pages/LoginTest";
+import Dictionary from "../pages/Dictionary";
 
 const AppRouter = () => {
   return (
@@ -21,6 +22,7 @@ const AppRouter = () => {
         <Route path="/winelist" element={<WineList />} />
         <Route path="/winesellerlist" element={<WineSellerList />} />
         <Route path="/wishlist" element={<WishList />} />
+        <Route path="/dictionary" element={<Dictionary />} />
         <Route path="*" element={<ErrorPage />}></Route>
       </Routes>
     </BrowserRouter>
