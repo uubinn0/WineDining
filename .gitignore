@@ -432,3 +432,7 @@ $RECYCLE.BIN/
 
 # macOS 시스템 파일 무시
 .DS_Store
+
+#환경 파일 무시
+.env
+

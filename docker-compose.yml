@@ -26,6 +26,8 @@ services:
     restart: unless-stopped
     networks:
       - winedining-network
+    ports:
+      - "8080:8080"
 
   frontend:
     image: ${FRONTEND_IMAGE}:${IMAGE_TAG}
