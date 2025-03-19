@@ -6,7 +6,7 @@ function Home() {
 
   return (
     <div>
-      <h1>앙 기모링 여기는 바텐더가 서있는 홈화면입니다.</h1>
+      <h1>앙 기모 여기는 바텐더가 서있는 홈화면입니다.</h1>
       <button onClick={() => navigate("/mypage")}>마이페이지</button>
       <button onClick={() => navigate("/winelist")}>메뉴판/와인리스트</button>
     </div>
