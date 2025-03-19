@@ -1,7 +1,7 @@
 spring:
   datasource:
     # DB_HOST 기본값은 localhost, 배포 시 DB_HOST가 오버라이드됩니다.
-    url: jdbc:postgresql://${DB_HOST:localhost}:5432/{POSTGRES_DB:winedining}
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/${POSTGRES_DB:winedining}
     username: ${POSTGRES_USER:winedining}
     password: ${POSTGRES_PASSWORD:gabojago!}
     driver-class-name: org.postgresql.Driver
