@@ -2,107 +2,158 @@ pipeline {
     agent any
 
     environment {
-        BACKEND_IMAGE = "rlatmddbsk75/winedining-backend"
-        FRONTEND_IMAGE = "rlatmddbsk75/winedining-frontend"
-        NGINX_IMAGE = "rlatmddbsk75/winedining-nginx"
-
-        DOCKER_HUB_USERNAME = "rlatmddbsk75"
-        DOCKER_HUB_REPO_BACKEND = "rlatmddbsk75/winedining-backend"
-        DOCKER_HUB_REPO_FRONTEND = "rlatmddbsk75/winedining-frontend"
-        DOCKER_HUB_REPO_NGINX = "rlatmddbsk75/winedining-nginx"
-        
-        IMAGE_TAG = "${env.BUILD_NUMBER}"
-
-        DEPLOY_HOST = "ubuntu@j12b202.p.ssafy.io" // EC2 서버의 IP 주소
-        DEPLOY_PATH = "/home/ubuntu/winedining"       // EC2 내부 배포 경로
+        BRANCH_NAME = "${GIT_BRANCH}"
+        NODE_VERSION = 'node20'
+        DEPLOY_PATH = '/home/ubuntu/nginx/html'
+        JAVA_VERSION = 'jdk17'
+        APP_NAME = 'jenkins-test'
+        DOCKER_IMAGE = 'jenkins-test:latest'
     }
 
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
-            }
-        }
-
-        stage('Update Env File') {
-            steps {
-                withCredentials([file(credentialsId: 'jenkins-env', variable: 'ENV_FILE')]) {
-                    // 현재 작업 디렉토리 확인 및 Credential로 불러온 .env 파일 내용 출력
-                    sh 'ls -al'
-                    sh 'cat $ENV_FILE'
-                    // .env 파일의 IMAGE_TAG 값을 현재 빌드 번호로 업데이트하여 updated.env 파일 생성
-                    sh 'sed "s/^IMAGE_TAG=.*/IMAGE_TAG=${IMAGE_TAG}/" $ENV_FILE > updated.env'
-                    sh 'cat updated.env'
+                script {
+                    echo "현재 브랜치: ${BRANCH_NAME}"
                 }
             }
         }
 
-        stage('Build Frontend Docker Image') {
-            steps {
-                dir('frontend/winedining') {
-                    sh "docker build -t ${FRONTEND_IMAGE}:${IMAGE_TAG} ."
-                }
+        stage('Backend Build & Deploy') {
+            when {
+                expression { BRANCH_NAME == 'origin/back' }
             }
-        }
-
-        stage('Build Backend Docker Image') {
+            tools {
+                jdk "${JAVA_VERSION}"
+            }
             steps {
                 dir('backend') {
-                    sh "docker build -t ${BACKEND_IMAGE}:${IMAGE_TAG} ."
-                }
-            }
-        }
+                    script {
+                        sh '''
+                            echo "===== Build Environment ====="
+                            echo "JDK Version:"
+                            java --version
+                            echo "Docker Version:"
+                            docker --version
+                            echo "Current Directory:"
+                            pwd
+                            ls -la
+                        '''
 
-        stage('Build Nginx Docker Image') {
-            steps {
-                dir('nginx') {
-                    sh "docker build -t ${NGINX_IMAGE}:${IMAGE_TAG} ."
-                }
-            }
-        }
+                        // Prepare Environment
+                        sh '''
+                            rm -rf src/main/resources
+                            mkdir -p src/main/resources
+                            chmod 777 src/main/resources
+                        '''
 
-        stage('Tag and Push Docker Images') {
-            steps {
-                withDockerRegistry([credentialsId: 'dockerhub-token', url: '']) {
-                    sh "docker tag ${BACKEND_IMAGE}:${IMAGE_TAG} ${DOCKER_HUB_REPO_BACKEND}:${IMAGE_TAG}"
-                    sh "docker push ${DOCKER_HUB_REPO_BACKEND}:${IMAGE_TAG}"
-
-                    sh "docker tag ${FRONTEND_IMAGE}:${IMAGE_TAG} ${DOCKER_HUB_REPO_FRONTEND}:${IMAGE_TAG}"
-                    sh "docker push ${DOCKER_HUB_REPO_FRONTEND}:${IMAGE_TAG}"
-
-                    sh "docker tag ${NGINX_IMAGE}:${IMAGE_TAG} ${DOCKER_HUB_REPO_NGINX}:${IMAGE_TAG}"
-                    sh "docker push ${DOCKER_HUB_REPO_NGINX}:${IMAGE_TAG}"
-                }
-            }
-        }
-
-        stage('Deploy to EC2') {
-            steps {
-                script {
-                    withCredentials([file(credentialsId: 'jenkins-env', variable: 'ENV_FILE')]) {
-                        sshagent(['ec2-ssh-key']) {
-                            sh '''
-                            # 먼저 기존의 .env 파일 삭제 (권한 문제 방지)
-                            ssh -o StrictHostKeyChecking=no ${DEPLOY_HOST} "rm -f ${DEPLOY_PATH}/.env"
-
-                            # 환경변수 파일 및 docker-compose.yml 파일을 EC2로 전송
-                            scp -o StrictHostKeyChecking=no updated.env  ${DEPLOY_HOST}:${DEPLOY_PATH}/.env
-                            scp -o StrictHostKeyChecking=no docker-compose.yml ${DEPLOY_HOST}:${DEPLOY_PATH}/docker-compose.yml
-
-                            # EC2에서 Docker Compose 실행하여 최신 컨테이너 배포
-                            ssh -o StrictHostKeyChecking=no ${DEPLOY_HOST} "
-                            cd ${DEPLOY_PATH} &&
-                            export IMAGE_TAG=${IMAGE_TAG} &&
-                            # docker login -u '${DOCKER_HUB_USERNAME}' &&
-                            docker compose down --remove-orphans &&
-                            docker compose pull &&
-                            docker compose up -d
-                            # docker image prune -f &&
-                            # rm -f ${DEPLOY_PATH}/.env
-                            "
-                            '''
+                        // 시크릿 파일 설정 부분 (필요시 주석 해제)
+                        withCredentials([
+                            file(credentialsId: 'prod-yaml', variable: 'prodFile'),
+                            file(credentialsId: 'firebase-json', variable: 'fireFile')
+                            // file(credentialsId: 'secret-yaml', variable: 'secretFile')
+                        ]) {
+                        sh '''
+                            cp "$prodFile" src/main/resources/application-prod.yml
+                            cp "$fireFile" src/main/resources/firebase-service-account.json
+                            chmod 644 src/main/resources/application-*.yml
+                            chmod 644 src/main/resources/firebase-*.json
+                        '''
                         }
+
+                        // Gradle 빌드
+                        sh '''
+                            chmod +x gradlew
+                            ./gradlew clean build -x test --no-daemon
+                        '''
+                        
+                        // Docker 배포
+                        sh '''
+                            docker rm -f ${APP_NAME} || true
+                            docker rmi ${DOCKER_IMAGE} || true
+                            docker build -t ${DOCKER_IMAGE} .
+                            docker run -d \
+                                --name ${APP_NAME} \
+                                -e SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE=50MB \
+                                -e SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE=100MB \
+                                --network my-network \
+                                --restart unless-stopped \
+                                -p 8080:8080 \
+                                ${DOCKER_IMAGE}
+                        '''
                     }
+                }
+            }
+            post {
+                success {
+                    echo '백엔드 빌드 및 배포 성공'
+                }
+                failure {
+                    echo '백엔드 빌드 및 배포 실패'
+                }
+            }
+        }
+
+        stage('Frontend Build & Deploy') {
+            when {
+                expression { BRANCH_NAME == 'origin/front' }
+            }
+            tools {
+                nodejs "${NODE_VERSION}"
+            }
+            steps {
+                dir('frontend') {
+                    script {
+                        // 빌드 전 상태 출력
+                        sh '''
+                            echo "===== Build Environment ====="
+                            echo "Node Version:"
+                            node --version
+                            echo "NPM Version:"
+                            npm --version
+                            echo "Current Directory:"
+                            pwd
+                            ls -la
+                        '''
+                        // 시크릿 파일 설정 부분 (필요시 주석 해제)
+                        withCredentials([
+                            file(credentialsId: 'react-env', variable: 'envFile')
+                        ]) {
+                        sh '''
+                            cp "$envFile" .env
+                            chmod 644 .env
+                        '''
+                        }
+                        
+                        sh '''
+                            echo "===== Starting Build Process ====="
+                            rm -rf node_modules
+                            npm install
+                            CI=false npm run build
+                        '''
+                        
+                        // 배포
+                        sh '''
+                            echo "===== Starting Deployment ====="
+                            echo "Cleaning deployment directory..."
+                            rm -rf ${DEPLOY_PATH}/*
+                            
+                            echo "Copying build files..."
+                            cp -r dist/* ${DEPLOY_PATH}/
+                            
+                            echo "Verifying deployment..."
+                            ls -la ${DEPLOY_PATH}
+                        '''
+                    }
+                }
+            }
+            post {
+                success {
+                    echo '프론트엔드 빌드 및 배포 성공'
+                }
+                failure {
+                    echo '프론트엔드 빌드 및 배포 실패'
                 }
             }
         }
@@ -110,10 +161,30 @@ pipeline {
 
     post {
         success {
-            echo '✅ 빌드, 태깅, 배포 성공!'
+            script {
+                def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                withCredentials([string(credentialsId: 'mattermost-webhook', variable: 'WEBHOOK_URL')]) {
+                    mattermostSend(color: 'good',
+                        message: "빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
+                        endpoint: WEBHOOK_URL,
+                        channel: 'f1f632e18102627b0737ddbefcf0c505'
+                    )
+                }
+            }
         }
         failure {
-            echo '❌ 문제가 발생했습니다. 로그를 확인하세요.'
+            script {
+                def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                withCredentials([string(credentialsId: 'mattermost-webhook', variable: 'WEBHOOK_URL')]) {
+                    mattermostSend(color: 'danger',
+                        message: "빌드 실패: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
+                        endpoint: WEBHOOK_URL,
+                        channel: 'f1f632e18102627b0737ddbefcf0c505'
+                    )
+                }
+            }
         }
     }
 }
