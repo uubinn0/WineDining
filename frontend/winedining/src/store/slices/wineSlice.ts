@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { Wine, WineFilter } from "../../types/wine";
-import { registerWineBySearch, registerWineByImage } from "../../api/wineApi";
+import { registerWineBySearch } from "../../api/wineApi";
 
 import { fetchFilteredWines } from "../../mocks/mockApi"; // 가짜 API 불러오기
 
@@ -42,19 +42,6 @@ export const postWineBySearch = createAsyncThunk<Wine, number, { rejectValue: st
   }
 );
 
-// 와인 등록 (이미지)
-export const postWineByImage = createAsyncThunk<Wine, File, { rejectValue: string }>(
-  "wine/postWineByImage",
-  async (imageFile, { rejectWithValue }) => {
-    try {
-      const response = await registerWineByImage(imageFile);
-      return response;
-    } catch (error) {
-      return rejectWithValue("이미지 기반 와인 등록 실패");
-    }
-  }
-);
-
 const wineSlice = createSlice({
   name: "wine",
   initialState,
@@ -85,19 +72,6 @@ const wineSlice = createSlice({
       .addCase(postWineBySearch.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload ?? "와인 등록 실패";
-      })
-
-      // 와인 등록 (이미지)
-      .addCase(postWineByImage.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(postWineByImage.fulfilled, (state, action: PayloadAction<Wine>) => {
-        state.status = "succeeded";
-        state.wines.push(action.payload);
-      })
-      .addCase(postWineByImage.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload ?? "이미지 기반 와인 등록 실패";
       });
   },
 });

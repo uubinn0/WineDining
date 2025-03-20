@@ -1,20 +1,66 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import EditModal from "../components/Modal/EditModal";
-import AddSellerModal from "../components/Modal/AddSellerModal"; // ✅ 추가
+import AddSeller1Modal from "../components/Modal/AddSeller1Modal";
+import AddSeller2Modal from "../components/Modal/AddSeller2Modal";
+import AddSeller3Modal from "../components/Modal/AddSeller3Modal";
+import { Wine } from "../types/wine";
 
 function MyPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isAddSellerModalOpen, setIsAddSellerModalOpen] = useState(false); // ✅ 추가
+  const [isAddSellerModalOpen, setIsAddSellerModalOpen] = useState(false);
+  const [isAddSeller2ModalOpen, setIsAddSeller2ModalOpen] = useState(false);
+  const [isAddSeller3ModalOpen, setIsAddSeller3ModalOpen] = useState(false);
+  const [selectedWine, setSelectedWine] = useState<Wine | null>(null);
+  const [drinkData, setDrinkData] = useState<any>(null);
 
   const openEditModal = () => setIsEditModalOpen(true);
   const closeEditModal = () => setIsEditModalOpen(false);
 
-  const openAddSellerModal = () => setIsAddSellerModalOpen(true); // ✅ 추가
-  const closeAddSellerModal = () => setIsAddSellerModalOpen(false); // ✅ 추가
+  const openAddSellerModal = () => setIsAddSellerModalOpen(true);
+  const closeAddSellerModal = () => setIsAddSellerModalOpen(false);
+
+  const openAddSeller2Modal = () => setIsAddSeller2ModalOpen(true);
+  const closeAddSeller2Modal = () => setIsAddSeller2ModalOpen(false);
+
+  const openAddSeller3Modal = () => setIsAddSeller3ModalOpen(true);
+  const closeAddSeller3Modal = () => setIsAddSeller3ModalOpen(false);
+
+  // 2번 모달이 변경될 때 확인
+  useEffect(() => {
+    console.log("2번:", isAddSeller2ModalOpen);
+  }, [isAddSeller2ModalOpen]);
+
+  // 1번 -> 2번
+  const handleNextStep = (wine: Wine | null) => {
+    if (!wine) return;
+    setSelectedWine(wine);
+    console.log("선택된 와인:", wine);
+
+    setTimeout(() => {
+      closeAddSellerModal();
+      setIsAddSeller2ModalOpen(true);
+    }, 100);
+  };
+
+  // 2번 -> 3번
+  const handleNextStep2 = (drinkInfo: any) => {
+    setDrinkData(drinkInfo);
+    console.log("3번 모달 열기");
+    console.log("2번 기록:", drinkInfo);
+    closeAddSeller2Modal();
+    setIsAddSeller3ModalOpen(true);
+  };
+
+  // 2번 -> 1번 이동 (뒤로가기)
+  const handlePrevStep = () => {
+    console.log("1번 모달 다시 열기");
+    closeAddSeller2Modal();
+    setIsAddSellerModalOpen(true);
+  };
 
   return (
     <div style={styles.container}>
@@ -42,7 +88,15 @@ function MyPage() {
         </button>
       </div>
       <EditModal isOpen={isEditModalOpen} onClose={closeEditModal} />
-      <AddSellerModal isOpen={isAddSellerModalOpen} onClose={closeAddSellerModal} /> {/* ✅ 추가 */}
+      <AddSeller1Modal isOpen={isAddSellerModalOpen} onClose={closeAddSellerModal} onNext={handleNextStep} />
+      <AddSeller2Modal
+        isOpen={isAddSeller2ModalOpen}
+        onClose={closeAddSeller2Modal}
+        onPrev={handlePrevStep}
+        onNext={handleNextStep2}
+        wineInfo={selectedWine!}
+      />
+      <AddSeller3Modal isOpen={isAddSeller3ModalOpen} onClose={closeAddSeller3Modal} drinkData={drinkData} />
     </div>
   );
 }

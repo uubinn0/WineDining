@@ -66,7 +66,6 @@ const WineDetailModal = ({ isOpen, onClose, wine }: WineDetailModalProps) => {
   );
 };
 
-// ✅ 프로그레스 바 컴포넌트 추가
 const ProgressBar = ({ value }: { value: number }) => (
   <div style={styles.progressBar}>
     {[1, 2, 3, 4, 5].map((i) => (
@@ -75,7 +74,6 @@ const ProgressBar = ({ value }: { value: number }) => (
   </div>
 );
 
-// ✅ 스타일 반영
 const styles: { [key: string]: React.CSSProperties } = {
   overlay: {
     position: "fixed",
