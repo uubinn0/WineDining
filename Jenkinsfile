@@ -51,14 +51,13 @@ pipeline {
                         // 시크릿 파일 설정 부분 (필요시 주석 해제)
                         withCredentials([
                             file(credentialsId: 'prod-yaml', variable: 'prodFile'),
-                            file(credentialsId: 'firebase-json', variable: 'fireFile')
-                            // file(credentialsId: 'secret-yaml', variable: 'secretFile')
+                            // file(credentialsId: 'firebase-json', variable: 'fireFile')
+                            file(credentialsId: 'secret-yaml', variable: 'secretFile')
                         ]) {
                         sh '''
                             cp "$prodFile" src/main/resources/application-prod.yml
-                            cp "$fireFile" src/main/resources/firebase-service-account.json
+                            cp "$secretFile" src/main/resources/application-secret.yml
                             chmod 644 src/main/resources/application-*.yml
-                            chmod 644 src/main/resources/firebase-*.json
                         '''
                         }
 
