@@ -9,7 +9,7 @@ interface AddSeller3ModalProps {
 const AddSeller3Modal = ({ isOpen, onClose, drinkData }: AddSeller3ModalProps) => {
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
 
-  // 이미지 업로드 핸들러
+  // 이미지 업로드
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
     const files = Array.from(event.target.files);
@@ -28,10 +28,10 @@ const AddSeller3Modal = ({ isOpen, onClose, drinkData }: AddSeller3ModalProps) =
     setSelectedImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // 완료 버튼 핸들러 (콘솔 출력)
+  // 완료 버튼
   const handleComplete = () => {
     console.log("업로드된 이미지:", selectedImages);
-    alert("저장 완료!");
+    alert("저장 완료");
     onClose();
   };
 
@@ -90,7 +90,6 @@ const AddSeller3Modal = ({ isOpen, onClose, drinkData }: AddSeller3ModalProps) =
   );
 };
 
-// 스타일 정의
 const styles: { [key: string]: React.CSSProperties } = {
   overlay: {
     position: "fixed",
