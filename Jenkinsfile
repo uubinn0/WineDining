@@ -167,7 +167,7 @@ pipeline {
                     mattermostSend(color: 'good',
                         message: "빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
                         endpoint: WEBHOOK_URL,
-                        channel: 'f1f632e18102627b0737ddbefcf0c505'
+                        channel: 'b202_'
                     )
                 }
             }
@@ -180,7 +180,7 @@ pipeline {
                     mattermostSend(color: 'danger',
                         message: "빌드 실패: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
                         endpoint: WEBHOOK_URL,
-                        channel: 'f1f632e18102627b0737ddbefcf0c505'
+                        channel: 'b202_'
                     )
                 }
             }
