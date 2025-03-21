@@ -22,7 +22,7 @@ pipeline {
 
         stage('Backend Build & Deploy') {
             when {
-                expression { BRANCH_NAME == 'origin/back' }
+                expression { BRANCH_NAME == 'origin/backend' }
             }
             tools {
                 jdk "${JAVA_VERSION}"
@@ -95,7 +95,7 @@ pipeline {
 
         stage('Frontend Build & Deploy') {
             when {
-                expression { BRANCH_NAME == 'origin/front' }
+                expression { BRANCH_NAME == 'origin/frontend' }
             }
             tools {
                 nodejs "${NODE_VERSION}"
