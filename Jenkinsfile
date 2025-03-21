@@ -138,7 +138,7 @@ pipeline {
                             rm -rf ${DEPLOY_PATH}/*
                             
                             echo "Copying build files..."
-                            cp -r dist/* ${DEPLOY_PATH}/
+                            cp -r build/* ${DEPLOY_PATH}/
                             
                             echo "Verifying deployment..."
                             ls -la ${DEPLOY_PATH}
