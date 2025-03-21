@@ -84,9 +84,9 @@ function Home() {
         <img src={mypageIcon} alt="마이페이지" style={navIconStyle} onClick={() => navigate("/mypage")}/>
       </button>
       {/* <button style={{...buttonStyle, ...myPagePositionStyle}} onClick={() => navigate("/mypage")}> */}
-        <img src={bartender} alt="바텐더" style={bartenderStyle} onClick={() => navigate("/winerecommend")}/>
+        <img src={bartender} alt="바텐더" style={bartenderStyle} onClick={() => navigate("/recommendflow")}/>
       {/* </button> */}
-      <img src={quest} alt="대화창" style={questStyle} onClick={() => navigate("/winerecommend")}/>
+      <img src={quest} alt="대화창" style={questStyle} onClick={() => navigate("/recommendflow")}/>
 
     </div>
   );
