@@ -101,7 +101,7 @@ pipeline {
                 nodejs "${NODE_VERSION}"
             }
             steps {
-                dir('frontend') {
+                dir('frontend/winedining') {
                     script {
                         // 빌드 전 상태 출력
                         sh '''
