@@ -15,24 +15,24 @@ public class RecommController {
      *
      *
      */
-    @PostMapping("/test")
-    public RegisterRecommTestResponse registerRecommTest(){
-        return RegisterRecommTestResponse registerRecommTestResponse;
-    }
+//    @PostMapping("/test")
+//    public  registerRecommTest(){
+//        return RegisterRecommTestResponse registerRecommTestResponse;
+//    }
 
-    /**
-     *
-     *
-     */
-    @GetMapping("/")
-    public
-
-    @GetMapping("/master/week")
-    public
-
-
-    @GetMapping("/master")
-    public
+//    /**
+//     *
+//     *
+//     */
+//    @GetMapping("/")
+//    public
+//
+//    @GetMapping("/master/week")
+//    public
+//
+//
+//    @GetMapping("/master")
+//    public
 
 
 

@@ -31,7 +31,7 @@ public class WineNote {
     private String content;
 
     @Column(precision = 2, scale = 1)
-    private Double rating;
+    private Integer rating;
 
     @Column(length = 255)
     private String image1;
