@@ -1,0 +1,60 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: winedining-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - winedining-postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - winedining-network
+
+  backend:
+    image: ${BACKEND_IMAGE}:${IMAGE_TAG}
+    container_name: winedining-backend
+    environment:
+      DB_USERNAME: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_HOST: ${DB_HOST}
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    networks:
+      - winedining-network
+
+  frontend:
+    image: ${FRONTEND_IMAGE}:${IMAGE_TAG}
+    container_name: winedining-frontend
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - winedining-network
+
+  nginx:
+    image: ${NGINX_IMAGE}:${IMAGE_TAG}
+    container_name: winedining-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    depends_on:
+      - frontend
+      - backend
+    restart: unless-stopped
+    networks:
+      - winedining-network
+
+volumes:
+  winedining-postgres-data:
+
+networks:
+  winedining-network:
+    driver: bridge
