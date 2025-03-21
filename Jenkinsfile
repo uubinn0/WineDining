@@ -6,8 +6,8 @@ pipeline {
         NODE_VERSION = 'node20'
         DEPLOY_PATH = '/home/ubuntu/nginx/html'
         JAVA_VERSION = 'jdk17'
-        APP_NAME = 'jenkins-test'
-        DOCKER_IMAGE = 'jenkins-test:latest'
+        APP_NAME = 'react-container'
+        DOCKER_IMAGE = 'react-container:latest'
     }
 
     stages {
@@ -51,7 +51,6 @@ pipeline {
                         // 시크릿 파일 설정 부분 (필요시 주석 해제)
                         withCredentials([
                             file(credentialsId: 'prod-yaml', variable: 'prodFile'),
-                            // file(credentialsId: 'firebase-json', variable: 'fireFile')
                             file(credentialsId: 'secret-yaml', variable: 'secretFile')
                         ]) {
                         sh '''
