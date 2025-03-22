@@ -22,7 +22,7 @@ pipeline {
 
         stage('Backend Build & Deploy') {
             when {
-                expression { BRANCH_NAME == 'origin/back' }
+                expression { BRANCH_NAME == 'origin/backend' }
             }
             tools {
                 jdk "${JAVA_VERSION}"
@@ -95,13 +95,13 @@ pipeline {
 
         stage('Frontend Build & Deploy') {
             when {
-                expression { BRANCH_NAME == 'origin/front' }
+                expression { BRANCH_NAME == 'origin/frontend' }
             }
             tools {
                 nodejs "${NODE_VERSION}"
             }
             steps {
-                dir('frontend') {
+                dir('frontend/winedining') {
                     script {
                         // 빌드 전 상태 출력
                         sh '''
@@ -138,7 +138,7 @@ pipeline {
                             rm -rf ${DEPLOY_PATH}/*
                             
                             echo "Copying build files..."
-                            cp -r dist/* ${DEPLOY_PATH}/
+                            cp -r build/* ${DEPLOY_PATH}/
                             
                             echo "Verifying deployment..."
                             ls -la ${DEPLOY_PATH}
