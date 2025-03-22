@@ -15,10 +15,10 @@ public class RecommController {
      *
      *
      */
-//    @PostMapping("/test")
-//    public  registerRecommTest(){
-//        return RegisterRecommTestResponse registerRecommTestResponse;
-//    }
+    @PostMapping("/test")
+    public  registerRecommTest(){
+        return RegisterRecommTestResponse registerRecommTestResponse;
+    }
 
 //    /**
 //     *

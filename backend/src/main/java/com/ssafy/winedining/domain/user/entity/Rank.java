@@ -1,4 +1,4 @@
-package com.ssafy.winedining.domain.info.entity;
+package com.ssafy.winedining.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
