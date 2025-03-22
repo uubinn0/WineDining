@@ -1,6 +1,6 @@
 //package com.ssafy.winedining.domain.recommend.dto;
 //
-//import com.ssafy.winedining.domain.user.entity.Preference;
+//import com.ssafy.winedining.domain.preference.entity.Preference;
 //import lombok.Data;
 //
 //import java.util.Date;

@@ -1,7 +1,7 @@
 //package com.ssafy.winedining.domain.recommend.dto;
 //
 //import com.ssafy.winedining.domain.collection.entity.Bottle;
-//import com.ssafy.winedining.domain.product.entity.Wine;
+//import com.ssafy.winedining.domain.wine.entity.Wine;
 //import lombok.Data;
 //
 //import java.math.BigDecimal;
