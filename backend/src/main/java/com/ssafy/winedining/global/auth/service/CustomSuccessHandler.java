@@ -24,6 +24,12 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     @Value("${jwt.access-token-expiration}")
     private long accessTokenExpiration;
 
+    @Value("${frontend.url}")
+    private String frontendUrl;
+
+    @Value("${server.domain}")
+    private String serverDomain;
+
     public CustomSuccessHandler(JWTUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
     }
@@ -45,16 +51,26 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         // 쿠키 만료 시간도 동일하게 설정 (초 단위로 변환 필요)
         response.addCookie(createCookie("Authorization", token));
-        response.sendRedirect("http://localhost:3000/");
+        response.sendRedirect(frontendUrl);
     }
 
     private Cookie createCookie(String key, String value) {
         Cookie cookie = new Cookie(key, value);
         // 밀리초를 초로 변환 (쿠키의 maxAge는 초 단위)
         cookie.setMaxAge((int)(accessTokenExpiration / 1000));
-        //cookie.setSecure(true);
+
+        // 서버 도메인에 따라 secure 설정
+        if (!serverDomain.equals("localhost")) {
+            cookie.setSecure(true);
+        }
+
         cookie.setPath("/");
         cookie.setHttpOnly(true);
+
+        // 서버 도메인이 localhost가 아닐 경우 도메인 설정
+        if (!serverDomain.equals("localhost")) {
+            cookie.setDomain(serverDomain);
+        }
 
         return cookie;
     }
