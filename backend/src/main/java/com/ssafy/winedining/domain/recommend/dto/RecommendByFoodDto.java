@@ -1,11 +1,9 @@
+package com.ssafy.winedining.domain.recommend.dto;
+
 import lombok.Data;
 
-//package com.ssafy.winedining.domain.recommend.dto;
-//
-//import lombok.Data;
+@Data
+public class RecommendByFoodDto {
 
-//@Data
-//public class RecommendByFoodDto {
-//
-//
-//}
+
+}
