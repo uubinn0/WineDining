@@ -1,4 +1,4 @@
-package com.ssafy.winedining.domain.recommend.dto.request;
+package com.ssafy.winedining.domain.preference.dto.request;
 
 import lombok.Data;
 

@@ -2,7 +2,7 @@ package com.ssafy.winedining.domain.preference.service;
 
 import com.ssafy.winedining.domain.preference.entity.Preference;
 import com.ssafy.winedining.domain.preference.repository.PreferenceRepository;
-import com.ssafy.winedining.domain.recommend.dto.request.PreferenceTestRequest;
+import com.ssafy.winedining.domain.preference.dto.request.PreferenceTestRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
