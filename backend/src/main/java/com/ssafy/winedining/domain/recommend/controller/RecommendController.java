@@ -1,32 +1,36 @@
 package com.ssafy.winedining.domain.recommend.controller;
 
-import com.ssafy.winedining.domain.preference.service.PreferenceService;
-import com.ssafy.winedining.domain.recommend.dto.request.PreferenceTestRequest;
+import com.ssafy.winedining.domain.recommend.service.RecommendService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api/v1/recommend")
 @RequiredArgsConstructor
 public class RecommendController {
 
-    private final PreferenceService preferenceService;
+    private final RecommendService recommendService;
 
     /**
-     * 사용자에게 취향 추천 테스트를 입력 받아 저장합니다.
-     *
+     * @return
      */
-    @PostMapping("/test")
-    public String getPreferenceTest(@RequestBody PreferenceTestRequest request){
-        // 유저 컨텍스트에서 유저ID 받기
+    @GetMapping("/")
+    public Mono<ResponseEntity<String>> getRecommendation() {
+
+        // JWT를 이용해 현재 사용자로 추후 변경 예정
         Long userId = 1L;
 
-        preferenceService.saveUserPreferenceTest(userId, request);
-        return "저장 완료";
+        // RecommendService에서 Mono<String>을 받아 리턴
+        return recommendService.recommendByPreference(userId)
+                // 결과가 준비되면 HTTP 200 응답으로 감싸줍니다.
+                .map(ResponseEntity::ok)
+                // 결과가 없으면 404를 반환합니다.
+                .defaultIfEmpty(ResponseEntity.notFound().build());
     }
+
+
 
 
 

@@ -2,7 +2,7 @@ package com.ssafy.winedining.domain.preference.service;
 
 import com.ssafy.winedining.domain.preference.entity.Preference;
 import com.ssafy.winedining.domain.preference.repository.PreferenceRepository;
-import com.ssafy.winedining.domain.recommend.dto.request.PreferenceTestRequest;
+import com.ssafy.winedining.domain.preference.dto.request.PreferenceTestRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -41,4 +41,19 @@ public class PreferenceService {
 
         preferenceRepository.save(userPreference);
     }
+
+    /**
+     * UserId로 추천 테이블 조회(RecommendDomainService 에서 사용)
+     *
+     * @param userId
+     * @return
+     */
+    public Preference getPreferenceByUserId(Long userId) {
+        return preferenceRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Preference not found for user: " + userId));
+    }
+
+
+
+
 }

@@ -1,6 +1,5 @@
 package com.ssafy.winedining.domain.preference.entity;
 
-import com.ssafy.winedining.domain.recommend.dto.request.PreferenceTestRequest;
 import jakarta.persistence.*;
 import lombok.*;
 import java.sql.Timestamp;
