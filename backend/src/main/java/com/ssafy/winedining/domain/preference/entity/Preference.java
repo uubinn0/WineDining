@@ -1,6 +1,5 @@
 package com.ssafy.winedining.domain.preference.entity;
 
-import com.ssafy.winedining.domain.recommend.dto.request.PreferenceTestRequest;
 import jakarta.persistence.*;
 import lombok.*;
 import java.sql.Timestamp;
@@ -8,30 +7,31 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "preferences")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Preference {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Id
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
     @Column(name = "alcohol_content")
-    private int alcoholContent;
+    private Byte alcoholContent;
 
     @Column
-    private int sweetness;
+    private Byte sweetness;
 
     @Column
-    private int acidity;
+    private Byte acidity;
 
     @Column
-    private int tannin;
+    private Byte tannin;
 
     @Column
-    private int body;
+    private Byte body;
 
     @Column
     private Boolean red;
