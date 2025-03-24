@@ -5,14 +5,16 @@ import lombok.*;
 
 @Entity
 @Table(name = "wine_types")
-@Data
+@Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class WineType {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "type_name", length = 60)
-    private String typeName;
+    @Column(name = "type_name")
+    private String typeName;  // 레드, 화이트, 스파클링, 로제
 }

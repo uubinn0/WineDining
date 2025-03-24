@@ -3,59 +3,55 @@ package com.ssafy.winedining.domain.wine.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "wines")
-@Data
+@Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Wine {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "kr_name", nullable = false, length = 255)
+    @Column(name = "kr_name", nullable = false)
     private String krName;
 
-    @Column(name = "en_name", nullable = false, length = 255)
+    @Column(name = "en_name", nullable = false)
     private String enName;
 
-    @Column(length = 255)
     private String image;
 
-    @Column(length = 60)
     private String country;
 
-    @Lob
     private String grape;
 
-    @Column
-    private Long price;
+    private Integer price;
 
-    @Column
-    private Byte sweetness;
+    private Integer sweetness;
 
-    @Column
-    private Byte acidity;
+    private Integer acidity;
 
-    @Column
-    private Byte tannin;
+    private Integer tannin;
 
-    @Column
-    private Byte body;
+    private Integer body;
 
     @Column(name = "alcohol_content")
     private Integer alcoholContent;
 
     @Column(name = "created_at", nullable = false)
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
-    @Column(name = "type_id", nullable = false)
-    private Long typeId;
+    @ManyToOne
+    @JoinColumn(name = "type_id", nullable = false)
+    private WineType wineType;
 
     @Column(name = "wine_group_id", nullable = false)
     private Long wineGroupId;
 
-    @Column
-    private String year;
+    @Column(name = "year")
+    private Integer year;
 }

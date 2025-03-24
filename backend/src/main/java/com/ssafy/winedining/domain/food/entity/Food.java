@@ -5,15 +5,16 @@ import lombok.*;
 
 @Entity
 @Table(name = "foods")
-@Data
+@Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Food {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "food_name", length = 60)
+    @Column(name = "food_name")
     private String foodName;
 }
-
