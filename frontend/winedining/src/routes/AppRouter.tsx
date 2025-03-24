@@ -11,6 +11,7 @@ import LoginTest from "../pages/LoginTest";
 import Dictionary from "../pages/Dictionary";
 import RecommendTest from "../pages/RecommendTest";
 import RecommendFlow from "../pages/RecommendFlow";
+import DicLoading from "../pages/DicLoading";
 
 function AppRouter() {
   return (
@@ -24,6 +25,7 @@ function AppRouter() {
         <Route path="/winelist" element={<WineList />} />
         <Route path="/winesellerlist" element={<WineSellerList />} />
         <Route path="/wishlist" element={<WishList />} />
+        <Route path="/dictionaryloading" element={<DicLoading />} />
         <Route path="/dictionary" element={<Dictionary />} />
         <Route path="/recommendflow" element={<RecommendFlow />} />
         <Route path="/recommendtest" element={<RecommendTest />} />
