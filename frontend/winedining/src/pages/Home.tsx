@@ -77,7 +77,7 @@ function Home() {
       <button style={{...buttonStyle, ...wineListPositionStyle}} onClick={() => navigate("/winelist")}>
         <img src={winelistIcon} alt="와인리스트" style={wineListStyle}/>
       </button>
-      <button style={{...buttonStyle, ...dictionaryPositionStyle}} onClick={() => navigate("/dictionary")}>
+      <button style={{...buttonStyle, ...dictionaryPositionStyle}} onClick={() => navigate("/dictionaryloading")}>
         <img src={dictionaryIcon} alt="알쓸신잡" style={navIconStyle}/>
       </button>
       <button style={{...buttonStyle, ...myPagePositionStyle}} onClick={() => navigate("/mypage")}>
