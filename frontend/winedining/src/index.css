@@ -1,24 +1,59 @@
+:root {
+  --design-width: 360;
+  --design-height: 640;
+  --aspect-ratio: calc(var(--design-width) / var(--design-height));
+}
+
+/* 배경색 */
+html,
+body {
+  background-color: rgba(39, 5, 46, 0.7);
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  font-family: "Galmuri9", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 비율 유지하는 반응형 래퍼 */
+.app-wrapper {
+  width: 100vw;
+  height: 100vh;
+  max-width: 430px;
+  aspect-ratio: var(--aspect-ratio);
+  /* background-color: #2a0e35; */
+  overflow: hidden;
+  position: relative;
+}
+
 body {
   margin: 0;
-  font-family: 'Galmuri9', sans-serif;
+  font-family: "Galmuri9", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
 @font-face {
-  font-family: 'Galmuri7';
-  src: url('./assets/fonts/Galmuri7.ttf') format('truetype');
+  font-family: "Galmuri7";
+  src: url("./assets/fonts/Galmuri7.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 @font-face {
-  font-family: 'Galmuri9';
-  src: url('./assets/fonts/Galmuri9.ttf') format('truetype');
+  font-family: "Galmuri9";
+  src: url("./assets/fonts/Galmuri9.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }

@@ -1,11 +1,13 @@
 import React from "react";
 import AppRouter from "./routes/AppRouter";
-import "./App.css";
+import GlobalLayout from "./components/Layout/GlobalLayout";
 
 function App() {
   return (
     <div>
-      <AppRouter />
+      <GlobalLayout>
+        <AppRouter />
+      </GlobalLayout>
     </div>
   );
 }
