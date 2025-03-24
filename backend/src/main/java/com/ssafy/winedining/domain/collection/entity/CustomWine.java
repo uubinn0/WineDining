@@ -1,4 +1,4 @@
-package com.ssafy.winedining.domain.wine.entity;
+package com.ssafy.winedining.domain.collection.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

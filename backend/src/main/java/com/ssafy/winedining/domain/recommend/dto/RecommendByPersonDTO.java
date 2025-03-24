@@ -15,15 +15,15 @@ public class RecommendByPersonDTO {
     private String image;
     private String country;
     private String grape;
-    private Long price;
-    private int sweetness;
-    private int acidity;
-    private int tannin;
-    private int body;
-    private float alcoholContent;
+    private Integer price;
+    private Integer sweetness;
+    private Integer acidity;
+    private Integer tannin;
+    private Integer body;
+    private Integer alcoholContent;
     private Long typeId;
     private Long wineGroupId;
-    private String year;
+//    private Integer year;
     private Double averageRating;
 
     public RecommendByPersonDTO(Wine wine, Double averageRating) {
@@ -39,9 +39,9 @@ public class RecommendByPersonDTO {
         this.tannin = wine.getTannin();
         this.body = wine.getBody();
         this.alcoholContent = wine.getAlcoholContent();
-        this.typeId = wine.getTypeId();
+        this.typeId = wine.getWineType().getId();
         this.wineGroupId = wine.getWineGroupId();
-        this.year = wine.getYear();
+//        this.year = wine.getYear();
         this.averageRating = (averageRating != null) ? averageRating : 0.0;
     }
 
