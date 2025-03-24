@@ -23,7 +23,7 @@ public class RecommendByPersonDTO {
     private Integer alcoholContent;
     private Long typeId;
     private Long wineGroupId;
-    private Integer year;
+//    private Integer year;
     private Double averageRating;
 
     public RecommendByPersonDTO(Wine wine, Double averageRating) {
@@ -41,7 +41,7 @@ public class RecommendByPersonDTO {
         this.alcoholContent = wine.getAlcoholContent();
         this.typeId = wine.getWineType().getId();
         this.wineGroupId = wine.getWineGroupId();
-        this.year = wine.getYear();
+//        this.year = wine.getYear();
         this.averageRating = (averageRating != null) ? averageRating : 0.0;
     }
 

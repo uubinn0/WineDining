@@ -52,6 +52,6 @@ public class Wine {
     @Column(name = "wine_group_id", nullable = false)
     private Long wineGroupId;
 
-    @Column(name = "year")
-    private Integer year;
+//    @Column(name = "year")
+//    private Integer year;
 }
