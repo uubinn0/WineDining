@@ -6,7 +6,9 @@ import lombok.*;
 @Entity
 @Table(name = "wish_items")
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class WishItem {
     @Id
     private Long id;

@@ -1,30 +1,37 @@
 package com.ssafy.winedining.domain.collection.entity;
 
+import com.ssafy.winedining.domain.wine.entity.WineType;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "custom_wines")
-@Data
+@Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class CustomWine {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 255)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(length = 60)
+    @Column(name = "graph")
     private String graph;
 
-    @Column(length = 60)
+    @Column(name = "country")
     private String country;
 
-    @Column(name = "created_at", length = 60)
+    @Column(name = "created_at")
     private String createdAt;
 
-    @Column(name = "type_id", nullable = false)
-    private Long typeId;
+    @ManyToOne
+    @JoinColumn(name = "type_id", nullable = false)
+    private WineType wineType;
 }
