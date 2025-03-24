@@ -12,6 +12,7 @@ function Home() {
 
 
   const homeContainer : React.CSSProperties = {
+    position : "relative",
     backgroundImage : `url(${Homebackground})`,
     backgroundSize : "cover",
     backgroundPosition : "center",
@@ -35,17 +36,17 @@ function Home() {
   }
 
   const wineListPositionStyle : React.CSSProperties = {
-    position : "fixed",
+    position : "absolute",
     top : "382px",
     left : "45px",
   }
   const dictionaryPositionStyle : React.CSSProperties = {
-    position : "fixed",
+    position : "absolute",
     top : "771px",
     left : "250px"
   }
   const myPagePositionStyle : React.CSSProperties = {
-    position : "fixed",
+    position : "absolute",
     top : "771px",
     left : "315px"
   }
@@ -55,7 +56,7 @@ function Home() {
     height : "56px"
   }
   const bartenderStyle : React.CSSProperties = {
-    position : "fixed",
+    position : "absolute",
     top : "437px",
     left : "111px",
     width : "213px",
@@ -63,7 +64,7 @@ function Home() {
   }
 
   const questStyle : React.CSSProperties = {
-    position : "fixed",
+    position : "absolute",
     top : "356px",
     left : "269px",
     width : "106px",
