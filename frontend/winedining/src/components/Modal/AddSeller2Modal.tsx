@@ -24,6 +24,7 @@ const AddSeller2Modal = ({ isOpen, onClose, onPrev, onNext, wineInfo }: AddSelle
   const handleNext = () => {
     const drinkData = {
       wineId: wineInfo.wine_id,
+      bottleId: wineInfo.wine_id,
       drinkDate,
       companion,
       food,

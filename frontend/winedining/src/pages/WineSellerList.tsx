@@ -3,21 +3,29 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
 import { useNavigate } from "react-router-dom";
 import { fetchWines } from "../store/slices/wineSlice";
+import { fetchNotes } from "../store/slices/noteSlice";
 import WineSellerCard from "../components/WineSellerCard";
 import { Wine } from "../types/wine";
+import { WineNote } from "../types/note";
+import { fetchAllNotes } from "../store/slices/noteSlice";
 
 const WineSellerList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { wines, status } = useSelector((state: RootState) => state.wine);
+  const { notes } = useSelector((state: RootState) => state.note);
   const [bestWines, setBestWines] = useState<Wine[]>([]);
 
   useEffect(() => {
-    dispatch(fetchWines()); // 필터 없이 전체 와인 불러오기 (내가 등록한 것만 가져와야 함)
+    dispatch(fetchWines());
+    dispatch(fetchNotesAll()); // 모든 노트 불러오기
   }, [dispatch]);
 
+  // 노트를 가진 와인만 필터링
+  const winesWithNotes = wines.filter((wine) => notes.some((note) => note.bottle_id === wine.wine_id));
+
   const toggleBest = (wine: Wine) => {
-    const alreadyBest = bestWines.some((w) => w.wine_id === wine.wine_id); // [1] 실제로, BEST 와인만 API 요청
+    const alreadyBest = bestWines.some((w) => w.wine_id === wine.wine_id);
     if (alreadyBest) {
       setBestWines((prev) => prev.filter((w) => w.wine_id !== wine.wine_id));
     } else {
@@ -30,7 +38,6 @@ const WineSellerList = () => {
       <button onClick={() => navigate("/mypage")}>뒤로가기</button>
       <h1 style={styles.title}>⚡ MY WINE SELLER ⚡</h1>
 
-      {/*  BEST 캐러셀 */}
       <div style={styles.carousel}>
         {bestWines.length > 0 ? (
           bestWines.map((wine) => (
@@ -50,7 +57,7 @@ const WineSellerList = () => {
       {status === "failed" && <p>데이터 불러오기 실패</p>}
 
       <div style={styles.list}>
-        {wines.map((wine) => (
+        {winesWithNotes.map((wine) => (
           <WineSellerCard
             key={wine.wine_id}
             wine={wine}
@@ -61,6 +68,14 @@ const WineSellerList = () => {
       </div>
     </div>
   );
+};
+
+const fetchNotesAll = () => async (dispatch: AppDispatch) => {
+  // NOTE: 이건 전체 note를 위한 mock 함수. 실제 백엔드에서는 사용자별로 필터링 필요
+  const allBottleIds = Array.from({ length: 40 }, (_, i) => i + 1); // bottle_id 1~40
+  for (const id of allBottleIds) {
+    await dispatch(fetchNotes(id));
+  }
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -92,6 +107,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     flexDirection: "column",
     gap: "12px",
+  },
+  emptyText: {
+    color: "#aaa",
+    fontSize: "14px",
   },
 };
 

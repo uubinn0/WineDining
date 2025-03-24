@@ -1,14 +1,13 @@
-// store/slices/testSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface TestState {
-  testCompleted: boolean;  // 취향 테스트 완료 여부
-  currentStep: number;     // 현재 질문 단계 (RecommendFlow에서 사용할)
+  testCompleted: boolean; // 취향 테스트 완료 여부
+  currentStep: number; // 현재 질문 단계 (RecommendFlow에서 사용할)
 }
 
 const initialState: TestState = {
-  testCompleted: false,  // 기본값은 false (테스트가 완료되지 않음)
-  currentStep: 0,        // 기본값은 0 (첫 번째 질문부터 시작)
+  testCompleted: false, // 기본값은 false (테스트가 완료되지 않음)
+  currentStep: 0, // 기본값은 0 (첫 번째 질문부터 시작)
 };
 
 const testSlice = createSlice({
@@ -27,8 +26,8 @@ const testSlice = createSlice({
 
     // 테스트 상태 초기화 (testCompleted와 currentStep을 초기 상태로 리셋)
     resetTestState: (state) => {
-      state.testCompleted = false;  // 취향 테스트 완료 여부를 false로 리셋
-      state.currentStep = 0;         // 질문을 처음부터 시작할 수 있도록 currentStep을 0으로 리셋
+      state.testCompleted = false; // 취향 테스트 완료 여부를 false로 리셋
+      state.currentStep = 0; // 질문을 처음부터 시작할 수 있도록 currentStep을 0으로 리셋
     },
   },
 });
