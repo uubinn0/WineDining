@@ -447,3 +447,7 @@ $RECYCLE.BIN/
 pyvenv.cfg
 .venv
 pip-selfcheck.json
+
+###  바이트 코드 ###
+__pycache__/
+*.pyc
