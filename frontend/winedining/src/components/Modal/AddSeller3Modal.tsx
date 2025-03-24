@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { createNote } from "../../store/slices/noteSlice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/store";
 
 interface AddSeller3ModalProps {
   isOpen: boolean;
@@ -8,6 +11,7 @@ interface AddSeller3ModalProps {
 
 const AddSeller3Modal = ({ isOpen, onClose, drinkData }: AddSeller3ModalProps) => {
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
 
   // 이미지 업로드
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,10 +32,26 @@ const AddSeller3Modal = ({ isOpen, onClose, drinkData }: AddSeller3ModalProps) =
     setSelectedImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // 완료 버튼
   const handleComplete = () => {
-    console.log("업로드된 이미지:", selectedImages);
-    alert("저장 완료");
+    const bottleId = drinkData.bottleId;
+
+    if (!bottleId) {
+      alert("bottle_id가 없습니다. 저장할 수 없습니다.");
+      return;
+    }
+
+    const newNote = {
+      who: drinkData.companion,
+      when: drinkData.drinkDate,
+      pairing: drinkData.food ? drinkData.food.split(",") : [],
+      nose: drinkData.taste,
+      content: drinkData.note,
+      rating: drinkData.rating,
+      image: selectedImages,
+    };
+
+    dispatch(createNote({ bottleId, note: newNote }));
+    alert("노트 저장 완료!");
     onClose();
   };
 
