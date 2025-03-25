@@ -1,5 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { Wine } from "../../types/wine";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "../../store/store";
+import { deleteNote, updateNote } from "../../store/slices/noteSlice";
 
 interface WineSellerDetailModalProps {
   isOpen: boolean;
@@ -7,9 +10,52 @@ interface WineSellerDetailModalProps {
   wine: Wine;
 }
 
-/* 이 곳은 내가 기록 남긴 와인을 보는 모달임 */
 const WineSellerDetailModal = ({ isOpen, onClose, wine }: WineSellerDetailModalProps) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { notes } = useSelector((state: RootState) => state.note);
+  const wineNotes = notes.filter((note) => note.bottle_id === wine.wine_id);
+  const [page, setPage] = useState(0);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editData, setEditData] = useState<any>({});
+
   if (!isOpen) return null;
+
+  const totalPages = wineNotes.length;
+  const currentNote = wineNotes[page];
+
+  const handleDelete = (noteId: number) => {
+    if (window.confirm("정말 삭제하시겠습니까?")) {
+      dispatch(deleteNote(noteId));
+      if (page > 0) setPage((prev) => prev - 1);
+    }
+  };
+
+  const handlePrev = () => {
+    if (page > 0) setPage((prev) => prev - 1);
+  };
+
+  const handleNext = () => {
+    if (page < totalPages - 1) setPage((prev) => prev + 1);
+  };
+
+  const startEdit = () => {
+    setIsEditing(true);
+    setEditData({ ...currentNote });
+  };
+
+  const cancelEdit = () => {
+    setIsEditing(false);
+    setEditData({});
+  };
+
+  const saveEdit = () => {
+    dispatch(updateNote({ noteId: currentNote.note_id, updatedNote: editData }));
+    setIsEditing(false);
+  };
+
+  const handleChange = (field: string, value: any) => {
+    setEditData((prev: any) => ({ ...prev, [field]: value }));
+  };
 
   return (
     <div style={styles.overlay} onClick={onClose}>
@@ -17,26 +63,117 @@ const WineSellerDetailModal = ({ isOpen, onClose, wine }: WineSellerDetailModalP
         <button style={styles.closeButton} onClick={onClose}>
           ✕
         </button>
-        <div style={styles.content}>
-          <h2>
-            {wine.kr_name} ({wine.en_name})
-          </h2>
-          <img src={wine.image || "/sample_image/wine_sample.jpg"} alt={wine.kr_name} style={styles.image} />
 
-          <div style={styles.details}>
-            <p>종류: {wine.type}</p>
-            <p>국가: {wine.country}</p>
-            <p>포도 품종: {wine.grape}</p>
-            <p>가격: {wine.price ? `${wine.price.toLocaleString()}원` : "가격 정보 없음"}</p>
-            <p>당도: {wine.sweetness}</p>
-            <p>산도: {wine.acidity}</p>
-            <p>바디: {wine.body}</p>
-            <p>타닌: {wine.tannin || "해당 없음"}</p>
-            <p>도수: {wine.alcohol_content ? `${wine.alcohol_content}%` : "정보 없음"}</p>
-            <p>추천 음식: {wine.pairing ? wine.pairing.join(", ") : "추천 없음"}</p>
+        <h2 style={styles.title}>
+          와인 수집 <span style={styles.best}>BEST</span>
+        </h2>
+        <p style={styles.subtitle}>
+          {wine.grape} | <img src={`/flags/${wine.country}.png`} alt={wine.country} style={styles.flag} />
+        </p>
+
+        <img
+          src={wine.image !== "no_image" ? wine.image : "/sample_image/wine_sample.jpg"}
+          alt={wine.kr_name}
+          style={styles.wineImage}
+        />
+        <h3 style={styles.name}>
+          {wine.en_name} {wine.kr_name}
+        </h3>
+
+        <div style={styles.noteContainer}>
+          {isEditing ? (
+            <>
+              <p>
+                마신 날짜: <input value={editData.when} onChange={(e) => handleChange("when", e.target.value)} />
+              </p>
+              <p>
+                누구랑? <input value={editData.who} onChange={(e) => handleChange("who", e.target.value)} />
+              </p>
+              <p>
+                안주는?{" "}
+                <input
+                  value={editData.pairing?.join(", ")}
+                  onChange={(e) => handleChange("pairing", e.target.value.split(","))}
+                />
+              </p>
+              <p>
+                내용:
+                <br />
+                <textarea value={editData.content} onChange={(e) => handleChange("content", e.target.value)} />
+              </p>
+              <p>
+                맛: <input value={editData.nose} onChange={(e) => handleChange("nose", e.target.value)} />
+              </p>
+              <p>
+                평점:{" "}
+                <input
+                  type="number"
+                  value={editData.rating}
+                  onChange={(e) => handleChange("rating", Number(e.target.value))}
+                />
+              </p>
+            </>
+          ) : (
+            <>
+              <p>마신 날짜: {currentNote.when}</p>
+              <p>누구랑? {currentNote.who}</p>
+              <p>안주는? {currentNote.pairing.join(" ")}</p>
+              <p>
+                내용:
+                <br />
+                {currentNote.content}
+              </p>
+              <p>맛: {currentNote.nose}</p>
+              <p>평점: {currentNote.rating} 점</p>
+            </>
+          )}
+
+          {currentNote.image && currentNote.image.length > 0 && (
+            <>
+              <p>함께 기억한 사진</p>
+              <div style={styles.imageList}>
+                {currentNote.image.map((img, idx) => (
+                  <img key={idx} src={img} alt={`note-img-${idx}`} style={styles.noteImage} />
+                ))}
+              </div>
+            </>
+          )}
+
+          <div style={styles.controlArea}>
+            <button style={styles.textBtn}>기록 추가</button>
+            <div>
+              <button onClick={handlePrev} style={styles.arrow}>
+                ←
+              </button>
+              <span>
+                {page + 1} / {totalPages}
+              </span>
+              <button onClick={handleNext} style={styles.arrow}>
+                →
+              </button>
+            </div>
+            <div>
+              {isEditing ? (
+                <>
+                  <button style={styles.controlBtn} onClick={saveEdit}>
+                    저장
+                  </button>
+                  <button style={styles.controlBtn} onClick={cancelEdit}>
+                    취소
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button style={styles.controlBtn} onClick={startEdit}>
+                    수정
+                  </button>
+                  <button style={styles.controlBtn} onClick={() => handleDelete(currentNote.note_id)}>
+                    삭제
+                  </button>
+                </>
+              )}
+            </div>
           </div>
-
-          <button style={styles.likeButton}>❤️ 좋아요</button>
         </div>
       </div>
     </div>
@@ -50,53 +187,114 @@ const styles: { [key: string]: React.CSSProperties } = {
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(0,0,0,0.7)",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 1000,
+    zIndex: 999,
   },
   modal: {
-    backgroundColor: "white",
+    backgroundColor: "#2a0035",
+    border: "3px solid #FFD447",
+    borderRadius: "20px",
     padding: "20px",
-    borderRadius: "8px",
-    width: "90%",
-    maxWidth: "500px",
-    position: "relative",
+    width: "320px",
+    color: "#fff",
+    fontFamily: "Pixel, sans-serif",
+    overflowY: "auto",
     maxHeight: "90vh",
-    overflow: "auto",
+    position: "relative",
   },
   closeButton: {
     position: "absolute",
-    right: "10px",
     top: "10px",
-    border: "none",
-    background: "none",
+    right: "15px",
     fontSize: "20px",
+    color: "#fff",
+    background: "none",
+    border: "none",
     cursor: "pointer",
   },
-  content: {
-    marginTop: "20px",
+  title: {
+    fontSize: "18px",
+    fontWeight: "bold",
+  },
+  best: {
+    color: "#FFD447",
+    fontSize: "12px",
+    marginLeft: "5px",
+  },
+  subtitle: {
+    fontSize: "12px",
+    marginBottom: "10px",
+    display: "flex",
+    alignItems: "center",
+    gap: "5px",
+  },
+  flag: {
+    width: "18px",
+    height: "12px",
+  },
+  wineImage: {
+    width: "80px",
+    height: "120px",
+    display: "block",
+    margin: "10px auto",
+  },
+  name: {
     textAlign: "center",
-  },
-  image: {
-    width: "100%",
-    maxHeight: "300px",
-    objectFit: "cover",
-    borderRadius: "8px",
-  },
-  details: {
-    marginTop: "20px",
-    textAlign: "left",
-  },
-  likeButton: {
-    marginTop: "15px",
-    padding: "10px",
+    color: "#FFD447",
     fontSize: "16px",
-    borderRadius: "5px",
-    backgroundColor: "#ff4d4d",
-    color: "white",
+    marginBottom: "15px",
+  },
+  noteContainer: {
+    backgroundColor: "#3a1145",
+    padding: "10px",
+    borderRadius: "10px",
+    fontSize: "12px",
+    lineHeight: "1.5",
+  },
+  imageList: {
+    display: "flex",
+    gap: "10px",
+    marginTop: "8px",
+  },
+  noteImage: {
+    width: "60px",
+    height: "60px",
+    borderRadius: "6px",
+    objectFit: "cover",
+  },
+  controlArea: {
+    marginTop: "15px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "10px",
+  },
+  controlBtn: {
+    backgroundColor: "#fff",
+    color: "#000",
     border: "none",
+    borderRadius: "4px",
+    padding: "6px 10px",
+    fontSize: "12px",
+    marginRight: "5px",
+    cursor: "pointer",
+  },
+  textBtn: {
+    textAlign: "left",
+    fontSize: "12px",
+    color: "#ccc",
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+  },
+  arrow: {
+    margin: "0 5px",
+    fontSize: "14px",
+    background: "none",
+    border: "none",
+    color: "#fff",
     cursor: "pointer",
   },
 };

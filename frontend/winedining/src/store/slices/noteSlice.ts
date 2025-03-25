@@ -114,7 +114,10 @@ const noteSlice = createSlice({
 
       .addCase(fetchNotes.fulfilled, (state, action: PayloadAction<WineNote[]>) => {
         state.status = "succeeded";
-        state.notes = [...state.notes, ...action.payload]; // ✅ 누적 방식
+        const incomingNotes = action.payload;
+        const existingIds = new Set(state.notes.map((n) => n.note_id));
+        const uniqueNewNotes = incomingNotes.filter((n) => !existingIds.has(n.note_id));
+        state.notes = [...state.notes, ...uniqueNewNotes];
       });
   },
 });

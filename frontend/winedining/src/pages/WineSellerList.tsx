@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { fetchWines } from "../store/slices/wineSlice";
 import { fetchNotes } from "../store/slices/noteSlice";
 import WineSellerCard from "../components/WineSellerCard";
+import WineSellerDetailModal from "../components/Modal/WineSellerDetailModal";
 import { Wine } from "../types/wine";
 import { WineNote } from "../types/note";
 import { fetchAllNotes } from "../store/slices/noteSlice";
@@ -15,6 +16,8 @@ const WineSellerList = () => {
   const { wines, status } = useSelector((state: RootState) => state.wine);
   const { notes } = useSelector((state: RootState) => state.note);
   const [bestWines, setBestWines] = useState<Wine[]>([]);
+  const [selectedWine, setSelectedWine] = useState<Wine | null>(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   useEffect(() => {
     dispatch(fetchWines());
@@ -31,6 +34,18 @@ const WineSellerList = () => {
     } else {
       setBestWines((prev) => [...prev, wine]);
     }
+  };
+
+  // 셀러 디테일 모달 열기
+  const openDetailModal = (wine: Wine) => {
+    setSelectedWine(wine);
+    setIsDetailOpen(true);
+  };
+
+  // 셀러 디테일 모달 닫기
+  const closeDetailModal = () => {
+    setSelectedWine(null);
+    setIsDetailOpen(false);
   };
 
   return (
@@ -63,9 +78,14 @@ const WineSellerList = () => {
             wine={wine}
             isBest={bestWines.some((w) => w.wine_id === wine.wine_id)}
             onBestClick={toggleBest}
+            onDetailClick={() => openDetailModal(wine)}
           />
         ))}
       </div>
+
+      {selectedWine && isDetailOpen && (
+        <WineSellerDetailModal wine={selectedWine} isOpen={isDetailOpen} onClose={closeDetailModal} />
+      )}
     </div>
   );
 };
