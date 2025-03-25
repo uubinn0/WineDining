@@ -56,17 +56,17 @@ function Home() {
   };
 
   const wineListPositionStyle: React.CSSProperties = {
-    position: "fixed",
+    position: "absolute",
     top: "382px",
     left: "45px",
   };
   const dictionaryPositionStyle: React.CSSProperties = {
-    position: "fixed",
+    position: "absolute",
     top: "771px",
     left: "250px",
   };
   const myPagePositionStyle: React.CSSProperties = {
-    position: "fixed",
+    position: "absolute",
     top: "771px",
     left: "315px",
   };
