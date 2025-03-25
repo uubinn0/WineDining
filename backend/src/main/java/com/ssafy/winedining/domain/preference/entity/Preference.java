@@ -1,13 +1,17 @@
 package com.ssafy.winedining.domain.preference.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import java.sql.Timestamp;
 
 @Entity
 @Table(name = "preferences")
-@Data
-@Builder
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Preference {
 
     @Id
@@ -55,4 +59,27 @@ public class Preference {
 
     @Column(name = "updated_at")
     private Timestamp updatedAt;
+
+    @Builder
+    public Preference(Long userId, int alcoholContent, int sweetness, int acidity, int tannin, int body, boolean red,
+                      boolean white, boolean sparkling, boolean rose, boolean fortified, boolean etc,
+                      Timestamp createdAt, Timestamp updatedAt){
+        this.userId = userId;
+        this.alcoholContent = alcoholContent;
+        this.sweetness = sweetness;
+        this.acidity = acidity;
+        this.tannin = tannin;
+        this.body = body;
+        this.red = red;
+        this.white = white;
+        this.sparkling = sparkling;
+        this.rose = rose;
+        this.fortified = fortified;
+        this.etc = etc;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+
+
 }

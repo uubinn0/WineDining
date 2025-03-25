@@ -33,16 +33,16 @@ public class Wine {
     private Long price;
 
     @Column
-    private Byte sweetness;
+    private Integer sweetness;
 
     @Column
-    private Byte acidity;
+    private Integer acidity;
 
     @Column
-    private Byte tannin;
+    private Integer tannin;
 
     @Column
-    private Byte body;
+    private Integer body;
 
     @Column(name = "alcohol_content")
     private Integer alcoholContent;

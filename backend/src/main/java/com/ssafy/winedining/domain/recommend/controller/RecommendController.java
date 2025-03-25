@@ -16,11 +16,16 @@ public class RecommendController {
     /**
      * @return
      */
-    @GetMapping("/")
+    @GetMapping("/prefer")
     public Mono<ResponseEntity<String>> getRecommendation() {
+
+        System.out.println("recommendService = " + recommendService);
 
         // JWT를 이용해 현재 사용자로 추후 변경 예정
         Long userId = 1L;
+
+//        String result = recommendService.recommendByPreference(userId).block();
+//        return ResponseEntity.ok(result);
 
         // RecommendService에서 Mono<String>을 받아 리턴
         return recommendService.recommendByPreference(userId)
