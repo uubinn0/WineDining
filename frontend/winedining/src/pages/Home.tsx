@@ -21,7 +21,7 @@ function Home() {
   const handleLogout = async () => {
     try {
       // (1) 서버에 로그아웃 요청 보내기
-      const response = await axios.post(`${BASE_URL}/v1/auth/logout`, {}, { withCredentials: true });
+      const response = await axios.post(`${BASE_URL}/api/v1/auth/logout`, {}, { withCredentials: true });
       console.log("로그아웃 응답", response.data);
 
       // (3) 상태 업데이트 (재렌더링 위해)

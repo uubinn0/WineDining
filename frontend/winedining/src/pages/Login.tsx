@@ -25,7 +25,7 @@ function Login() {
       localStorage.setItem("provider", "KAKAO");
       console.log("provider (KAKAO):", localStorage.getItem("provider"));
 
-      window.location.href = `${BASE_URL}/v1/auth/oauth2/authorization/kakao`; // 해당 URL로 리다이렉션
+      window.location.href = `${BASE_URL}/api/v1/auth/oauth2/authorization/kakao`; // 해당 URL로 리다이렉션
     } catch (error) {
       console.error("카카오 로그인 요청 실패:", error);
     }
@@ -37,7 +37,7 @@ function Login() {
       localStorage.setItem("provider", "GOOGLE");
       console.log("provider (GOOGLE):", localStorage.getItem("provider"));
 
-      window.location.href = `${BASE_URL}/v1/auth/oauth2/authorization/google`; // 해당 URL로 리다이렉션
+      window.location.href = `${BASE_URL}/api/v1/auth/oauth2/authorization/google`; // 해당 URL로 리다이렉션
     } catch (error) {
       console.error("구글 로그인 요청 실패:", error);
     }
@@ -46,7 +46,7 @@ function Login() {
   const handleLogout = async () => {
     try {
       // (1) 서버에 로그아웃 요청 보내기
-      const response = await axios.post(`${BASE_URL}/v1/auth/logout`, {}, { withCredentials: true });
+      const response = await axios.post(`${BASE_URL}/api/v1/auth/logout`, {}, { withCredentials: true });
       console.log("로그아웃 응답", response.data);
 
       // (3) 상태 업데이트 (재렌더링 위해)
