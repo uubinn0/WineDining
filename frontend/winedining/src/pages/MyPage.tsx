@@ -32,18 +32,12 @@ function MyPage() {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        // 쿠키에서 Authorization 토큰 직접 추출
-        const authToken = document.cookie
-          .split("; ")
-          .find((row) => row.startsWith("Authorization="))
-          ?.split("=")[1];
-
-        console.log("[DEBUG] Authorization:", authToken);
+        console.log("BASE_URL 주소 확인", BASE_URL);
 
         const response = await axios.get(`${BASE_URL}/api/v1/users/profile`, {
+          withCredentials: true,
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
           },
         });
 
