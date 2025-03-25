@@ -81,7 +81,7 @@ function Login() {
       <button style={styles.button} onClick={() => navigate("/home")}>
         홈으로 이동하기
       </button>
-      <button style={styles.button} onClick={() => navigate("/logintest")}>
+      <button style={styles.button} onClick={() => navigate("/MBTITest")}>
         WINE MBTI TEST
       </button>
     </div>
