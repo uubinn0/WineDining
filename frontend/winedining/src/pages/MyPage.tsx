@@ -6,6 +6,14 @@ import AddSeller1Modal from "../components/Modal/AddSeller1Modal";
 import AddSeller2Modal from "../components/Modal/AddSeller2Modal";
 import AddSeller3Modal from "../components/Modal/AddSeller3Modal";
 import { Wine } from "../types/wine";
+import axios from "axios";
+
+interface UserProfile {
+  userId: number;
+  nickname: string;
+  email: string | null;
+  rank: string | null;
+}
 
 function MyPage() {
   const navigate = useNavigate();
@@ -16,6 +24,35 @@ function MyPage() {
   const [isAddSeller3ModalOpen, setIsAddSeller3ModalOpen] = useState(false);
   const [selectedWine, setSelectedWine] = useState<Wine | null>(null);
   const [drinkData, setDrinkData] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  // 사용자 정보 로드
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        console.log("BASE_URL 주소 확인", BASE_URL);
+
+        const response = await axios.get(`${BASE_URL}/api/v1/users/profile`, {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        console.log("성공, 사용자 정보:", response.data.data);
+        setUserProfile(response.data.data);
+      } catch (error) {
+        console.error("실패, 사용자 정보 로딩 오류:", error);
+        setError("사용자 정보를 불러오는 데 실패했습니다.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserProfile();
+  }, [BASE_URL]);
 
   const openEditModal = () => setIsEditModalOpen(true);
   const closeEditModal = () => setIsEditModalOpen(false);
