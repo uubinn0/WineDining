@@ -5,8 +5,7 @@ import lombok.*;
 
 @Entity
 @Table(name = "users")
-@Getter
-@Setter
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
@@ -16,9 +15,14 @@ public class User {
     private Long id;
 
     private String username;
+
     private String name;
 
     private String email;
 
     private String role;
+
+    @ManyToOne
+    @JoinColumn(name = "rank_id")
+    private Rank rank; // 사용자 등급
 }
