@@ -12,9 +12,9 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class WineResponseDTO {
-    private Long wine_id;
-    private String kr_name;
-    private String en_name;
+    private Long wineId;
+    private String krName;
+    private String enName;
     private String image;
     private String type;
     private String country;
@@ -24,6 +24,6 @@ public class WineResponseDTO {
     private Integer acidity;
     private Integer tannin;
     private Integer body;
-    private Integer alcohol_content;
+    private Integer alcoholContent;
     private List<String> pairing;
 }
