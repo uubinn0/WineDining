@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CustomWineDTO {
-    private Long wine_id;
+public class CustomWineCreateDTO {
     private String name;
-    private String type;
+    private String graph;
     private String country;
-    private String grape;
+    private Long typeId;  // 와인 타입 ID (1: 레드, 2: 화이트, 3: 스파클링, 4: 로제)
+    private String grape; // 선택적 필드
 }
