@@ -34,7 +34,7 @@ function MyPage() {
       try {
         console.log("BASE_URL 주소 확인", BASE_URL);
 
-        const response = await axios.get(`${BASE_URL}/api/v1/users/profile`, {
+        const response = await axios.get(`${BASE_URL}/api/v1/user/profile`, {
           withCredentials: true,
           headers: {
             "Content-Type": "application/json",
