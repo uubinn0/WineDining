@@ -16,13 +16,10 @@ const BackButton: React.FC<BackButtonProps> = ({ onClick }) => {
 
 const styles: { [key: string]: React.CSSProperties } = {
   button: {
-    position: "fixed",
-    top: "10px",
-    left: "10px",
     backgroundColor: "transparent",
     border: "none",
     cursor: "pointer",
-    padding: "0",
+    padding: "20px",
     flexShrink: 0,
   },
 };
