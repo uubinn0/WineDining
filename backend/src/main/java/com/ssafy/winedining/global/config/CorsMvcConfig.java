@@ -13,11 +13,21 @@ public class CorsMvcConfig implements WebMvcConfigurer {
     @Value("${server.domain}")
     private String serverDomain;
 
+//    @Override
+//    public void addCorsMappings(CorsRegistry corsRegistry) {
+//
+//        corsRegistry.addMapping("/**")
+//                .exposedHeaders("Set-Cookie")
+//                .allowedOrigins("http://localhost:3000", frontendUrl, "http://" + serverDomain, "https://" + serverDomain);
+//    }
+
     @Override
     public void addCorsMappings(CorsRegistry corsRegistry) {
-
         corsRegistry.addMapping("/**")
-                .exposedHeaders("Set-Cookie")
-                .allowedOrigins("http://localhost:3000", frontendUrl, "http://" + serverDomain, "https://" + serverDomain);
+                .allowedOrigins("http://localhost:3000", "https://j12b202.p.ssafy.io", frontendUrl, "http://" + serverDomain, "https://" + serverDomain)
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true)
+                .exposedHeaders("Set-Cookie");
     }
 }

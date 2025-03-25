@@ -5,13 +5,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BottleResponseDTO {
+public class CustomBottleResponseDTO {
     private Long bottle_id;
     private String created_at;
     private WineSimpleDTO wine;
