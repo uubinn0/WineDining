@@ -7,18 +7,20 @@ import WineList from "../pages/WineList";
 import WineSellerList from "../pages/WineSellerList";
 import WishList from "../pages/WishList";
 import ErrorPage from "../pages/ErrorPage";
-import LoginTest from "../pages/LoginTest";
+import MBTITest from "../pages/MBTITest";
 import Dictionary from "../pages/Dictionary";
 import RecommendTest from "../pages/RecommendTest";
 import RecommendFlow from "../pages/RecommendFlow";
 import DicLoading from "../pages/DicLoading";
+import MBTIResults from "../pages/MBTIResult";
 
 function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/logintest" element={<LoginTest />}></Route>
+        <Route path="/MBTItest" element={<MBTITest />}></Route>
+        <Route path="//MBTIresults" element={<MBTIResults />}></Route>
         <Route path="/home" element={<Home />} />
         {/* <Route path="/test" element={<Test />} /> */}
         <Route path="/mypage" element={<MyPage />} />
