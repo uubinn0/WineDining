@@ -4,6 +4,7 @@ import { Wine } from "../types/wine";
 interface WineSellerCardProps {
   wine: Wine;
   onBestClick: (wine: Wine) => void;
+  onDetailClick: () => void;
   isBest: boolean;
 }
 
@@ -11,7 +12,7 @@ interface WineSellerCardProps {
 // 1. 내꺼만 가져오기
 // 2. 베스트 누를 때, best 여부 전송하기
 
-const WineSellerCard = ({ wine, onBestClick, isBest }: WineSellerCardProps) => {
+const WineSellerCard = ({ wine, onBestClick, onDetailClick, isBest }: WineSellerCardProps) => {
   return (
     <div style={styles.card}>
       <img
@@ -36,7 +37,9 @@ const WineSellerCard = ({ wine, onBestClick, isBest }: WineSellerCardProps) => {
         >
           BEST
         </button>
-        <button style={styles.button}>자세히</button>
+        <button style={styles.button} onClick={onDetailClick}>
+          자세히
+        </button>
       </div>
     </div>
   );
