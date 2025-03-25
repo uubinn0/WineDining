@@ -1,17 +1,16 @@
 package com.ssafy.winedining.domain.collection.entity;
 
 import com.ssafy.winedining.domain.user.entity.User;
+import com.ssafy.winedining.domain.wine.entity.CustomWine;
 import com.ssafy.winedining.domain.wine.entity.Wine;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "bottles")
 @Getter
 @Builder
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Bottle {

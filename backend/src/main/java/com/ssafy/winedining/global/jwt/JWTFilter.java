@@ -95,6 +95,8 @@ public class JWTFilter extends OncePerRequestFilter {
         // 인증 관련 경로는 필터링하지 않음
         return path.startsWith("/oauth2") ||
                 path.startsWith("/login") ||
-                path.startsWith("/api/v1/auth/oauth2");
+                path.startsWith("/api/v1/auth/oauth2") ||
+                path.startsWith("/api/v1/auth/logout") || // 로그아웃 경로 추가
+                path.startsWith("/api/v1/auth/status");   // 인증 상태 확인 경로 추가
     }
 }

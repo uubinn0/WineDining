@@ -1,6 +1,5 @@
-package com.ssafy.winedining.domain.collection.entity;
+package com.ssafy.winedining.domain.wine.entity;
 
-import com.ssafy.winedining.domain.wine.entity.WineType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

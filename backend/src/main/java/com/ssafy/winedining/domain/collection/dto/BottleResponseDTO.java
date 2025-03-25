@@ -26,5 +26,19 @@ public class BottleResponseDTO {
         private String type;
         private String country;
         private String grape;
+        private String image;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class CustomWineSimpleDTO {
+        private Long wine_id;
+        private String image;
+        private String name;
+        private String type;
+        private String country;
+        private String grape;
     }
 }

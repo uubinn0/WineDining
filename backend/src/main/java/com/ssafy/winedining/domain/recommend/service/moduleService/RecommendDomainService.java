@@ -1,6 +1,5 @@
 package com.ssafy.winedining.domain.recommend.service.moduleService;
 
-import com.ssafy.winedining.domain.collection.service.CollectionService;
 import com.ssafy.winedining.domain.preference.entity.Preference;
 import com.ssafy.winedining.domain.preference.service.PreferenceService;
 import com.ssafy.winedining.domain.recommend.dto.RecommendByPreferenceDto;
@@ -16,7 +15,7 @@ public class RecommendDomainService {
 
     // 추천 도메인 서비스는 퍼사드 패턴으로 다른 서비스를 호출해서 조합함
     private final PreferenceService preferenceService;
-    private final CollectionService collectionService;
+//    private final CollectionService collectionService;
 
     /**
      * DB에서 사용자 취향 테스트 기반한 데이터를 가져옵니다.
