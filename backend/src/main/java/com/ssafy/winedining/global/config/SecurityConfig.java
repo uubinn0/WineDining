@@ -13,9 +13,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -31,8 +31,9 @@ public class SecurityConfig {
     @Value("${frontend.url}")
     private String frontendUrl;
 
-    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler, JWTUtil jwtUtil) {
-
+    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService,
+                          CustomSuccessHandler customSuccessHandler,
+                          JWTUtil jwtUtil) {
         this.customOAuth2UserService = customOAuth2UserService;
         this.customSuccessHandler = customSuccessHandler;
         this.jwtUtil = jwtUtil;
@@ -40,63 +41,55 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // cors
-        http
-                .cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
+        // CORS
+        http.cors();
 
-                    @Override
-                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+        // Disable default security features not used
+        http.csrf(csrf -> csrf.disable());
+        http.formLogin(form -> form.disable());
+        http.httpBasic(basic -> basic.disable());
 
-                        CorsConfiguration configuration = new CorsConfiguration();
+        // JWT Filter
+        http.addFilterAfter(new JWTFilter(jwtUtil), OAuth2LoginAuthenticationFilter.class);
 
-                        configuration.setAllowedOrigins(Arrays.asList(
-                                frontendUrl,
-                                "http://localhost:3000",
-                                "https://j12b202.p.ssafy.io"
-                        ));
-                        configuration.setAllowedMethods(Collections.singletonList("*"));
-                        configuration.setAllowCredentials(true);
-                        configuration.setAllowedHeaders(Collections.singletonList("*"));
-                        configuration.setMaxAge(3600L);
+        // OAuth2 Login
+        http.oauth2Login(oauth2 -> oauth2
+                .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                .successHandler(customSuccessHandler)
+        );
 
-                        configuration.setExposedHeaders(Arrays.asList("Set-Cookie", "Authorization"));
+        // Authorization settings
+        http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/", "/api/v1/auth/**", "/oauth2/**", "/login/**").permitAll()
+                .anyRequest().authenticated()
+        );
 
-                        return configuration;
-                    }
-                }));
-        //csrf disable
-        http
-                .csrf((auth) -> auth.disable());
-
-        //From 로그인 방식 disable
-        http
-                .formLogin((auth) -> auth.disable());
-
-        //HTTP Basic 인증 방식 disable
-        http
-                .httpBasic((auth) -> auth.disable());
-        //JWTFilter 추가
-        http
-                .addFilterAfter(new JWTFilter(jwtUtil), OAuth2LoginAuthenticationFilter.class);
-        //oauth2
-        http
-                .oauth2Login((oauth2) -> oauth2
-                        .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
-                                .userService(customOAuth2UserService))
-                        .successHandler(customSuccessHandler)
-                );
-
-        //경로별 인가 작업
-        http
-                .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "/api/v1/auth/**", "/oauth2/**", "/login/**").permitAll()
-                        .anyRequest().authenticated());
-
-        //세션 설정 : STATELESS
-        http
-                .sessionManagement((session) -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        // Stateless session
+        http.sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        );
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+
+        config.setAllowedOrigins(Arrays.asList(
+                frontendUrl,
+                "http://localhost:3000",
+                "https://j12b202.p.ssafy.io"
+        ));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(Collections.singletonList("*"));
+        config.setAllowCredentials(true);
+        config.setMaxAge(3600L);
+        config.setExposedHeaders(Arrays.asList("Authorization", "Set-Cookie"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+
+        return source;
     }
 }
