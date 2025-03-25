@@ -24,7 +24,7 @@ public class PreferenceController {
     @PostMapping("/test")
     public String getPreferenceTest(@RequestBody PreferenceTestRequest request){
         // 유저 컨텍스트에서 유저ID 받기
-        Long userId = 1L;
+        Long userId = 2L;
         preferenceService.saveUserPreferenceTest(userId, request);
         return "저장 완료";
     }

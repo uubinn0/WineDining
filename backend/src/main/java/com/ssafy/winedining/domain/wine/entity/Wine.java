@@ -31,12 +31,16 @@ public class Wine {
 
     private Integer price;
 
+    @Column
     private Integer sweetness;
 
+    @Column
     private Integer acidity;
 
+    @Column
     private Integer tannin;
 
+    @Column
     private Integer body;
 
     @Column(name = "alcohol_content")
