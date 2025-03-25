@@ -21,7 +21,6 @@ public class RecommendFastApiService {
      */
     public <T> Mono<String> sendData(T data, String endpoint) {
         String targetUrl = BASE_URL + endpoint;
-        System.out.println("targetUrl = " + targetUrl);
         
         return webClientBuilder.build()
                 .post()
