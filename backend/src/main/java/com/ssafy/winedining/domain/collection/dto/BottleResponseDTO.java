@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class BottleResponseDTO {
-    private Long bottle_id;
-    private String created_at;
+    private Long bottleId;
+    private String createdAt;
     private WineSimpleDTO wine;
 
     @Getter
@@ -21,7 +21,7 @@ public class BottleResponseDTO {
     @AllArgsConstructor
     @Builder
     public static class WineSimpleDTO {
-        private Long wine_id;
+        private Long wineId;
         private String name;
         private String type;
         private String country;
@@ -34,7 +34,7 @@ public class BottleResponseDTO {
     @AllArgsConstructor
     @Builder
     public static class CustomWineSimpleDTO {
-        private Long wine_id;
+        private Long wineId;
         private String image;
         private String name;
         private String type;

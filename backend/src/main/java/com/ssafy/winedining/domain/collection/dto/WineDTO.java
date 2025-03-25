@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class WineDTO {
-    private Long wine_id;
+    private Long wineId;
     private String image;
     private String name;
     private String type;

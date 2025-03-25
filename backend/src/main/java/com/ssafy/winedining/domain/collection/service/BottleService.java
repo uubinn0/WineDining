@@ -49,11 +49,11 @@ public class BottleService {
 
         // 응답 DTO 생성
         return BottleResponseDTO.builder()
-                .bottle_id(savedBottle.getId())
-                .created_at(savedBottle.getCreateAt())
+                .bottleId(savedBottle.getId())
+                .createdAt(savedBottle.getCreateAt())
                 .wine(
                         BottleResponseDTO.WineSimpleDTO.builder()
-                                .wine_id(wine.getId())
+                                .wineId(wine.getId())
                                 .name(wine.getKrName())
                                 .type(typeName)
                                 .country(wine.getCountry())

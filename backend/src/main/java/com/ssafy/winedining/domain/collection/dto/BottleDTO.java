@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class BottleDTO {
-    private Long bottle_id;
-    private String created_at;
+    private Long bottleId;
+    private String createdAt;
     private WineDTO wine;
-    private CustomWineDTO custom_wine;
-    private boolean is_custom;
-    private boolean is_best;
+    private CustomWineDTO customWine;
+    private boolean isCustom;
+    private boolean isBest;
 }

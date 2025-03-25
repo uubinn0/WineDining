@@ -13,5 +13,5 @@ import java.util.List;
 @Builder
 public class CellarResponseDTO {
     private List<BottleDTO> bottles;
-    private int total_count;
+    private int totalCount;
 }

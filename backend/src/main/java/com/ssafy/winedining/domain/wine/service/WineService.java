@@ -36,9 +36,9 @@ public class WineService {
         String typeName = wine.getWineType().getTypeName();
 
         return WineResponseDTO.builder()
-                .wine_id(wine.getId())
-                .kr_name(wine.getKrName())
-                .en_name(wine.getEnName())
+                .wineId(wine.getId())
+                .krName(wine.getKrName())
+                .enName(wine.getEnName())
                 .image(wine.getImage())
                 .type(typeName)
                 .country(wine.getCountry())
@@ -48,7 +48,7 @@ public class WineService {
                 .acidity(wine.getAcidity())
                 .tannin(wine.getTannin())
                 .body(wine.getBody())
-                .alcohol_content(wine.getAlcoholContent())
+                .alcoholContent(wine.getAlcoholContent())
                 .pairing(pairingFoodNames)
                 .build();
     }

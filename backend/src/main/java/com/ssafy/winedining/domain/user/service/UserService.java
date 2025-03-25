@@ -23,7 +23,7 @@ public class UserService {
                 .orElseThrow(() -> new NoSuchElementException("사용자를 찾을 수 없습니다."));
 
         return UserResponseDTO.builder()
-                .user_id(user.getId())
+                .userId(user.getId())
                 .nickname(user.getName())  // name을 nickname으로 사용
                 .email(user.getEmail())
                 .rank(user.getRank() != null ? user.getRank().getName() : "초보자")
