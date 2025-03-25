@@ -24,12 +24,9 @@ public class RecommendService {
     public Mono<String> recommendByPreference(Long userId) {
         // 1. Repository에서 추천 데이터를 조회 (DTO 변환)
         RecommendByPreferenceDto data = recommendDomainService.recommendByPreferene(userId);
-        System.out.println("data = " + data);
         // 2. WebClient를 이용해 FastAPI 서버에 DTO 데이터를 전달 (비동기 처리 후 동기적으로 응답 받음)
         // fastApiService.sendRecommendations()는 Mono<String>을 반환하는 것으로 가정합니다.
-        Mono<String> result = recommendFastApiService.sendData(data, "preference");
-        System.out.println("result = " + result);
-        return result;
+        return recommendFastApiService.sendData(data, "preference");
     }
 
 //    /**

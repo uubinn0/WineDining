@@ -16,23 +16,23 @@ public class RecommendController {
     /**
      * @return
      */
-    @GetMapping("/prefer")
-    public Mono<ResponseEntity<String>> getRecommendation() {
+    @GetMapping("/")
+    public ResponseEntity<String> getRecommendation() {
 
         System.out.println("recommendService = " + recommendService);
 
         // JWT를 이용해 현재 사용자로 추후 변경 예정
         Long userId = 1L;
 
-//        String result = recommendService.recommendByPreference(userId).block();
-//        return ResponseEntity.ok(result);
+        String result = recommendService.recommendByPreference(userId).block();
+        return ResponseEntity.ok(result);
 
-        // RecommendService에서 Mono<String>을 받아 리턴
-        return recommendService.recommendByPreference(userId)
-                // 결과가 준비되면 HTTP 200 응답으로 감싸줍니다.
-                .map(ResponseEntity::ok)
-                // 결과가 없으면 404를 반환합니다.
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+//        // RecommendService에서 Mono<String>을 받아 리턴
+//        return recommendService.recommendByPreference(userId)
+//                // 결과가 준비되면 HTTP 200 응답으로 감싸줍니다.
+//                .map(ResponseEntity::ok)
+//                // 결과가 없으면 404를 반환합니다.
+//                .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
 
