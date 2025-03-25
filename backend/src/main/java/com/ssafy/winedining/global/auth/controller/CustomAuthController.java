@@ -57,6 +57,7 @@ public class CustomAuthController {
         responseBody.put("redirectUrl", "/oauth2/authorization/kakao");
 
         return ResponseEntity.ok(responseBody);
+
     }
 
     // 현재 인증 상태 확인용 API
