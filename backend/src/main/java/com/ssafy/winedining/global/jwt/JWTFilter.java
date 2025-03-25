@@ -19,7 +19,6 @@ public class JWTFilter extends OncePerRequestFilter {
     private final JWTUtil jwtUtil;
 
     public JWTFilter(JWTUtil jwtUtil) {
-
         this.jwtUtil = jwtUtil;
     }
 
@@ -28,12 +27,10 @@ public class JWTFilter extends OncePerRequestFilter {
         String requestUri = request.getRequestURI();
 
         if (requestUri.matches("^\\/login(?:\\/.*)?$")) {
-
             filterChain.doFilter(request, response);
             return;
         }
         if (requestUri.matches("^\\/oauth2(?:\\/.*)?$")) {
-
             filterChain.doFilter(request, response);
             return;
         }
@@ -41,21 +38,20 @@ public class JWTFilter extends OncePerRequestFilter {
         //cookie들을 불러온 뒤 Authorization Key에 담긴 쿠키를 찾음
         String authorization = null;
         Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
 
-            System.out.println(cookie.getName());
-            if (cookie.getName().equals("Authorization")) {
-
-                authorization = cookie.getValue();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                System.out.println(cookie.getName());
+                if (cookie.getName().equals("Authorization")) {
+                    authorization = cookie.getValue();
+                }
             }
         }
 
         //Authorization 헤더 검증
         if (authorization == null) {
-
             System.out.println("token null");
             filterChain.doFilter(request, response);
-
             //조건이 해당되면 메소드 종료 (필수)
             return;
         }
@@ -65,20 +61,20 @@ public class JWTFilter extends OncePerRequestFilter {
 
         //토큰 소멸 시간 검증
         if (jwtUtil.isExpired(token)) {
-
             System.out.println("token expired");
             filterChain.doFilter(request, response);
-
             //조건이 해당되면 메소드 종료 (필수)
             return;
         }
 
-        //토큰에서 username과 role 획득
+        //토큰에서 username, role, userId 획득
         String username = jwtUtil.getUsername(token);
         String role = jwtUtil.getRole(token);
+        Long userId = jwtUtil.getUserId(token); // userId 추출
 
         //userDTO를 생성하여 값 set
         UserDTO userDTO = new UserDTO();
+        userDTO.setId(userId); // userId 설정
         userDTO.setUsername(username);
         userDTO.setRole(role);
 
@@ -99,6 +95,8 @@ public class JWTFilter extends OncePerRequestFilter {
         // 인증 관련 경로는 필터링하지 않음
         return path.startsWith("/oauth2") ||
                 path.startsWith("/login") ||
-                path.startsWith("/api/v1/auth/oauth2");
+                path.startsWith("/api/v1/auth/oauth2") ||
+                path.startsWith("/api/v1/auth/logout") || // 로그아웃 경로 추가
+                path.startsWith("/api/v1/auth/status");   // 인증 상태 확인 경로 추가
     }
 }

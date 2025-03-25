@@ -6,8 +6,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserDTO {
-
-    private String role;
-    private String name;
+    private Long id;
     private String username;
+    private String name;
+    private String email;
+    private String role;
+    private String rankName;
 }

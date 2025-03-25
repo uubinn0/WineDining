@@ -40,14 +40,15 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         CustomOAuth2User customUserDetails = (CustomOAuth2User) authentication.getPrincipal();
 
         String username = customUserDetails.getUsername();
+        Long userId = customUserDetails.getUserId(); // userId 가져오기
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
-        // 설정 파일의 만료 시간 사용
-        String token = jwtUtil.createJwt(username, role, accessTokenExpiration);
+        // userId를 포함한 토큰 생성
+        String token = jwtUtil.createJwt(username, role, userId, accessTokenExpiration);
 
         // 쿠키 만료 시간도 동일하게 설정 (초 단위로 변환 필요)
         response.addCookie(createCookie("Authorization", token));
