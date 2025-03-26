@@ -1,24 +1,31 @@
 package com.ssafy.winedining.domain.collection.entity;
 
+import com.ssafy.winedining.domain.user.entity.User;
+import com.ssafy.winedining.domain.wine.entity.Wine;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Table(name = "wish_items")
-@Data
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class WishItem {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "created_at", nullable = false, length = 60)
+    @Column(name = "created_at", nullable = false)
     private String createdAt;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column(name = "wine_id", nullable = false)
-    private Long wineId;
+    @ManyToOne
+    @JoinColumn(name = "wine_id", nullable = false)
+    private Wine wine;
 }
