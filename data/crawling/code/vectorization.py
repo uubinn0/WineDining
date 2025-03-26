@@ -37,7 +37,7 @@ columns = ['id', 'acidity', 'alcohol_content', 'body', 'country', 'grape',
 wine_data = pd.DataFrame(wines, columns=columns)
 
 # Convert categorical variables to numerical using one-hot encoding
-categorical_columns = ['country', 'grape']
+categorical_columns = ['country', 'grape', 'type_id']
 wine_data_encoded = pd.get_dummies(wine_data, columns=categorical_columns)
 
 def create_wine_vector(row):
@@ -48,14 +48,13 @@ def create_wine_vector(row):
         float(row['alcohol_content']) / 100,
         float(row['body']) / 5,
         float(row['sweetness']) / 5,
-        float(row['tannin']) / 5,
-        float(float(row['type_id']) / wine_data['type_id'].max())
+        float(row['tannin']) / 5
     ]
     
     # Get one-hot encoded categorical features
     categorical_features = [
         float(value) for key, value in row.items() 
-        if key.startswith(('country_', 'grape_'))
+        if key.startswith(('country_', 'grape_', 'type_id_'))
     ]
     
     # Combine all features into a single vector
