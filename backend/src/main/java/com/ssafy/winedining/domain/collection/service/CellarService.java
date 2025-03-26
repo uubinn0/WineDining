@@ -92,7 +92,7 @@ public class CellarService {
         // 커스텀 와인 생성
         CustomWine customWine = CustomWine.builder()
                 .name(customWineDTO.getName())
-                .graph(customWineDTO.getGraph())
+                .grape(customWineDTO.getGraph())
                 .country(customWineDTO.getCountry())
                 .createdAt(LocalDateTime.now().toString())
                 .wineType(wineType)
@@ -172,7 +172,7 @@ public class CellarService {
                                         .type(customWine.getWineType().getTypeName())
                                         .country(customWine.getCountry())
                                         .grape(null)
-                                        .image(customWine.getGraph()) // 커스텀 와인의 graph를 image로 사용
+                                        .image(customWine.getGrape()) // 커스텀 와인의 graph를 image로 사용
                                         .build()
                         )
                         .build();

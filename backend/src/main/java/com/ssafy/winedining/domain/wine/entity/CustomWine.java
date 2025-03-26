@@ -21,8 +21,8 @@ public class CustomWine {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "graph")
-    private String graph;
+    @Column(name = "grape")
+    private String grape;
 
     @Column(name = "country")
     private String country;
