@@ -63,7 +63,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   titleSection: {
     textAlign: "center",
-    marginTop: "100px",
+    marginTop: "50px",
     marginBottom: "0px",
   },
   logoTitle: {
