@@ -16,7 +16,7 @@ public class RecommendController {
     /**
      * @return
      */
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<String> getRecommendation() {
 
         System.out.println("recommendService = " + recommendService);
