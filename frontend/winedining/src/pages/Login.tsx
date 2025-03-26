@@ -1,121 +1,120 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import kakao from "../assets/icons/kakao.png";
+import google from "../assets/icons/google.png";
+import PixelButton from "../components/PixelButton";
 
-// 쿠키에서 Authorization 꺼내는 함수
-function getCookie(name: string): string | null {
-  const matches = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
-  return matches ? decodeURIComponent(matches[1]) : null;
-}
-
-function Login() {
-  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+const MainPage = () => {
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
-  // 쿠키에서 Authorization 읽어서 로그인 여부 판단
-  useEffect(() => {
-    const accessToken = getCookie("Authorization");
-    setIsLoggedIn(Boolean(accessToken && accessToken.trim() !== ""));
-  }, []);
-
-  const handleKakaoLogin = async () => {
-    try {
-      //로컬 스토리에 kakao 상태값 저장
-      localStorage.setItem("provider", "KAKAO");
-      console.log("provider (KAKAO):", localStorage.getItem("provider"));
-
-      window.location.href = `${BASE_URL}/api/v1/auth/oauth2/authorization/kakao`; // 해당 URL로 리다이렉션
-    } catch (error) {
-      console.error("카카오 로그인 요청 실패:", error);
-    }
+  const handleKakaoLogin = () => {
+    localStorage.setItem("provider", "KAKAO");
+    window.location.href = `${BASE_URL}/api/v1/auth/oauth2/authorization/kakao`;
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      //로컬 스토리에 google 상태값 저장
-      localStorage.setItem("provider", "GOOGLE");
-      console.log("provider (GOOGLE):", localStorage.getItem("provider"));
-
-      window.location.href = `${BASE_URL}/api/v1/auth/oauth2/authorization/google`; // 해당 URL로 리다이렉션
-    } catch (error) {
-      console.error("구글 로그인 요청 실패:", error);
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      // (1) 서버에 로그아웃 요청 보내기
-      const response = await axios.post(`${BASE_URL}/api/v1/auth/logout`, {}, { withCredentials: true });
-      console.log("로그아웃 응답", response.data);
-
-      // (3) 상태 업데이트 (재렌더링 위해)
-      setIsLoggedIn(false);
-
-      // (4) 홈으로 이동
-      navigate("/");
-    } catch (error) {
-      console.error("로그아웃 error:", error);
-    }
+  const handleGoogleLogin = () => {
+    localStorage.setItem("provider", "GOOGLE");
+    window.location.href = `${BASE_URL}/api/v1/auth/oauth2/authorization/google`;
   };
 
   return (
     <div style={styles.container}>
-      {isLoggedIn ? (
-        <>
-          <h1>로그인 상태임</h1>
-          <h3 style={styles.button} onClick={handleLogout}>
-            로그아웃
-          </h3>
-        </>
-      ) : (
-        <>
-          <h3 style={styles.button} onClick={handleKakaoLogin}>
-            카카오 로그인
-          </h3>
-          <h3 style={styles.button} onClick={handleGoogleLogin}>
-            구글로 시작하기
-          </h3>
-        </>
-      )}
-      <button style={styles.button} onClick={() => navigate("/home")}>
-        홈으로 이동하기
-      </button>
-      <button style={styles.button} onClick={() => navigate("/MBTITest")}>
-        WINE MBTI TEST
-      </button>
+      <div style={styles.titleSection}>
+        <h1 style={styles.logoTitle}>Wine Dining</h1>
+        <p style={styles.subText}>
+          간편하게 로그인하고
+          <br />
+          다양한 서비스를 이용해보세요
+        </p>
+      </div>
+
+      <div style={styles.imageWrapper}>
+        <img src="/main_page/mainwine.png" alt="mainwine" style={styles.mainImage} />
+
+        <div style={styles.buttonOverlay}>
+          <button onClick={handleKakaoLogin} style={styles.loginBtn}>
+            <img src={kakao} alt="카카오" style={styles.icon} />
+          </button>
+          <button onClick={handleGoogleLogin} style={styles.loginBtn}>
+            <img src={google} alt="구글" style={styles.icon} />
+          </button>
+        </div>
+        <div style={styles.mbtiBtn}>
+          <PixelButton onClick={() => navigate("/MBTITest")}>WINE MBTI TEST</PixelButton>
+        </div>
+      </div>
     </div>
   );
-}
+};
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
-    backgroundImage: 'url("/main_page/main_image.webp")',
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
+    backgroundColor: "#2a0e35",
     width: "100%",
     height: "100vh",
+    fontFamily: "PressStart2P",
     display: "flex",
     flexDirection: "column",
+    alignItems: "center",
+    overflow: "hidden",
+    position: "relative",
+    color: "white",
+  },
+  titleSection: {
+    textAlign: "center",
+    marginTop: "100px",
+    marginBottom: "0px",
+  },
+  logoTitle: {
+    fontSize: "24px",
+    marginBottom: "10px",
+  },
+  subText: {
+    fontFamily: "Galmuri9",
+    fontSize: "14px",
+    lineHeight: "1.6",
+  },
+  imageWrapper: {
+    position: "relative",
+    display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    color: "white",
-    textAlign: "center",
-    overflow: "hidden",
-    margin: 0,
-    padding: 0,
   },
-  button: {
-    margin: "10px",
-    padding: "10px 20px",
-    fontSize: "16px",
-    backgroundColor: "#ffcc00",
-    color: "#2a0e35",
+  mainImage: {
+    width: "350px",
+    paddingRight: "13px",
+    zIndex: 0,
+  },
+  buttonOverlay: {
+    position: "absolute",
+    bottom: "180px", // 이미지 기준 버튼 위치 조절
+    display: "flex",
+    gap: "20px",
+    zIndex: 2,
+  },
+  loginBtn: {
+    width: "42px",
+    height: "42px",
+    borderRadius: "50%",
     border: "none",
-    borderRadius: "8px",
+    backgroundColor: "#fff",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     cursor: "pointer",
+  },
+  mbtiBtn: {
+    position: "absolute",
+    bottom: "100px", // 이미지 기준 버튼 위치 조절
+    display: "flex",
+    gap: "20px",
+    zIndex: 2,
+  },
+  icon: {
+    width: "45px",
+    height: "45px",
   },
 };
 
-export default Login;
+export default MainPage;
