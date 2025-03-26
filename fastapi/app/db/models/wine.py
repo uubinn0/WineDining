@@ -23,4 +23,4 @@ class Wine(SQLModel, table=True):
     created_at: datetime
     type_id: int
     wine_group_id: int
-    year: Optional[str] = None
+    # year: Optional[str] = None
