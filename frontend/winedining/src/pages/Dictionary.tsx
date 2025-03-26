@@ -23,8 +23,10 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     backgroundImage: `url(${DictionaryBackground})`,
     backgroundSize: "cover",
-    width: "100vw",
-    height: "100vh",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    width: "100%",
+    height: "calc(100 * var(--custom-vh))",
   },
   headertext: {
     fontFamily: "PressStart2P",

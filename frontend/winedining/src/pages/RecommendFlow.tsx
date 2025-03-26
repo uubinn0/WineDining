@@ -6,6 +6,7 @@ import Homebackground from "../assets/images/background/Home.png"
 import bartender from "../assets/icons/bartender.png"
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentStep, resetTestState } from "../store/slices/testSlice"
+import { vh } from "../utils/vh";
 
 
 const RecommendFlow: React.FC = () => {
@@ -145,21 +146,23 @@ const RecommendFlow: React.FC = () => {
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
     backgroundImage: `url(${Homebackground})`,
-    backgroundSize: "cover",
-    width: "100vw",
-    height: "100vh",
+    backgroundSize: "contain",
+    width: "100%",
+    height: "calc(100 * var(--custom-vh))",
+    position: "relative",
   },
   bartenderStyle: {
     position: "absolute",
-    top: "459.58px",
-    left: "165px",
-    width: "213px",
-    height: "261px",
+    top: vh(53.9), // top 비율
+    left: vh(20), // left 비율
+    // width: vw(54.2), // width 비율
+    height: vh(30.6), // height 비율
     transform: "rotate(0.69deg)", // 회전 적용
   },
   speechBubbleContainer: {
-    position: "fixed",
-    top: "200px",
+    position: "absolute",
+    top: vh(23.9),
+    // width : vh(30)
   },
   nextButton: {
     // width: "25%", // 버튼의 너비 설정

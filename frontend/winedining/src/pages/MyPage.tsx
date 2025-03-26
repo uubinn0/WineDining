@@ -82,7 +82,7 @@ function MyPage() {
       <div style={styles.buttonGroup}>
         <PixelButton onClick={() => navigate("/winesellerlist")}>MY WINE SELLER</PixelButton>
         <PixelButton onClick={() => navigate("/wishlist")}>WISH LIST</PixelButton>
-        <PixelButton onClick={() => navigate("/test")}>WINE TEST</PixelButton>
+        <PixelButton onClick={() => navigate("/recommendtest")}>WINE TEST</PixelButton>
       </div>
 
       <EditModal

@@ -1,4 +1,6 @@
 import { useNavigate } from "react-router-dom";
+import { vh } from "../utils/vh";
+
 
 function DicLoading() {
   const navigate = useNavigate();
@@ -21,16 +23,17 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     backgroundColor : "black",
     backgroundSize: "cover",
-    width: "100vw",
-    height: "100vh",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    width: "100%",
+    height: "calc(100 * var(--custom-vh))",
+    position: "relative",
     display : "flex",
     justifyContent : "center",
     alignItems:"center",
   },
   video: {
-    maxWidth : "100%",
-    maxHeight : "100%"
-    
+    width : "100%",
   }
 };
 
