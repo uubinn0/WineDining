@@ -24,6 +24,7 @@ public class CustomBottleResponseDTO {
         private String type;
         private String country;
         private String grape;
+        private String image;
     }
 
 }
