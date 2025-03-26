@@ -34,12 +34,15 @@ public class WineController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<ApiResponse<WineListResponseDTO>> searchWineList(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
             @RequestBody WineListRequestDTO request){
 
-        WineListResponseDTO wineListResponseDTO = wineService.getWineListByFilter(request);
+        Long userId = customOAuth2User.getUserId();
+        System.out.println("userId = " + userId);
+
+        WineListResponseDTO wineListResponseDTO = wineService.getWineListByFilter(request, userId);
         ApiResponse<WineListResponseDTO> response = ApiResponse.<WineListResponseDTO>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
