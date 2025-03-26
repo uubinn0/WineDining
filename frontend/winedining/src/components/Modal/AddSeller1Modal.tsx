@@ -155,7 +155,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundColor: "#2a0e35",
     padding: "20px",
     borderRadius: "10px",
-    width: "90%",
+    width: "80%",
     maxWidth: "400px",
     position: "relative",
     textAlign: "center",
