@@ -5,47 +5,49 @@ import lombok.*;
 
 @Entity
 @Table(name = "wine_notes")
-@Data
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class WineNote {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 60)
+    @Column(name = "who")
     private String who;
 
     // "when"는 예약어이므로 필드명은 whenField로 사용하고, DB 컬럼명은 그대로 지정
-    @Column(name = "\"when\"", length = 60)
-    private String whenField;
+    @Column(name = "`when`")
+    private String when;
 
-    @Column(length = 60)
+    @Column(name = "pairing")
     private String pairing;
 
-    @Column(length = 100)
+    @Column(name = "nose")
     private String nose;
 
-    @Lob
+    @Column(name = "content")
     private String content;
 
-    @Column(precision = 2, scale = 1)
+    @Column(name = "rating")
     private Integer rating;
 
-    @Column(length = 255)
+    @Column(name = "image1")
     private String image1;
 
-    @Column(length = 255)
+    @Column(name = "image2")
     private String image2;
 
-    @Column(length = 255)
+    @Column(name = "image3")
     private String image3;
 
-    @Column(name = "created_at", nullable = false, length = 60)
+    @Column(name = "created_at", nullable = false)
     private String createdAt;
 
-    @Column(name = "bottle_id", nullable = false)
-    private Long bottleId;
+    @ManyToOne
+    @JoinColumn(name = "bottle_id", nullable = false)
+    private Bottle bottle;
 }
 
