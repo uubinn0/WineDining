@@ -6,6 +6,8 @@ import winelistIcon from "../assets/icons/winelisticon.png";
 import dictionaryIcon from "../assets/icons/dictionaryicon.png";
 import bartender from "../assets/icons/bartender.png";
 import quest from "../assets/icons/questicon.png";
+
+import { vh } from "../utils/vh"; // 이거 calc 함수 대신 사용하면 됩니다.
 import axios from "axios";
 
 function Home() {
@@ -34,80 +36,8 @@ function Home() {
     }
   };
 
-  const homeContainer: React.CSSProperties = {
-    backgroundImage: `url(${Homebackground})`,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-    width: "100%",
-    height: "100vh",
-    overflow: "hidden",
-    margin: 0,
-    padding: 0,
-  };
-
-  const buttonStyle: React.CSSProperties = {
-    background: "none",
-    border: "none",
-    cursor: "pointer",
-    // margin : "10px"
-  };
-
-  const wineListStyle: React.CSSProperties = {
-    width: "120px",
-    height: "120px",
-  };
-
-  const wineListPositionStyle: React.CSSProperties = {
-    position: "absolute",
-    top: "382px",
-    left: "45px",
-  };
-  const dictionaryPositionStyle: React.CSSProperties = {
-    position: "absolute",
-    top: "771px",
-    left: "250px",
-  };
-  const myPagePositionStyle: React.CSSProperties = {
-    position: "absolute",
-    top: "771px",
-    left: "315px",
-  };
-
-  const navIconStyle: React.CSSProperties = {
-    width: "56px",
-    height: "56px",
-  };
-  const bartenderStyle: React.CSSProperties = {
-    position: "fixed",
-    top: "437px",
-    left: "111px",
-    width: "213px",
-    height: "261px",
-  };
-
-  const logoutbutton: React.CSSProperties = {
-    margin: "10px",
-    padding: "10px 20px",
-    fontSize: "16px",
-    backgroundColor: "#ffcc00",
-    color: "#2a0e35",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-  };
-
-  const questStyle: React.CSSProperties = {
-    position: "fixed",
-    top: "356px",
-    left: "269px",
-    width: "106px",
-    height: "102px",
-  };
-
   return (
     <div style={homeContainer}>
-      {/* <h1>여기는 바텐더가 서있는 홈화면입니다.</h1> */}
       <h3 style={logoutbutton} onClick={handleLogout}>
         로그아웃
       </h3>
@@ -128,6 +58,87 @@ function Home() {
   );
 }
 
-export default Home;
+const homeContainer: React.CSSProperties = {
+  backgroundImage: `url(${Homebackground})`,
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+  backgroundRepeat: "no-repeat",
+  width: "100%",
+  height: "calc(100 * var(--custom-vh))",
+  position: "relative",
+};
 
+const buttonStyle: React.CSSProperties = {
+  background: "none",
+  border: "none",
+  cursor: "pointer",
+};
+
+// 와인 메뉴판 크기
+const wineListStyle: React.CSSProperties = {
+  width: vh(15),
+  height: vh(15),
+};
+
+// 와인 메뉴판 위치
+const wineListPositionStyle: React.CSSProperties = {
+  position: "absolute",
+  top: vh(44.3),
+  left: vh(4.2),
+};
+
+// 알쓸신잡 위치
+const dictionaryPositionStyle: React.CSSProperties = {
+  position: "absolute",
+  top: vh(73.1),
+  left: vh(1.5),
+};
+
+// 나의 페이지 위치
+const myPagePositionStyle: React.CSSProperties = {
+  position: "absolute",
+  top: vh(73.1),
+  left: vh(8.5),
+};
+
+//
+const navIconStyle: React.CSSProperties = {
+  width: vh(5.6),
+  height: vh(5.6),
+};
+
+// 바텐더 스타일
+const bartenderStyle: React.CSSProperties = {
+  position: "absolute",
+  top: vh(48.2),
+  left: vh(17.3),
+  width: vh(24.3),
+  height: vh(30.1),
+};
+
+// 물음표 스타일
+const questStyle: React.CSSProperties = {
+  position: "absolute",
+  top: vh(39.5),
+  left: vh(33.9),
+  width: vh(12),
+  height: vh(12),
+};
+
+// 로그아웃 스타일
+const logoutbutton: React.CSSProperties = {
+  margin: "1vh",
+  padding: "1vh 2vh",
+  fontSize: vh(1.6),
+  backgroundColor: "#ffcc00",
+  color: "#2a0e35",
+  border: "none",
+  borderRadius: vh(0.8),
+  cursor: "pointer",
+  position: "absolute",
+  top: "1vh",
+  right: "32vh",
+};
+
+export default Home;
 export {};
