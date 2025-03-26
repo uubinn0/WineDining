@@ -11,9 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CustomWineDTO {
     private Long wineId;
-    private String image;
     private String name;
-    private String type;
-    private String country;
     private String grape;
+    private String country;
+    private String typeId;
 }
