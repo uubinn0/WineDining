@@ -1,8 +1,6 @@
 package com.ssafy.winedining.domain.collection.service;
 
-import com.ssafy.winedining.domain.collection.dto.BottleResponseDTO;
-import com.ssafy.winedining.domain.collection.dto.CustomBottleResponseDTO;
-import com.ssafy.winedining.domain.collection.dto.CustomWineCreateDTO;
+import com.ssafy.winedining.domain.collection.dto.*;
 import com.ssafy.winedining.domain.collection.entity.Bottle;
 import com.ssafy.winedining.domain.collection.repository.BottleRepository;
 import com.ssafy.winedining.domain.user.entity.User;
@@ -131,7 +129,7 @@ public class CellarService {
      * 사용자의 모든 병(와인 + 커스텀 와인) 조회
      */
     @Transactional(readOnly = true)
-    public List<CustomBottleResponseDTO> getUserBottles(Long userId) {
+    public CellarResponseDTO getUserBottles(Long userId) {
         // 사용자 확인
         userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 사용자입니다."));
@@ -139,42 +137,53 @@ public class CellarService {
         // 사용자의 모든 병 조회
         List<Bottle> bottles = bottleRepository.findByUserId(userId);
 
-        // 응답 DTO 변환
-        return bottles.stream().map(bottle -> {
+        // 병 정보를 BottleDTO 리스트로 변환
+        List<BottleDTO> bottleDTOs = bottles.stream().map(bottle -> {
             if (bottle.getWine() != null) {
                 // 일반 와인인 경우
                 Wine wine = bottle.getWine();
-                return CustomBottleResponseDTO.builder()
+                return BottleDTO.builder()
                         .bottleId(bottle.getId())
                         .createdAt(bottle.getCreateAt())
+                        .isCustom(false)
+                        .isBest(bottle.getBest() != null ? bottle.getBest() : false)
                         .wine(
-                                CustomBottleResponseDTO.WineSimpleDTO.builder()
+                                WineDTO.builder()
                                         .wineId(wine.getId())
                                         .name(wine.getKrName())
                                         .type(wine.getWineType().getTypeName())
                                         .country(wine.getCountry())
                                         .grape(wine.getGrape())
+                                        .image(wine.getImage())
                                         .build()
                         )
                         .build();
             } else {
                 // 커스텀 와인인 경우
                 CustomWine customWine = bottle.getCustomWine();
-                return CustomBottleResponseDTO.builder()
+                return BottleDTO.builder()
                         .bottleId(bottle.getId())
                         .createdAt(bottle.getCreateAt())
+                        .isCustom(true)
+                        .isBest(bottle.getBest() != null ? bottle.getBest() : false)
                         .wine(
-                                CustomBottleResponseDTO.WineSimpleDTO.builder()
+                                WineDTO.builder()
                                         .wineId(customWine.getId())
                                         .name(customWine.getName())
                                         .type(customWine.getWineType().getTypeName())
                                         .country(customWine.getCountry())
-                                        .grape(null)
-//                                        .image(customWine.getGraph()) // 커스텀 와인의 graph를 image로 사용
+                                        .grape(customWine.getGrape()) // 포도 정보가 있다면 포함
+                                        .image(null) // 커스텀 와인은 image null로 설정
                                         .build()
                         )
                         .build();
             }
         }).collect(Collectors.toList());
+
+        // CellarResponseDTO 생성 및 반환
+        return CellarResponseDTO.builder()
+                .bottles(bottleDTOs)
+                .totalCount(bottleDTOs.size())
+                .build();
     }
 }
