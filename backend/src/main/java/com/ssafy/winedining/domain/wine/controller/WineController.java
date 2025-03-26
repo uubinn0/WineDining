@@ -34,7 +34,7 @@ public class WineController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("")
+    @PostMapping
     public ResponseEntity<ApiResponse<WineListResponseDTO>> searchWineList(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
             @RequestBody WineListRequestDTO request){
