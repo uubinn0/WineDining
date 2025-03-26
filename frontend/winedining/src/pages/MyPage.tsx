@@ -32,9 +32,7 @@ function MyPage() {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        console.log("BASE_URL 주소 확인", BASE_URL);
-
-        const response = await axios.get(`${BASE_URL}/api/v1/user/profile`, {
+        const response = await axios.get(`/api/v1/user/profile`, {
           withCredentials: true,
           headers: {
             "Content-Type": "application/json",
