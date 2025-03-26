@@ -23,7 +23,7 @@ cursor.execute("CREATE EXTENSION IF NOT EXISTS vector")
 # NULL값을 갖는 데이터 제외
 # Get wine data from database
 query = """
-    SELECT id, acidity, alcohol_content, body, country, grape, 
+    SELECT id, acidity, alcohol_content, body, 
            sweetness, tannin, type_id 
     FROM wines
     WHERE acidity IS NOT NULL AND alcohol_content IS NOT NULL AND body IS NOT NULL AND
@@ -32,12 +32,12 @@ query = """
 
 cursor.execute(query)
 wines = cursor.fetchall()
-columns = ['id', 'acidity', 'alcohol_content', 'body', 'country', 'grape', 
+columns = ['id', 'acidity', 'alcohol_content', 'body',
            'sweetness', 'tannin', 'type_id']
 wine_data = pd.DataFrame(wines, columns=columns)
 
 # Convert categorical variables to numerical using one-hot encoding
-categorical_columns = ['country', 'grape', 'type_id']
+categorical_columns = ['type_id']
 wine_data_encoded = pd.get_dummies(wine_data, columns=categorical_columns)
 
 def create_wine_vector(row):
@@ -54,7 +54,7 @@ def create_wine_vector(row):
     # Get one-hot encoded categorical features
     categorical_features = [
         float(value) for key, value in row.items() 
-        if key.startswith(('country_', 'grape_', 'type_id_'))
+        if key.startswith(('type_id_'))
     ]
     
     # Combine all features into a single vector
@@ -84,8 +84,8 @@ print(wine_vectors[10])
 ### 벡터화 데이터를 DB에 저장 ###
 # 테이블이 이미 존재한다면 제거 후 다시 생성
 cursor.execute("""
-    DROP TABLE IF EXISTS wine_vectors;
-    CREATE TABLE wine_vectors (
+    DROP TABLE IF EXISTS preference_wine_vectors;
+    CREATE TABLE preference_wine_vectors (
         wine_id INTEGER PRIMARY KEY REFERENCES wines(id),
         feature_vector vector(%s) 
     )
@@ -94,7 +94,7 @@ cursor.execute("""
 # Insert vectors into database
 for wine_id, vector in zip(wine_ids, wine_vectors):
     cursor.execute("""
-        INSERT INTO wine_vectors (wine_id, feature_vector)
+        INSERT INTO preference_wine_vectors (wine_id, feature_vector)
         VALUES (%s, %s)
         ON CONFLICT (wine_id) DO UPDATE 
         SET feature_vector = EXCLUDED.feature_vector
