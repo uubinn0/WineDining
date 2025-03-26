@@ -1,5 +1,6 @@
 package com.ssafy.winedining.domain.wine.service;
 
+import com.ssafy.winedining.domain.collection.repository.WishItemRepository;
 import com.ssafy.winedining.domain.food.entity.Food;
 import com.ssafy.winedining.domain.food.repository.PairingSetRepository;
 import com.ssafy.winedining.domain.wine.dto.WineListItemDTO;
@@ -28,6 +29,7 @@ public class WineService {
 
     private final WineRepository wineRepository;
     private final PairingSetRepository pairingSetRepository;
+    private final WishItemRepository wishItemRepository;
 
     @Transactional(readOnly = true)
     public WineResponseDTO getWineDetail(Long wineId) {
@@ -63,8 +65,8 @@ public class WineService {
     }
 
     @Transactional(readOnly = true)
-    public WineListResponseDTO getWineListByFilter(WineListRequestDTO request) {
-
+    public WineListResponseDTO getWineListByFilter(
+            WineListRequestDTO request, Long userId) {
 
         // 동적 조건 생성
         Specification<Wine> spec = Specification.where(WineSpecification.keywordContains(request.getKeyword()))
@@ -93,7 +95,9 @@ public class WineService {
                     dto.setCountry(wine.getCountry());
                     dto.setGrape(wine.getGrape());
                     // isWish 관련 정보는 로그인한 사용자 정보 등과 연동 필요 (여기서는 false로 처리)
-                    dto.setWish(false);
+                    boolean isWish = wishItemRepository.existsByWineIdAndUserId(wine.getId(), userId);
+                    System.out.println("isWish = " + isWish);
+                    dto.setWish(isWish);
                     return dto;
                 })
                 .collect(Collectors.toList());
