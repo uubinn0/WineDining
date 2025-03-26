@@ -1,6 +1,7 @@
 package com.ssafy.winedining.domain.collection.controller;
 
 import com.ssafy.winedining.domain.collection.dto.BottleResponseDTO;
+import com.ssafy.winedining.domain.collection.dto.CellarResponseDTO;
 import com.ssafy.winedining.domain.collection.dto.CustomBottleResponseDTO;
 import com.ssafy.winedining.domain.collection.dto.CustomWineCreateDTO;
 import com.ssafy.winedining.domain.collection.service.CellarService;
@@ -67,17 +68,17 @@ public class CellarController {
      * 사용자의 모든 병(일반 와인 + 커스텀 와인) 조회 API
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<CustomBottleResponseDTO>>> getUserBottles(
+    public ResponseEntity<ApiResponse<CellarResponseDTO>> getUserBottles(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
         Long userId = customOAuth2User.getUserId();
-        List<CustomBottleResponseDTO> bottles = cellarService.getUserBottles(userId);
+        CellarResponseDTO cellarResponseDTO = cellarService.getUserBottles(userId);
 
-        ApiResponse<List<CustomBottleResponseDTO>> response = ApiResponse.<List<CustomBottleResponseDTO>>builder()
+        ApiResponse<CellarResponseDTO> response = ApiResponse.<CellarResponseDTO>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
                 .message("사용자의 셀러를 조회했습니다")
-                .data(bottles)
+                .data(cellarResponseDTO)
                 .build();
 
         return ResponseEntity.ok(response);
