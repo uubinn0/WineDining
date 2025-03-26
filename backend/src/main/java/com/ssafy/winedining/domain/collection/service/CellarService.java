@@ -84,22 +84,22 @@ public class CellarService {
         // 사용자 확인
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 사용자입니다."));
-        System.out.println("111111111");
+
         // 와인 타입 확인
         WineType wineType = wineTypeRepository.findById(customWineDTO.getTypeId())
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 와인 타입입니다."));
-        System.out.println("22222222");
+        System.out.println("1111111111");
         // 커스텀 와인 생성
         CustomWine customWine = CustomWine.builder()
                 .name(customWineDTO.getName())
-                .graph(customWineDTO.getGraph())
+                .grape(customWineDTO.getGrape())
                 .country(customWineDTO.getCountry())
                 .createdAt(LocalDateTime.now().toString())
                 .wineType(wineType)
                 .build();
         System.out.println("22222222");
         CustomWine savedCustomWine = customWineRepository.save(customWine);
-
+        System.out.println("333333333");
         // 병에 추가
         Bottle bottle = Bottle.builder()
                 .createAt(LocalDateTime.now().toString())
@@ -113,16 +113,15 @@ public class CellarService {
         System.out.println("444444444444");
         // 응답 DTO 생성
         return CustomBottleResponseDTO.builder()
-                .bottle_id(savedBottle.getId())
-                .created_at(savedBottle.getCreateAt())
+                .bottleId(savedBottle.getId())
+                .createdAt(savedBottle.getCreateAt())
                 .wine(
                         CustomBottleResponseDTO.WineSimpleDTO.builder()
-                                .wine_id(savedCustomWine.getId())
+                                .wineId(savedCustomWine.getId())
                                 .name(savedCustomWine.getName())
                                 .type(savedCustomWine.getWineType().getTypeName())
                                 .country(savedCustomWine.getCountry())
                                 .grape(customWineDTO.getGrape())  // 커스텀 와인에 포도 정보 추가
-                                .image(customWineDTO.getGraph())  // 그래프를 이미지로 사용
                                 .build()
                 )
                 .build();
@@ -146,16 +145,15 @@ public class CellarService {
                 // 일반 와인인 경우
                 Wine wine = bottle.getWine();
                 return CustomBottleResponseDTO.builder()
-                        .bottle_id(bottle.getId())
-                        .created_at(bottle.getCreateAt())
+                        .bottleId(bottle.getId())
+                        .createdAt(bottle.getCreateAt())
                         .wine(
                                 CustomBottleResponseDTO.WineSimpleDTO.builder()
-                                        .wine_id(wine.getId())
+                                        .wineId(wine.getId())
                                         .name(wine.getKrName())
                                         .type(wine.getWineType().getTypeName())
                                         .country(wine.getCountry())
                                         .grape(wine.getGrape())
-                                        .image(wine.getImage())
                                         .build()
                         )
                         .build();
@@ -163,16 +161,16 @@ public class CellarService {
                 // 커스텀 와인인 경우
                 CustomWine customWine = bottle.getCustomWine();
                 return CustomBottleResponseDTO.builder()
-                        .bottle_id(bottle.getId())
-                        .created_at(bottle.getCreateAt())
+                        .bottleId(bottle.getId())
+                        .createdAt(bottle.getCreateAt())
                         .wine(
                                 CustomBottleResponseDTO.WineSimpleDTO.builder()
-                                        .wine_id(customWine.getId())
+                                        .wineId(customWine.getId())
                                         .name(customWine.getName())
                                         .type(customWine.getWineType().getTypeName())
                                         .country(customWine.getCountry())
                                         .grape(null)
-                                        .image(customWine.getGraph()) // 커스텀 와인의 graph를 image로 사용
+//                                        .image(customWine.getGraph()) // 커스텀 와인의 graph를 image로 사용
                                         .build()
                         )
                         .build();
