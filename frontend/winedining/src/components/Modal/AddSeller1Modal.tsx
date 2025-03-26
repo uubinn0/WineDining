@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Wine } from "../../types/wine";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
+import closeButton from "../../assets/icons/closebutton.png";
 // 더미데이터 api
 import { fetchFilteredWines } from "../../mocks/mockApi";
 
@@ -71,9 +72,8 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext }: AddSeller1ModalProps) => {
   return (
     <div style={styles.overlay} onClick={onClose}>
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button style={styles.closeButton} onClick={onClose}>
-          ✕
-        </button>
+        <img src={closeButton} alt="닫기" style={styles.closeButton} onClick={onClose} />
+
         <h2 style={styles.title}>와인 수집</h2>
         <p style={styles.subtitle}>내가 마신 와인 등록</p>
 
@@ -113,7 +113,18 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext }: AddSeller1ModalProps) => {
           </div>
         )}
 
-        {/* 와인 선택 */}
+        {/* 선택 전 병 이미지 + 안내 문구 */}
+        {!selectedWine && (
+          <>
+            {/* <div style={styles.centerBottleContainer}>
+              <img src="/images/wine1.png" alt="와인병" style={styles.centerBottleImage} />
+            </div> */}
+            <p style={styles.bottomText}>내가 마신 와인을 찾아주세요!</p>
+            <p style={styles.pagination}> 1 / 3 </p>
+          </>
+        )}
+
+        {/* 와인 선택 후 정보 */}
         {selectedWine && (
           <div style={styles.selectedWineContainer}>
             <p style={styles.selectedTitle}>선택한 와인</p>
@@ -153,34 +164,120 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   modal: {
     backgroundColor: "#2a0e35",
-    padding: "20px",
-    borderRadius: "10px",
+    padding: "24px",
+    borderRadius: "16px",
     width: "90%",
     maxWidth: "400px",
+    border: "5px solid #d4a017",
     position: "relative",
-    textAlign: "center",
-    border: "3px solid #d4a017",
     color: "white",
+    fontFamily: "Galmuri9",
+    textAlign: "center",
   },
   closeButton: {
     position: "absolute",
-    right: "10px",
-    top: "10px",
-    fontSize: "18px",
+    top: "12px",
+    right: "12px",
+    width: "24px",
+    height: "24px",
     cursor: "pointer",
-    color: "white",
   },
-  title: { fontSize: "18px", fontWeight: "bold" },
-  searchContainer: { display: "flex", justifyContent: "center", marginBottom: "10px" },
-  searchInput: { flex: 1, padding: "8px", fontSize: "14px" },
-  searchButton: { padding: "8px", cursor: "pointer" },
-  loadingText: { textAlign: "center", fontSize: "14px" },
-  resultContainer: { marginTop: "10px", maxHeight: "200px", overflowY: "auto", borderTop: "1px solid #ccc" },
-  wineItem: { padding: "10px", cursor: "pointer", borderBottom: "1px solid #ccc", transition: "background 0.2s" },
-  selectedWineContainer: { marginTop: "15px", padding: "10px", background: "#3b1845", borderRadius: "5px" },
-  selectedTitle: { fontSize: "16px", fontWeight: "bold" },
-  wineImage: { width: "100px", height: "150px", marginTop: "10px" },
-  nextButton: { marginTop: "10px", padding: "10px", backgroundColor: "#ffcc00", cursor: "pointer" },
+  title: {
+    fontSize: "18px",
+    fontWeight: "bold",
+    marginBottom: "4px",
+  },
+  subtitle: {
+    fontSize: "13px",
+    marginBottom: "16px",
+    color: "#ccc",
+  },
+  searchContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: "8px",
+    gap: "4px",
+  },
+  searchInput: {
+    flex: 1,
+    padding: "8px",
+    fontSize: "14px",
+    backgroundColor: "transparent",
+    border: "none",
+    borderBottom: "1px solid white",
+    color: "white",
+    outline: "none",
+  },
+  searchButton: {
+    fontSize: "16px",
+    backgroundColor: "transparent",
+    border: "none",
+    color: "white",
+    cursor: "pointer",
+  },
+  loadingText: {
+    fontSize: "14px",
+    marginTop: "10px",
+  },
+  resultContainer: {
+    marginTop: "10px",
+    maxHeight: "200px",
+    overflowY: "auto",
+    borderTop: "1px solid #ccc",
+  },
+  wineItem: {
+    padding: "10px",
+    cursor: "pointer",
+    borderBottom: "1px solid #ccc",
+    transition: "background 0.2s",
+  },
+  centerBottleContainer: {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: "32px",
+    marginBottom: "24px",
+  },
+  centerBottleImage: {
+    width: "80px",
+    height: "auto",
+  },
+  bottomText: {
+    fontSize: "14px",
+    color: "#ffcc00",
+    fontWeight: "bold",
+    marginBottom: "12px",
+  },
+  pagination: {
+    fontSize: "12px",
+    color: "white",
+    fontFamily: "Galmuri9",
+  },
+  selectedWineContainer: {
+    marginTop: "15px",
+    padding: "10px",
+    background: "#3b1845",
+    borderRadius: "5px",
+  },
+  selectedTitle: {
+    fontSize: "16px",
+    fontWeight: "bold",
+  },
+  wineImage: {
+    width: "100px",
+    height: "150px",
+    marginTop: "10px",
+  },
+  nextButton: {
+    marginTop: "10px",
+    padding: "10px",
+    backgroundColor: "#ffcc00",
+    color: "#2a0e35",
+    fontWeight: "bold",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+  },
 };
 
 export default AddSeller1Modal;

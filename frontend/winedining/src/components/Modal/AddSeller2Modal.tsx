@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Wine } from "../../types/wine";
+import closebutton from "../../assets/icons/closebutton.png";
 
 interface AddSeller2ModalProps {
   isOpen: boolean;
@@ -10,14 +11,10 @@ interface AddSeller2ModalProps {
 }
 
 const AddSeller2Modal = ({ isOpen, onClose, onPrev, onNext, wineInfo }: AddSeller2ModalProps) => {
-  const [drinkDate, setDrinkDate] = useState(new Date().toISOString().split("T")[0]);
-  const [companion, setCompanion] = useState<string>("");
-  const [food, setFood] = useState("");
-  const [note, setNote] = useState("");
-  const [taste, setTaste] = useState("");
-  const [rating, setRating] = useState<number>(0);
-
-  const companions = ["혼자", "친구", "연인", "가족"];
+  const [drinkDate] = useState("2025.03.18");
+  const companions = ["친구", "연인", "가족", "혼자"];
+  const taste = "초코릿 향";
+  const rating = 5;
 
   if (!isOpen) return null;
 
@@ -26,129 +23,72 @@ const AddSeller2Modal = ({ isOpen, onClose, onPrev, onNext, wineInfo }: AddSelle
       wineId: wineInfo.wine_id,
       bottleId: wineInfo.wine_id,
       drinkDate,
-      companion,
-      food,
-      note,
+      companion: companions.join(" "),
+      food: "입력",
+      note: "누구랑 드셨는지 무슨 느낌이셨는지 기록해둬요!",
       taste,
       rating,
     };
-
-    console.log("저장된 데이터:", drinkData);
     onNext(drinkData);
   };
 
   return (
     <div style={styles.overlay} onClick={onClose}>
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button style={styles.closeButton} onClick={onClose}>
-          ✕
-        </button>
+        <img src={closebutton} alt="닫기" style={styles.closeButton} onClick={onClose} />
+
         <h2 style={styles.title}>와인 수집</h2>
         <p style={styles.subtitle}>
-          {wineInfo.grape} |{" "}
+          품종이 들어가는 자리
           <img src={`/flags/${wineInfo.country}.png`} alt={wineInfo.country} style={styles.flagIcon} />
         </p>
 
-        {/* 와인 이미지, 이름 */}
         <div style={styles.wineContainer}>
-          <img
-            src={wineInfo.image !== "no_image" ? wineInfo.image : "/sample_image/wine_bottle.png"}
-            alt={wineInfo.kr_name}
-            style={styles.wineImage}
-          />
-          <p style={styles.wineName}>
-            {wineInfo.kr_name} / {wineInfo.en_name}
-          </p>
+          <img src={wineInfo.image || "/sample_image/whitewine_pixel.png"} alt="와인" style={styles.wineImage} />
+          <p style={styles.wineName}>{wineInfo.en_name.toUpperCase()}</p>
         </div>
 
-        {/* 마신 날짜 */}
-        <div style={styles.formGroup}>
-          <label style={styles.label}>마신 날짜</label>
-          <input type="date" value={drinkDate} onChange={(e) => setDrinkDate(e.target.value)} style={styles.input} />
+        <div style={styles.section}>
+          <span style={styles.label}>마신 날짜</span>
+          <span style={styles.value}>{drinkDate}</span>
+        </div>
+        <div style={styles.section}>
+          <span style={styles.label}>누구랑?</span>
+          <span style={styles.value}>{companions.join(" ")}</span>
+        </div>
+        <div style={styles.section}>
+          <span style={styles.label}>안주는?</span>
+          <span style={styles.value}>입력</span>
+        </div>
+        <div style={styles.section}>
+          <span style={styles.label}>내용</span>
+          <span style={styles.note}>
+            누구랑 드셨는지
+            <br />
+            무슨 느낌이셨는지
+            <br />
+            기록해둬요!
+          </span>
+        </div>
+        <div style={styles.section}>
+          <span style={styles.label}>맛</span>
+          <span style={styles.value}>{taste}</span>
+        </div>
+        <div style={styles.section}>
+          <span style={styles.label}>평점</span>
+          <span style={styles.value}>
+            1 2 3 4 <b>{rating}</b>
+          </span>
         </div>
 
-        {/* 누구랑? */}
-        <div style={styles.formGroup}>
-          <label style={styles.label}>누구랑?</label>
-          <div style={styles.optionButtons}>
-            {companions.map((comp) => (
-              <button
-                key={comp}
-                onClick={() => setCompanion(comp)}
-                style={{
-                  ...styles.optionButton,
-                  backgroundColor: companion === comp ? "#d4a5ff" : "transparent",
-                }}
-              >
-                {comp}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* 안주 */}
-        <div style={styles.formGroup}>
-          <label style={styles.label}>안주는?</label>
-          <input
-            type="text"
-            value={food}
-            onChange={(e) => setFood(e.target.value)}
-            style={styles.input}
-            placeholder="무슨 안주랑 드셨나요?"
-          />
-        </div>
-
-        {/* 내용 */}
-        <div style={styles.formGroup}>
-          <label style={styles.label}>내용</label>
-          <textarea
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            style={styles.textarea}
-            placeholder="누구랑 드셨는지 무슨 느낌이셨는지 기록해둬요!"
-          />
-        </div>
-
-        {/* 맛 */}
-        <div style={styles.formGroup}>
-          <label style={styles.label}>맛</label>
-          <input
-            type="text"
-            value={taste}
-            onChange={(e) => setTaste(e.target.value)}
-            style={styles.input}
-            placeholder="무슨 맛이었는지 표현해주세요."
-          />
-        </div>
-
-        {/* 평점 */}
-        <div style={styles.formGroup}>
-          <label style={styles.label}>평점</label>
-          <div style={styles.optionButtons}>
-            {[1, 2, 3, 4, 5].map((num) => (
-              <button
-                key={num}
-                onClick={() => setRating(num)}
-                style={{
-                  ...styles.optionButton,
-                  backgroundColor: rating === num ? "#d4a5ff" : "transparent",
-                }}
-              >
-                {num}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* 페이지 이동 */}
         <div style={styles.pagination}>
-          <button style={styles.navButton} onClick={onPrev}>
+          <span style={styles.pageArrow} onClick={onPrev}>
             ←
-          </button>
-          <span>2 / 3</span>
-          <button style={styles.navButton} onClick={handleNext}>
+          </span>
+          <span style={styles.pageText}>2 / 3</span>
+          <span style={styles.pageArrow} onClick={handleNext}>
             →
-          </button>
+          </span>
         </div>
       </div>
     </div>
@@ -170,113 +110,86 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   modal: {
     backgroundColor: "#2a0e35",
-    padding: "20px",
-    borderRadius: "25px",
-    width: "350px",
-    height: "600px",
-    color: "#fff",
+    padding: "24px",
+    borderRadius: "16px",
+    width: "90%",
+    maxWidth: "400px",
+    border: "5px solid #d4a017",
     position: "relative",
-    border: "3px solid #d4a5ff",
-    overflowY: "auto",
-    boxSizing: "border-box",
+    color: "white",
+    fontFamily: "Galmuri9",
+    textAlign: "left",
   },
   closeButton: {
     position: "absolute",
-    right: "15px",
-    top: "15px",
-    background: "none",
-    border: "none",
-    fontSize: "24px",
-    color: "#fff",
+    top: "16px",
+    right: "16px",
+    width: "24px",
+    height: "24px",
     cursor: "pointer",
   },
   title: {
-    fontSize: "24px",
+    fontSize: "18px",
     fontWeight: "bold",
-    textAlign: "center",
+    marginBottom: "4px",
   },
   subtitle: {
-    fontSize: "14px",
-    textAlign: "center",
-    color: "#d4a5ff",
+    fontSize: "13px",
+    marginBottom: "16px",
     display: "flex",
-    justifyContent: "center",
     alignItems: "center",
-    gap: "5px",
+    gap: "6px",
   },
   flagIcon: {
-    width: "20px",
-    height: "14px",
+    width: "18px",
+    height: "12px",
   },
   wineContainer: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    marginBottom: "20px",
+    textAlign: "center",
+    marginBottom: "16px",
   },
   wineImage: {
-    width: "120px",
-    height: "180px",
+    width: "80px",
+    height: "auto",
   },
   wineName: {
     fontSize: "16px",
     fontWeight: "bold",
-    textAlign: "center",
     color: "#ffcc00",
+    marginTop: "8px",
   },
-  formGroup: {
+  section: {
     display: "flex",
-    flexDirection: "column",
-    gap: "5px",
+    justifyContent: "space-between",
+    margin: "8px 0",
   },
   label: {
-    fontSize: "14px",
-    color: "#d4a5ff",
+    fontWeight: "bold",
+    width: "80px",
   },
-  input: {
-    backgroundColor: "transparent",
-    border: "1px solid #d4a5ff",
-    borderRadius: "4px",
-    padding: "8px",
-    color: "white",
-    fontSize: "14px",
-  },
-  textarea: {
-    backgroundColor: "transparent",
-    border: "1px solid #d4a5ff",
-    borderRadius: "4px",
-    padding: "8px",
-    color: "white",
-    fontSize: "14px",
-    minHeight: "60px",
-    resize: "none",
-  },
-  optionButtons: {
-    display: "flex",
-    gap: "10px",
-  },
-  optionButton: {
+  value: {
+    color: "#bbb",
+    textAlign: "right",
     flex: 1,
-    padding: "8px",
-    border: "1px solid #d4a5ff",
-    borderRadius: "4px",
-    color: "white",
-    cursor: "pointer",
+  },
+  note: {
     fontSize: "12px",
+    color: "#888",
+    textAlign: "right",
+    flex: 1,
   },
   pagination: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
     marginTop: "20px",
-    gap: "10px",
-  },
-  navButton: {
-    background: "none",
-    border: "none",
+    textAlign: "center",
+    fontSize: "14px",
     color: "white",
-    fontSize: "18px",
+  },
+  pageArrow: {
+    margin: "0 12px",
     cursor: "pointer",
+  },
+  pageText: {
+    fontSize: "14px",
   },
 };
 
