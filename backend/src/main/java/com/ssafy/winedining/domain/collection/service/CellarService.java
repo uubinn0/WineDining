@@ -86,7 +86,7 @@ public class CellarService {
         // 와인 타입 확인
         WineType wineType = wineTypeRepository.findById(customWineDTO.getTypeId())
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 와인 타입입니다."));
-        System.out.println("1111111111");
+
         // 커스텀 와인 생성
         CustomWine customWine = CustomWine.builder()
                 .name(customWineDTO.getName())
@@ -95,9 +95,9 @@ public class CellarService {
                 .createdAt(LocalDateTime.now().toString())
                 .wineType(wineType)
                 .build();
-        System.out.println("22222222");
+
         CustomWine savedCustomWine = customWineRepository.save(customWine);
-        System.out.println("333333333");
+
         // 병에 추가
         Bottle bottle = Bottle.builder()
                 .createAt(LocalDateTime.now().toString())
@@ -108,7 +108,6 @@ public class CellarService {
                 .build();
 
         Bottle savedBottle = bottleRepository.save(bottle);
-        System.out.println("444444444444");
         // 응답 DTO 생성
         return CustomBottleResponseDTO.builder()
                 .bottleId(savedBottle.getId())
