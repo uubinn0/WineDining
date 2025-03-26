@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import EditModal from "../components/Modal/EditModal";
-import AddSeller1Modal from "../components/Modal/AddSeller1Modal";
-import AddSeller2Modal from "../components/Modal/AddSeller2Modal";
-import AddSeller3Modal from "../components/Modal/AddSeller3Modal";
-import { Wine } from "../types/wine";
 import axios from "axios";
+import BackButton from "../components/BackButton";
+import PixelButton from "../components/PixelButton";
+import MySellerAddFlow from "../components/MySellerAddFlow";
+import { Wine } from "../types/wine";
+import pencilIcon from "../assets/icons/raphael_pensil.png";
 
 interface UserProfile {
   userId: number;
@@ -18,17 +19,14 @@ interface UserProfile {
 function MyPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isAddSellerModalOpen, setIsAddSellerModalOpen] = useState(false);
-  const [isAddSeller2ModalOpen, setIsAddSeller2ModalOpen] = useState(false);
-  const [isAddSeller3ModalOpen, setIsAddSeller3ModalOpen] = useState(false);
-  const [selectedWine, setSelectedWine] = useState<Wine | null>(null);
-  const [drinkData, setDrinkData] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
-  // 사용자 정보 로드
+
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
@@ -52,86 +50,49 @@ function MyPage() {
     fetchUserProfile();
   }, [BASE_URL]);
 
-  const openEditModal = () => setIsEditModalOpen(true);
-  const closeEditModal = () => setIsEditModalOpen(false);
-
-  const openAddSellerModal = () => setIsAddSellerModalOpen(true);
-  const closeAddSellerModal = () => setIsAddSellerModalOpen(false);
-
-  const openAddSeller2Modal = () => setIsAddSeller2ModalOpen(true);
-  const closeAddSeller2Modal = () => setIsAddSeller2ModalOpen(false);
-
-  const openAddSeller3Modal = () => setIsAddSeller3ModalOpen(true);
-  const closeAddSeller3Modal = () => setIsAddSeller3ModalOpen(false);
-
-  // 2번 모달이 변경될 때 확인
-  useEffect(() => {
-    console.log("2번:", isAddSeller2ModalOpen);
-  }, [isAddSeller2ModalOpen]);
-
-  // 1번 -> 2번
-  const handleNextStep = (wine: Wine | null) => {
-    if (!wine) return;
-    setSelectedWine(wine);
-    console.log("선택된 와인:", wine);
-
-    setTimeout(() => {
-      closeAddSellerModal();
-      setIsAddSeller2ModalOpen(true);
-    }, 100);
-  };
-
-  // 2번 -> 3번
-  const handleNextStep2 = (drinkInfo: any) => {
-    setDrinkData(drinkInfo);
-    console.log("3번 모달 열기");
-    console.log("2번 기록:", drinkInfo);
-    closeAddSeller2Modal();
-    setIsAddSeller3ModalOpen(true);
-  };
-
-  // 2번 -> 1번 이동 (뒤로가기)
-  const handlePrevStep = () => {
-    console.log("1번 모달 다시 열기");
-    closeAddSeller2Modal();
-    setIsAddSellerModalOpen(true);
-  };
-
   return (
     <div style={styles.container}>
+      <div style={styles.backButtonWrapper}>
+        <BackButton onClick={() => navigate("/home")} />
+      </div>
       <h1 style={styles.title}>MY PAGE</h1>
+      <img src={"/sample_image/myimg.png"} alt={"myimg"} style={styles.image} />
+      <div style={styles.userInfo}>
+        {isLoading || !userProfile ? (
+          <div style={styles.placeholder}></div>
+        ) : (
+          <>
+            <div style={styles.nicknameColumn}>
+              <p style={styles.rank}>
+                {/* <span style={styles.crown}>👑</span> */}
+                <span style={styles.rankText}>{userProfile.rank}</span>
+                {/* <span style={styles.crown}>👑</span> */}
+              </p>
+              <div style={styles.nicknameRow}>
+                <span style={styles.nickname}>{userProfile.nickname}</span>
+                <button onClick={() => setIsEditModalOpen(true)} style={styles.editIconButton}>
+                  <img src={pencilIcon} alt="수정" style={styles.editIcon} />
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+
       <div style={styles.buttonGroup}>
-        <button onClick={() => navigate("/home")} style={styles.button}>
-          홈으로 가기
-        </button>
-        <button onClick={() => navigate("/winesellerlist")} style={styles.button}>
-          MY WINE SELLER
-        </button>
-        <button onClick={() => navigate("/wishlist")} style={styles.button}>
-          WISH LIST
-        </button>
-        <button onClick={() => navigate("/test")} style={styles.button}>
-          WINE TEST
-        </button>
+        <PixelButton onClick={() => navigate("/winesellerlist")}>MY WINE SELLER</PixelButton>
+        <PixelButton onClick={() => navigate("/wishlist")}>WISH LIST</PixelButton>
+        <PixelButton onClick={() => navigate("/test")}>WINE TEST</PixelButton>
       </div>
-      <div style={styles.modalButtonGroup}>
-        <button onClick={openEditModal} style={styles.modalButton}>
-          회원모달
-        </button>
-        <button onClick={openAddSellerModal} style={styles.modalButton}>
-          내가 마신 와인 추가하기
-        </button>
-      </div>
-      <EditModal isOpen={isEditModalOpen} onClose={closeEditModal} />
-      <AddSeller1Modal isOpen={isAddSellerModalOpen} onClose={closeAddSellerModal} onNext={handleNextStep} />
-      <AddSeller2Modal
-        isOpen={isAddSeller2ModalOpen}
-        onClose={closeAddSeller2Modal}
-        onPrev={handlePrevStep}
-        onNext={handleNextStep2}
-        wineInfo={selectedWine!}
+
+      <EditModal
+        nickname={userProfile?.nickname || ""}
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
       />
-      <AddSeller3Modal isOpen={isAddSeller3ModalOpen} onClose={closeAddSeller3Modal} drinkData={drinkData} />
+      <div style={styles.floatingAddButton}>
+        <MySellerAddFlow />
+      </div>
     </div>
   );
 }
@@ -144,18 +105,37 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundColor: "#2a0e35",
     minHeight: "100vh",
   },
+  image: {
+    width: "100px",
+    height: "100px",
+    border: "4px solid #d4b27a",
+    backgroundColor: "#F5F4E6",
+    borderRadius: "50px",
+    marginTop: "40px",
+  },
   title: {
+    fontFamily: "PressStart2P",
     fontSize: "24px",
     marginBottom: "20px",
   },
+  nickname: {
+    fontSize: "18px",
+    paddingLeft: "25px",
+  },
+  backButtonWrapper: {
+    position: "absolute",
+    top: "16px",
+    left: "16px",
+  },
   buttonGroup: {
+    padding: "30px 0",
     display: "flex",
     justifyContent: "center",
-    gap: "10px",
+    gap: "30px",
     flexWrap: "wrap",
   },
   modalButtonGroup: {
-    marginTop: "20px",
+    marginBottom: "40px",
     display: "flex",
     justifyContent: "center",
     gap: "10px",
@@ -179,6 +159,67 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: "8px",
     cursor: "pointer",
     transition: "0.2s",
+  },
+  userInfo: {
+    margin: "10px 0",
+    minHeight: "70px",
+  },
+  placeholder: {
+    height: "100%",
+  },
+  nicknameRow: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "4px",
+    marginBottom: "4px",
+  },
+
+  nicknameColumn: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "4px",
+  },
+
+  editIconButton: {
+    height: "16px",
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+    padding: 0,
+  },
+  editIcon: {
+    width: "18px",
+    height: "18px",
+  },
+  rank: {
+    display: "flex",
+    alignItems: "flex-end", // 왕관 기준으로 맞추기
+    justifyContent: "center",
+    gap: "4px",
+    fontSize: "12px",
+    color: "#FFD700",
+    marginBottom: "5px",
+  },
+
+  crown: {
+    fontSize: "12px",
+    lineHeight: 1,
+  },
+
+  rankText: {
+    fontSize: "12px",
+    lineHeight: 1,
+    position: "relative",
+    top: "1.6px", // 왕관과 수직 정렬 위해 아래로 살짝 내림
+  },
+
+  floatingAddButton: {
+    position: "absolute",
+    bottom: "24px",
+    right: "24px",
   },
 };
 

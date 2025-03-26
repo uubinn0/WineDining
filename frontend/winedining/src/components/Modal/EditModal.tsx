@@ -1,17 +1,20 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { RootState } from "../../store/store";
-// import { updateNickName, deleteAccount } from "../../store/slices/authSlice";
+import React, { useState, useEffect } from "react";
+// import { useDispatch } from "react-redux";
 
 interface EditModalProps {
   isOpen: boolean;
   onClose: () => void;
+  nickname: string;
 }
 
-const EditModal = ({ isOpen, onClose }: EditModalProps) => {
-  const [nickname, setNickname] = useState("");
+const EditModal = ({ nickname: initialNickname, isOpen, onClose }: EditModalProps) => {
+  const [nickname, setNickname] = useState(initialNickname);
   const [error, setError] = useState("");
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
+
+  useEffect(() => {
+    setNickname(initialNickname);
+  }, [initialNickname]);
 
   if (!isOpen) return null;
 
@@ -20,17 +23,9 @@ const EditModal = ({ isOpen, onClose }: EditModalProps) => {
       setError("닉네임을 입력해주세요!");
       return;
     }
-    setError("");
     alert(`닉네임이 '${nickname}'(으)로 변경되었습니다!`);
-    setNickname("");
+    setError("");
     onClose();
-  };
-
-  const handleDeleteAccount = () => {
-    if (window.confirm("정말 회원 탈퇴하시겠습니까?")) {
-      alert("회원 탈퇴가 완료되었습니다.");
-      onClose();
-    }
   };
 
   return (
@@ -39,27 +34,23 @@ const EditModal = ({ isOpen, onClose }: EditModalProps) => {
         <button style={styles.closeButton} onClick={onClose}>
           ✕
         </button>
-        <h2 style={styles.title}>회원 정보 관리</h2>
+        <h2 style={styles.title}>회원 정보 수정</h2>
 
-        {/* 닉네임 변경 */}
-        <div style={styles.inputGroup}>
-          <label style={styles.label}>닉네임 변경</label>
-          <input
-            type="text"
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
-            placeholder="새로운 닉네임 입력"
-            style={styles.input}
-          />
-          {error && <p style={styles.error}>{error}</p>}
-          <button onClick={handleNicknameChange} style={styles.saveButton}>
-            닉네임 변경하기
-          </button>
+        <div style={styles.inputRow}>
+          <span style={styles.label}>닉네임:</span>
+          <input value={nickname} onChange={(e) => setNickname(e.target.value)} style={styles.input} />
         </div>
 
-        <button onClick={handleDeleteAccount} style={styles.deleteButton}>
-          ❌ 회원탈퇴
-        </button>
+        {error && <p style={styles.error}>{error}</p>}
+
+        <div style={styles.buttonRow}>
+          <button style={styles.cancelButton} onClick={onClose}>
+            회원탈퇴
+          </button>
+          <button style={styles.confirmButton} onClick={handleNicknameChange}>
+            수정완료
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -72,78 +63,89 @@ const styles: { [key: string]: React.CSSProperties } = {
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     zIndex: 1000,
   },
   modal: {
-    backgroundColor: "#2a0e35",
-    color: "white",
-    padding: "20px",
-    borderRadius: "10px",
-    width: "90%",
-    maxWidth: "400px",
     position: "relative",
-    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
-    textAlign: "center",
+    backgroundColor: "#2a0e35",
+    border: "4px solid #d4b27a",
+    padding: "20px 24px",
+    width: "80%",
+    maxWidth: "340px",
+    borderRadius: "12px",
+    textAlign: "left",
+    color: "white",
   },
   closeButton: {
     position: "absolute",
-    right: "10px",
     top: "10px",
-    border: "none",
+    right: "12px",
     background: "none",
-    fontSize: "18px",
+    border: "none",
+    fontSize: "16px",
     color: "white",
     cursor: "pointer",
   },
   title: {
-    marginBottom: "15px",
-    fontSize: "20px",
-    fontWeight: "bold",
+    textAlign: "center",
+    fontSize: "18px",
+    marginBottom: "30px",
   },
-  inputGroup: {
-    marginBottom: "20px",
+  inputRow: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: "16px",
   },
   label: {
-    display: "block",
-    marginBottom: "5px",
-    fontSize: "14px",
-    fontWeight: "bold",
+    fontSize: "16px",
+    color: "white",
+    marginRight: "10px",
   },
   input: {
-    width: "90%",
-    padding: "8px",
-    borderRadius: "5px",
-    border: "1px solid #ccc",
-    fontSize: "14px",
+    flexGrow: 1,
+    backgroundColor: "transparent",
+    border: "none",
+    borderBottom: "2px solid white",
+    color: "white",
+    padding: "4px",
+    fontSize: "16px",
+    outline: "none",
   },
   error: {
+    fontSize: "10px",
     color: "#ff4d4d",
-    fontSize: "12px",
-    marginTop: "5px",
+    textAlign: "center",
+    marginTop: "-8px",
+    marginBottom: "8px",
   },
-  saveButton: {
+  buttonRow: {
+    display: "flex",
+    justifyContent: "flex-end",
+    gap: "5px",
     marginTop: "10px",
-    backgroundColor: "#5a1a5e",
-    color: "white",
-    padding: "8px",
-    borderRadius: "5px",
-    border: "none",
-    cursor: "pointer",
-    width: "100%",
   },
-  deleteButton: {
-    backgroundColor: "#ff4d4d",
-    color: "white",
-    padding: "10px",
-    borderRadius: "5px",
-    border: "none",
+  cancelButton: {
+    backgroundColor: "#ffffff",
+    color: "#000",
+    padding: "8px 10px",
+    borderRadius: "4px",
+    border: "2px solid #000",
+    fontSize: "10px",
     cursor: "pointer",
-    width: "100%",
-    marginTop: "10px",
+  },
+  confirmButton: {
+    backgroundColor: "#ffffff",
+    color: "#000",
+    padding: "8px 10px",
+    borderRadius: "4px",
+    border: "2px solid #000",
+    fontSize: "10px",
+    cursor: "pointer",
   },
 };
 

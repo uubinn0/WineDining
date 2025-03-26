@@ -164,9 +164,9 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   modal: {
     backgroundColor: "#2a0e35",
-    padding: "24px",
-    borderRadius: "16px",
-    width: "90%",
+    padding: "20px",
+    borderRadius: "10px",
+    width: "80%",
     maxWidth: "400px",
     border: "5px solid #d4a017",
     position: "relative",
