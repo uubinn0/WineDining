@@ -25,9 +25,6 @@ class Wine(SQLModel, table=True):
     created_at: datetime
     type_id: int
     wine_group_id: int
-<<<<<<< HEAD
-    # year: Optional[str] = None
-=======
     year: Optional[str] = None
 
 
@@ -38,4 +35,3 @@ class WineVector(SQLModel, table=True):
     feature_vector: Optional[list[float]] = Field(
         sa_column=Column(VECTOR)  # PostgreSQL vector 타입 지정
     )
->>>>>>> c8a9f1d289fb8d6cee3c20b049d16abcbdafbc3f
