@@ -13,7 +13,9 @@ console.log(api.defaults.headers);
 // 필터로 와인 가져오기
 export const fetchFilteredWines = async (filter: WineFilter): Promise<WineListResponse> => {
   try {
+    console.log("보내는 필터:", filter);
     const response = await api.post("/v1/product", filter);
+    console.log("받은 응답:", response);
     return response.data.data;
   } catch (error) {
     console.error("와인 리스트 불러오기 실패:", error);
