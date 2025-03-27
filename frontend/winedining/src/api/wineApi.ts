@@ -1,14 +1,19 @@
 import { Wine, WineFilter, WineListResponse, WineDetail } from "../types/wine";
 import axios from "axios";
 
+// baseURL이 제대로 설정되었는지 확인하고, 필요한 경우 /api를 추가
+const baseURL = process.env.REACT_APP_API_BASE_URL?.endsWith("/api")
+  ? process.env.REACT_APP_API_BASE_URL
+  : `${process.env.REACT_APP_API_BASE_URL}/api`;
+
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL,
+  baseURL,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-console.log(api.defaults.headers);
+console.log("최종 API 주소:", baseURL);
 
 // 필터로 와인 가져오기
 export const fetchFilteredWines = async (filter: WineFilter): Promise<WineListResponse> => {
