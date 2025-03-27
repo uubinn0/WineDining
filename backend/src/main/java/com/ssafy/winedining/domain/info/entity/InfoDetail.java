@@ -5,24 +5,27 @@ import lombok.*;
 
 @Entity
 @Table(name = "info_details")
-@Data
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class InfoDetail {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 60)
+    @Column(name = "subtitle")
     private String subtitle;
 
-    // SQL의 "order" 컬럼은 예약어이므로 orderNum으로 사용 (DB 컬럼명은 그대로 지정)
-    @Column(name = "\"order\"")
-    private Byte orderNum;
+    @Column(name = "`order`")
+    private Integer order;
 
-    @Lob
+    @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @Column(name = "info_id", nullable = false)
-    private Long infoId;
+    @ManyToOne
+    @JoinColumn(name = "info_id", nullable = false)
+    private Info info;
 }
