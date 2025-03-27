@@ -4,6 +4,7 @@ import BackButton from "../components/BackButton";
 import MBTIBackground from "../assets/images/background/wineMbti.png";
 import questions from "../data/MBTIQuestion";
 import speechbubble from "../assets/icons/speechbubble.png";
+import { vh } from "../utils/vh";
 
 
 
@@ -12,21 +13,44 @@ const MBTITest = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
-
+  const [scores, setScores] = useState({ E: 0, I: 0, S: 0, N: 0, F: 0, T: 0, P: 0, J: 0 });
 
   useEffect(() => {
     // 진행률 계산
     setProgress(((currentQuestionIndex + 1) / questions.length) * 100);
   }, [currentQuestionIndex]);
 
+
   const handleOptionSelect = (option: string) => {
     setSelectedOption(option);
+
+
+    // 성격 유형 점수 증가
+    const updateScores = (selectedOption: string) => {
+      const newScores = { ...scores };
+
+      // 각 옵션에 대한 성격 유형 점수를 증가시키는 로직 (예시)
+      if (selectedOption === "E") newScores.E += 1;
+      if (selectedOption === "I") newScores.I += 1;
+      if (selectedOption === "S") newScores.S += 1;
+      if (selectedOption === "N") newScores.N += 1;
+      if (selectedOption === "F") newScores.F += 1;
+      if (selectedOption === "T") newScores.T += 1;
+      if (selectedOption === "P") newScores.P += 1;
+      if (selectedOption === "J") newScores.J += 1;
+
+      setScores(newScores);
+    };
+
+    updateScores(option);
+
+
     setTimeout(() => {
       if (currentQuestionIndex < questions.length - 1) {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
       } else {
         // 마지막 질문에 도달하면 결과 페이지로 이동
-        navigate("/MBTIresults");
+        navigate("/MBTIresults", { state: scores });
       }
     }, 500); // 선택 후 약간의 딜레이 후 다음 질문으로 이동
   };
@@ -83,11 +107,14 @@ const styles: { [key: string]: React.CSSProperties } = {
     width: "100vw",
     height: "100vh",
     color: "white",
+    position : "relative",
+    padding : vh(1.5)
 
   },
   chatItself : {
     position : "absolute",
-    bottom : "100px",
+    bottom : vh(13),
+    // width : "100vw",
     display : "flex",
     justifyContent : "center",
   },
@@ -97,15 +124,15 @@ const styles: { [key: string]: React.CSSProperties } = {
     border : "solid 5px #D6BA91",
     padding: "20px",
     borderRadius: "10px",
-    width: "80%",
+    width: vh(37.5),
   },
   questionContainer: {
-    marginBottom: "20px",
+    // marginBottom: "20px",
   },
   questionText: {
     fontSize: "18px",
     lineHeight: "1.5",
-    wordWrap : "break-word",
+    // wordWrap : "break-word",
   },
   optionsContainer: {
     display: "flex",
@@ -115,24 +142,25 @@ const styles: { [key: string]: React.CSSProperties } = {
   optionButton: {
     backgroundColor: "transparent",
     color: "white",
-    padding: "10px 20px",
+    padding: vh(1),
     fontFamily : "Galmuri9",
     fontSize: "16px",
     border: "none",
     borderRadius: "8px",
     cursor: "pointer",
+    // wordWrap : "break-word",
   },
   progressContainer: {
     position: "absolute",
-    bottom: "10px",
-    left: "10%",
-    right: "10%",
-    width: "80%",
+    bottom: vh(3.5),
+    left: vh(2),
+    // right: vh(4),
+    width: vh(41),
     textAlign: "right",
   },
   progressBar: {
-    width: "100%",
-    height: "10px",
+    // width: vh(35),
+    height: vh(1.3),
     // backgroundColor: "#ddd",
     borderRadius: "5px",
     overflow: "hidden",
@@ -143,8 +171,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     transition: "width 0.5s ease",
   },
   progressText: {
-    marginTop: "5px",
-    fontSize: "14px",
+    // position : "absolute",
+
+    // marginTop: "5px",
+    fontSize: vh(1.5),
+    
   },
   speechBubbleContainer: {
     backgroundImage: `url(${speechbubble})`,
@@ -153,11 +184,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height :"220px",
-    width : "100%",
+    height :vh(25),
+    width : vh(45),
     color : "black",
     fontFamily : "Galmuri7",
-    fontSize : "20px"
+    fontSize : vh(2.3)
   },
 };
 

@@ -20,7 +20,7 @@ function AppRouter() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/MBTItest" element={<MBTITest />}></Route>
-        <Route path="//MBTIresults" element={<MBTIResults />}></Route>
+        <Route path="/MBTIresults" element={<MBTIResults />}></Route>
         <Route path="/home" element={<Home />} />
         {/* <Route path="/test" element={<Test />} /> */}
         <Route path="/mypage" element={<MyPage />} />
