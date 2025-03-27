@@ -35,6 +35,12 @@ const EditModal = ({ nickname: initialNickname, isOpen, onClose, onNicknameUpdat
           withCredentials: true,
           headers: {
             "Content-Type": "application/json",
+            // ✅ Authorization을 명시적으로 제거
+            ...Object.fromEntries(
+              Object.entries({
+                Authorization: undefined,
+              }).filter(([_, v]) => v !== undefined)
+            ),
           },
         }
       );
