@@ -12,4 +12,5 @@ public class UserResponseDTO {
     private String nickname;
     private String email;
     private String rank;
+    private Boolean preference;
 }
