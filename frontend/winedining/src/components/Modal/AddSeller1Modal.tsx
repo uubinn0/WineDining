@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Wine, WineFilter } from "../../types/wine"; // WineFilter 추가
+import { Wine, WineFilter } from "../../types/wine";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import closeButton from "../../assets/icons/closebutton.png";
-import { fetchFilteredWines } from "../../api/wineApi"; // Add this import
+import { fetchFilteredWines } from "../../api/wineApi";
 
 interface AddSeller1ModalProps {
   isOpen: boolean;
@@ -42,7 +42,7 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext }: AddSeller1ModalProps) => {
           pairing: [],
         },
         sort: {
-          field: "price" as const, // Fix the type by explicitly setting it as a const
+          field: "price" as const,
           order: "desc" as const,
         },
         page: 1,
