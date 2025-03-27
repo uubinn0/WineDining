@@ -1,10 +1,27 @@
-// types/note.ts
+// export interface Wine {
+//   wineId: number;
+//   image: string;
+//   name: string;
+//   type: string;
+//   country: string;
+//   grape: string;
+// }
 
 import { Wine } from "./wine";
 
+// 셀러에 등록된 와인 정보
+export interface Bottle {
+  bottleId: number;
+  createdAt: string;
+  wine: Wine;
+  isCustom: boolean;
+  isBest: boolean;
+  totalNote: number;
+}
+
+// 노트 정보
 export interface WineNote {
-  note_id: number;
-  bottle_id: number;
+  noteId: number;
   who: string;
   when: string;
   pairing: string[];
@@ -12,21 +29,35 @@ export interface WineNote {
   content: string;
   rating: number;
   image: string[];
-  created_at: string;
+  createdAt: string;
 }
 
-export interface Bottle {
-  bottle_id: number;
-  created_at: string;
-  wine: Wine;
-  is_custom: boolean;
-  is_best: boolean;
-  total_note: number;
+// 노트 응답 타입
+export interface WineNoteResponse {
+  status: number;
+  success: boolean;
+  message: string;
+  data: {
+    bottle: Bottle;
+    notes: WineNote[];
+  };
 }
 
-export interface NoteState {
-  bottle: Bottle | null;
-  notes: WineNote[];
-  status: "idle" | "loading" | "succeeded" | "failed";
-  error: string | null;
+// 노트 작성/수정 타입
+export interface WineNoteRequest {
+  who: string;
+  when: string;
+  pairing: string[];
+  nose: string;
+  content: string;
+  rating: number;
+  image: string[];
+}
+
+// 노트 수정 응답 타입
+export interface WineNoteSingleResponse {
+  status: number;
+  success: boolean;
+  message: string;
+  data: WineNote;
 }

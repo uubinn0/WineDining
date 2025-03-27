@@ -4,14 +4,16 @@ import wishReducer from "./slices/wishSlice";
 import wineReducer from "./slices/wineSlice";
 import testReducer from "./slices/testSlice";
 import noteReducer from "./slices/noteSlice";
+import sellarReducer from "./slices/sellarSlice";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     wine: wineReducer,
     wish: wishReducer,
-    test: testReducer, // testSlice 연결
+    test: testReducer,
     note: noteReducer,
+    cellar: sellarReducer,
   },
 });
 

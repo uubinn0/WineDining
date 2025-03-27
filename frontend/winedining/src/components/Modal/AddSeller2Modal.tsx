@@ -20,8 +20,8 @@ const AddSeller2Modal = ({ isOpen, onClose, onPrev, onNext, wineInfo }: AddSelle
 
   const handleNext = () => {
     const drinkData = {
-      wineId: wineInfo.wine_id,
-      bottleId: wineInfo.wine_id,
+      wineId: wineInfo.wineId,
+      bottleId: wineInfo.wineId,
       drinkDate,
       companion: companions.join(" "),
       food: "입력",
@@ -45,7 +45,7 @@ const AddSeller2Modal = ({ isOpen, onClose, onPrev, onNext, wineInfo }: AddSelle
 
         <div style={styles.wineContainer}>
           <img src={wineInfo.image || "/sample_image/whitewine_pixel.png"} alt="와인" style={styles.wineImage} />
-          <p style={styles.wineName}>{wineInfo.en_name.toUpperCase()}</p>
+          <p style={styles.wineName}>{wineInfo.name.toUpperCase()}</p>
         </div>
 
         <div style={styles.section}>
