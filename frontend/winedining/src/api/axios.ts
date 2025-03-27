@@ -10,10 +10,10 @@ const api = axios.create({
 // 개발 환경에서 임시로 토큰 검증 비활성화
 api.interceptors.request.use(
   (config) => {
-    // const token = localStorage.getItem("accessToken");
-    // if (token) {
-    //   config.headers.Authorization = `Bearer ${token}`;
-    // }
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {
