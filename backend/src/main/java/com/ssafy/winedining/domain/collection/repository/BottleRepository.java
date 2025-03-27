@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface BottleRepository extends JpaRepository<Bottle, Long> {
     List<Bottle> findByUserId(Long userId);
+    List<Bottle> findByUserIdAndBestIsTrue(Long userId);
 }
