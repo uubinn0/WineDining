@@ -6,6 +6,7 @@ import lombok.Data;
 public class WineListItemDTO {
     private Long wineId;
     private String name;
+    private String image;
     private String typeName;
     private String country;
     private String grape;
