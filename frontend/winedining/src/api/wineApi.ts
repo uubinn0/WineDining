@@ -1,5 +1,14 @@
 import { Wine, WineFilter, WineListResponse, WineDetail } from "../types/wine";
-import api from "./axios"; // Import the configured axios instance
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: process.env.REACT_APP_API_BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+console.log(api.defaults.headers);
 
 // 필터로 와인 가져오기
 export const fetchFilteredWines = async (filter: WineFilter): Promise<WineListResponse> => {

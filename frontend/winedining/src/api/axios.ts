@@ -1,19 +1,23 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL, // Changed to use environment variable
+  baseURL: process.env.REACT_APP_API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
-// 개발 환경에서 임시로 토큰 검증 비활성화
 api.interceptors.request.use(
   (config) => {
+    // 🧪 개발 중에는 하드코딩된 토큰 사용
+    // config.headers.Authorization = `Bearer ${devToken}`;
+
     const token = localStorage.getItem("accessToken");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
     return config;
   },
   (error) => {
@@ -24,7 +28,6 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // 401 에러 무시하고 응답 전달 (개발 환경용)
     if (error.response && error.response.status === 401) {
       console.warn("Authentication error ignored for development");
       return Promise.resolve({ data: { data: { wines: [] } } });
