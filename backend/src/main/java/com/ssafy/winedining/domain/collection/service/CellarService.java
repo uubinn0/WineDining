@@ -185,4 +185,88 @@ public class CellarService {
                 .totalCount(bottleDTOs.size())
                 .build();
     }
+
+    /**
+     * 베스트 와인 조회
+     */
+    @Transactional(readOnly = true)
+    public CellarResponseDTO getBestWines(Long userId) {
+        // 사용자 확인
+        userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 사용자입니다."));
+
+        // 사용자의 베스트 와인 병 조회
+        List<Bottle> bestBottles = bottleRepository.findByUserIdAndBestIsTrue(userId);
+
+        // DTO 변환
+        List<BottleDTO> bottleDTOs = bestBottles.stream()
+                .map(bottle -> {
+                    if (bottle.getWine() != null) {
+                        // 일반 와인인 경우
+                        Wine wine = bottle.getWine();
+                        return BottleDTO.builder()
+                                .bottleId(bottle.getId())
+                                .createdAt(bottle.getCreateAt())
+                                .isCustom(false)
+                                .isBest(true)
+                                .wine(
+                                        WineDTO.builder()
+                                                .wineId(wine.getId())
+                                                .name(wine.getKrName())
+                                                .type(wine.getWineType().getTypeName())
+                                                .country(wine.getCountry())
+                                                .grape(wine.getGrape())
+                                                .image(wine.getImage())
+                                                .build()
+                                )
+                                .build();
+                    } else {
+                        // 커스텀 와인인 경우
+                        CustomWine customWine = bottle.getCustomWine();
+                        return BottleDTO.builder()
+                                .bottleId(bottle.getId())
+                                .createdAt(bottle.getCreateAt())
+                                .isCustom(true)
+                                .isBest(true)
+                                .wine(
+                                        WineDTO.builder()
+                                                .wineId(customWine.getId())
+                                                .name(customWine.getName())
+                                                .type(customWine.getWineType().getTypeName())
+                                                .country(customWine.getCountry())
+                                                .grape(null)
+                                                .build()
+                                )
+                                .build();
+                    }
+                })
+                .collect(Collectors.toList());
+
+        // 응답 구성
+        return CellarResponseDTO.builder()
+                .bottles(bottleDTOs)
+                .totalCount(bottleDTOs.size())
+                .build();
+    }
+
+    /**
+     * 베스트 와인 등록/해제
+     */
+    @Transactional
+    public void updateBestWineStatus(Long userId, Long bottleId, boolean setBest) {
+        // 병 조회 (사용자 확인)
+        Bottle bottle = bottleRepository.findById(bottleId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 병입니다."));
+
+        // 사용자 권한 확인
+        if (!bottle.getUser().getId().equals(userId)) {
+            throw new IllegalArgumentException("해당 병에 대한 접근 권한이 없습니다.");
+        }
+
+        // 베스트 상태 업데이트
+        bottle.setBest(setBest);
+
+        // 저장
+        bottleRepository.save(bottle);
+    }
 }
