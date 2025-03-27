@@ -89,6 +89,9 @@ function MyPage() {
         nickname={userProfile?.nickname || ""}
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
+        onNicknameUpdated={(newNickname) =>
+          setUserProfile((prev) => (prev ? { ...prev, nickname: newNickname } : prev))
+        }
       />
       <div style={styles.floatingAddButton}>
         <MySellerAddFlow />
