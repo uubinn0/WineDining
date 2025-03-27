@@ -22,7 +22,7 @@ public class InfoDetail {
     @Column(name = "`order`")
     private Integer order;
 
-    @Column(name = "content")
+    @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
 
     @ManyToOne
