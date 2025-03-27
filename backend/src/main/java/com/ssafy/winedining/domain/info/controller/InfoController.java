@@ -22,7 +22,7 @@ public class InfoController {
     @GetMapping
     public ResponseEntity<ApiResponse<InfoListResponseDTO>> getWineInfoList(
             @RequestParam(required = false, defaultValue = "1") int page,
-            @RequestParam(required = false, defaultValue = "10") int limit) {
+            @RequestParam(required = false, defaultValue = "6") int limit) {
 
         InfoListResponseDTO responseDTO = infoService.getWineInfoList(page, limit);
 
