@@ -1,9 +1,6 @@
 package com.ssafy.winedining.domain.collection.controller;
 
-import com.ssafy.winedining.domain.collection.dto.BottleResponseDTO;
-import com.ssafy.winedining.domain.collection.dto.CellarResponseDTO;
-import com.ssafy.winedining.domain.collection.dto.CustomBottleResponseDTO;
-import com.ssafy.winedining.domain.collection.dto.CustomWineCreateDTO;
+import com.ssafy.winedining.domain.collection.dto.*;
 import com.ssafy.winedining.domain.collection.service.CellarService;
 import com.ssafy.winedining.global.auth.dto.CustomOAuth2User;
 import com.ssafy.winedining.global.common.ApiResponse;
@@ -79,6 +76,52 @@ public class CellarController {
                 .success(true)
                 .message("사용자의 셀러를 조회했습니다")
                 .data(cellarResponseDTO)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 베스트 와인 조회 API
+     */
+    @GetMapping("/best")
+    public ResponseEntity<ApiResponse<CellarResponseDTO>> getBestWines(
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+
+        Long userId = customOAuth2User.getUserId();
+        CellarResponseDTO responseDTO = cellarService.getBestWines(userId);
+
+        ApiResponse<CellarResponseDTO> response = ApiResponse.<CellarResponseDTO>builder()
+                .status(HttpStatus.OK.value())
+                .success(true)
+                .message("베스트 와인 조회 성공")
+                .data(responseDTO)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 베스트 와인 등록/해제 API
+     */
+    @PatchMapping("/{bottleId}/best")
+    public ResponseEntity<ApiResponse<Void>> updateBestWineStatus(
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @PathVariable Long bottleId,
+            @RequestBody BestWineRequestDTO requestDTO) {
+
+        Long userId = customOAuth2User.getUserId();
+        boolean setBest = requestDTO.isBest();
+
+        cellarService.updateBestWineStatus(userId, bottleId, setBest);
+
+        String message = setBest ? "베스트 와인 등록 성공" : "베스트 와인 해제 성공";
+
+        ApiResponse<Void> response = ApiResponse.<Void>builder()
+                .status(HttpStatus.OK.value())
+                .success(true)
+                .message(message)
+                .data(null)
                 .build();
 
         return ResponseEntity.ok(response);
