@@ -1,39 +1,35 @@
 import React from "react";
-import { Wine } from "../types/wine";
+import { Bottle } from "../types/seller";
 
 interface WineSellerCardProps {
-  wine: Wine;
-  onBestClick: (wine: Wine) => void;
+  wine: Bottle;
+  onBestClick: (bottleId: number) => void;
   onDetailClick: () => void;
   isBest: boolean;
 }
-
-// api 연결하면서 해야 할 일
-// 1. 내꺼만 가져오기
-// 2. 베스트 누를 때, best 여부 전송하기
 
 const WineSellerCard = ({ wine, onBestClick, onDetailClick, isBest }: WineSellerCardProps) => {
   return (
     <div style={styles.card}>
       <img
-        src={wine.image !== "no_image" ? wine.image : "/sample_image/wine_sample.jpg"}
-        alt={wine.kr_name}
+        src={wine.wine.image !== "no_image" ? wine.wine.image : "/sample_image/wine_sample.jpg"}
+        alt={wine.wine.name}
         style={styles.image}
       />
 
       <div style={styles.info}>
-        <div style={styles.name}>{wine.kr_name.toUpperCase()}</div>
-        <div style={styles.grape}>{wine.grape}</div>
+        <div style={styles.name}>{wine.wine.name.toUpperCase()}</div>
+        <div style={styles.grape}>{wine.wine.grape}</div>
       </div>
 
       <div style={styles.buttons}>
         <button
           style={{
             ...styles.button,
-            backgroundColor: isBest ? "#5A0000" : "#FFFFFF", // 빨간색 토글
+            backgroundColor: isBest ? "#5A0000" : "#FFFFFF",
             color: isBest ? "#FFFFFF" : "#000000",
           }}
-          onClick={() => onBestClick(wine)}
+          onClick={() => onBestClick(wine.bottleId)}
         >
           BEST
         </button>

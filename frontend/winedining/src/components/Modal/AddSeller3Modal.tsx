@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { createNote } from "../../store/slices/noteSlice";
+import { addNote } from "../../store/slices/noteSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 
@@ -50,7 +50,7 @@ const AddSeller3Modal = ({ isOpen, onClose, drinkData }: AddSeller3ModalProps) =
       image: selectedImages,
     };
 
-    dispatch(createNote({ bottleId, note: newNote }));
+    dispatch(addNote({ bottleId, note: newNote }));
     alert("노트 저장 완료!");
     onClose();
   };

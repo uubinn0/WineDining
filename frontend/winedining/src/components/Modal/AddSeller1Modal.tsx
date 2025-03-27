@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Wine } from "../../types/wine";
+import { Wine, WineFilter } from "../../types/wine"; // WineFilter 추가
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import closeButton from "../../assets/icons/closebutton.png";
-// 더미데이터 api
-import { fetchFilteredWines } from "../../mocks/mockApi";
+import { fetchFilteredWines } from "../../api/wineApi"; // Add this import
 
 interface AddSeller1ModalProps {
   isOpen: boolean;
@@ -24,11 +23,35 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext }: AddSeller1ModalProps) => {
     if (!searchTerm.trim()) return;
     setLoading(true);
     try {
-      const wines = (await fetchFilteredWines()) as Wine[];
-      const filteredResults = wines.filter(
-        (wine: Wine) =>
-          wine.kr_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          wine.en_name.toLowerCase().includes(searchTerm.toLowerCase())
+      const filter: WineFilter = {
+        keyword: searchTerm,
+        filters: {
+          type: [],
+          grape: [],
+          country: [],
+          minPrice: 0,
+          maxPrice: 1000000,
+          minSweetness: 1,
+          maxSweetness: 5,
+          minAcidity: 1,
+          maxAcidity: 5,
+          minTannin: 1,
+          maxTannin: 5,
+          minBody: 1,
+          maxBody: 5,
+          pairing: [],
+        },
+        sort: {
+          field: "price" as const, // Fix the type by explicitly setting it as a const
+          order: "desc" as const,
+        },
+        page: 1,
+        limit: 20,
+      };
+
+      const response = await fetchFilteredWines(filter);
+      const filteredResults = response.wines.filter((wine: Wine) =>
+        wine.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setSearchResults(filteredResults);
     } catch (error) {
@@ -69,6 +92,7 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext }: AddSeller1ModalProps) => {
 
   if (!isOpen) return null;
 
+  // Update the JSX part
   return (
     <div style={styles.overlay} onClick={onClose}>
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -98,16 +122,14 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext }: AddSeller1ModalProps) => {
           <div style={styles.resultContainer}>
             {searchResults.map((wine) => (
               <div
-                key={wine.wine_id}
+                key={wine.wineId}
                 style={{
                   ...styles.wineItem,
-                  backgroundColor: selectedWine?.wine_id === wine.wine_id ? "#d4a017" : "transparent",
+                  backgroundColor: selectedWine?.wineId === wine.wineId ? "#d4a017" : "transparent",
                 }}
                 onClick={() => handleSelectWine(wine)}
               >
-                <p>
-                  {wine.kr_name} ({wine.en_name})
-                </p>
+                <p>{wine.name}</p>
               </div>
             ))}
           </div>
@@ -130,13 +152,12 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext }: AddSeller1ModalProps) => {
             <p style={styles.selectedTitle}>선택한 와인</p>
             <img
               src={selectedWine.image || "/sample_image/default_wine.jpg"}
-              alt={selectedWine.kr_name}
+              alt={selectedWine.name}
               style={styles.wineImage}
             />
-            <p>{selectedWine.kr_name}</p>
-            <p>{selectedWine.en_name}</p>
+            <p>{selectedWine.name}</p>
             <p>
-              {selectedWine.country} | {selectedWine.type}
+              {selectedWine.country} | {selectedWine.typeName}
             </p>
             <p>포도 품종: {selectedWine.grape}</p>
             <button onClick={handleNextStep} style={styles.nextButton}>

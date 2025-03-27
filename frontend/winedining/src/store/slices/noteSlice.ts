@@ -1,67 +1,67 @@
-// store/slices/noteslice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { WineNote } from "../../types/note";
-import * as mockNoteApi from "../../mocks/mockNoteApi";
+import { fetchWineNotes, createWineNote, updateWineNote, deleteWineNote } from "../../api/noteApi";
+import { Bottle, WineNote, WineNoteRequest } from "../../types/note";
 
+// 노트 상태 타입
 interface NoteState {
+  bottle: Bottle | null;
   notes: WineNote[];
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
 
 const initialState: NoteState = {
+  bottle: null,
   notes: [],
   status: "idle",
   error: null,
 };
 
-// 전체 조회 (특정 bottleId)
-export const fetchNotes = createAsyncThunk<WineNote[], number, { rejectValue: string }>(
+// 노트 조회
+export const fetchNotes = createAsyncThunk<{ bottle: Bottle; notes: WineNote[] }, number, { rejectValue: string }>(
   "note/fetchNotes",
   async (bottleId, { rejectWithValue }) => {
     try {
-      const response = await mockNoteApi.fetchMockNotes(bottleId);
-      return response.notes;
+      const data = await fetchWineNotes(bottleId);
+      return data;
     } catch (error) {
       return rejectWithValue("노트 조회 실패");
     }
   }
 );
 
-// 저장
-export const createNote = createAsyncThunk<
-  WineNote,
-  { bottleId: number; note: Omit<WineNote, "note_id" | "created_at" | "bottle_id"> },
-  { rejectValue: string }
->("note/createNote", async ({ bottleId, note }, { rejectWithValue }) => {
-  try {
-    const response = await mockNoteApi.postMockNote(bottleId, note);
-    return response as WineNote;
-  } catch (error) {
-    return rejectWithValue("노트 저장 실패");
+// 노트 추가
+export const addNote = createAsyncThunk<WineNote, { bottleId: number; note: WineNoteRequest }, { rejectValue: string }>(
+  "note/addNote",
+  async ({ bottleId, note }, { rejectWithValue }) => {
+    try {
+      const data = await createWineNote(bottleId, note);
+      return data.notes[data.notes.length - 1]; // 마지막으로 추가된 노트
+    } catch (error) {
+      return rejectWithValue("노트 등록 실패");
+    }
   }
-});
+);
 
-// 수정
-export const updateNote = createAsyncThunk<
-  WineNote,
-  { noteId: number; updatedNote: Partial<WineNote> },
-  { rejectValue: string }
->("note/updateNote", async ({ noteId, updatedNote }, { rejectWithValue }) => {
-  try {
-    const response = await mockNoteApi.updateMockNote(noteId, updatedNote);
-    return response as WineNote;
-  } catch (error) {
-    return rejectWithValue("노트 수정 실패");
+// 노트 수정
+export const editNote = createAsyncThunk<WineNote, { noteId: number; note: WineNoteRequest }, { rejectValue: string }>(
+  "note/editNote",
+  async ({ noteId, note }, { rejectWithValue }) => {
+    try {
+      const updatedNote = await updateWineNote(noteId, note);
+      return updatedNote;
+    } catch (error) {
+      return rejectWithValue("노트 수정 실패");
+    }
   }
-});
+);
 
-// 삭제
-export const deleteNote = createAsyncThunk<number, number, { rejectValue: string }>(
-  "note/deleteNote",
+// 노트 삭제
+export const removeNote = createAsyncThunk<number, number, { rejectValue: string }>(
+  "note/removeNote",
   async (noteId, { rejectWithValue }) => {
     try {
-      await mockNoteApi.deleteMockNote(noteId);
+      await deleteWineNote(noteId);
       return noteId;
     } catch (error) {
       return rejectWithValue("노트 삭제 실패");
@@ -69,57 +69,58 @@ export const deleteNote = createAsyncThunk<number, number, { rejectValue: string
   }
 );
 
-// 전체 노트 조회 thunk
-export const fetchAllNotes = createAsyncThunk<WineNote[], void, { rejectValue: string }>(
-  "note/fetchAllNotes",
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await mockNoteApi.fetchAllMockNotes();
-      return response.notes;
-    } catch (error) {
-      return rejectWithValue("전체 노트 조회 실패");
-    }
-  }
-);
-
 const noteSlice = createSlice({
   name: "note",
   initialState,
-  reducers: {},
+  reducers: {
+    resetNoteState: (state) => {
+      state.bottle = null;
+      state.notes = [];
+      state.status = "idle";
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
+      // 조회
       .addCase(fetchNotes.pending, (state) => {
         state.status = "loading";
       })
-
+      .addCase(fetchNotes.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.bottle = action.payload.bottle;
+        state.notes = action.payload.notes;
+      })
       .addCase(fetchNotes.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload ?? "노트 조회 실패";
       })
 
-      .addCase(createNote.fulfilled, (state, action: PayloadAction<WineNote>) => {
+      // 추가
+      .addCase(addNote.fulfilled, (state, action: PayloadAction<WineNote>) => {
         state.notes.push(action.payload);
+        if (state.bottle) {
+          state.bottle.totalNote += 1;
+        }
       })
 
-      .addCase(updateNote.fulfilled, (state, action: PayloadAction<WineNote>) => {
-        const index = state.notes.findIndex((note) => note.note_id === action.payload.note_id);
+      // 수정
+      .addCase(editNote.fulfilled, (state, action: PayloadAction<WineNote>) => {
+        const index = state.notes.findIndex((n) => n.noteId === action.payload.noteId);
         if (index !== -1) {
           state.notes[index] = action.payload;
         }
       })
 
-      .addCase(deleteNote.fulfilled, (state, action: PayloadAction<number>) => {
-        state.notes = state.notes.filter((note) => note.note_id !== action.payload);
-      })
-
-      .addCase(fetchNotes.fulfilled, (state, action: PayloadAction<WineNote[]>) => {
-        state.status = "succeeded";
-        const incomingNotes = action.payload;
-        const existingIds = new Set(state.notes.map((n) => n.note_id));
-        const uniqueNewNotes = incomingNotes.filter((n) => !existingIds.has(n.note_id));
-        state.notes = [...state.notes, ...uniqueNewNotes];
+      // 삭제
+      .addCase(removeNote.fulfilled, (state, action: PayloadAction<number>) => {
+        state.notes = state.notes.filter((n) => n.noteId !== action.payload);
+        if (state.bottle) {
+          state.bottle.totalNote -= 1;
+        }
       });
   },
 });
 
+export const { resetNoteState } = noteSlice.actions;
 export default noteSlice.reducer;

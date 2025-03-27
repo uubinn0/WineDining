@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Wine } from "../../types/wine";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../store/store";
-import { deleteNote, updateNote } from "../../store/slices/noteSlice";
+import { editNote, removeNote } from "../../store/slices/noteSlice";
+import { WineNoteRequest } from "../../types/note";
 
 interface WineSellerDetailModalProps {
   isOpen: boolean;
@@ -13,10 +14,19 @@ interface WineSellerDetailModalProps {
 const WineSellerDetailModal = ({ isOpen, onClose, wine }: WineSellerDetailModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const { notes } = useSelector((state: RootState) => state.note);
-  const wineNotes = notes.filter((note) => note.bottle_id === wine.wine_id);
+  // Fix bottleId reference
+  const wineNotes = notes.filter((note) => note.noteId === wine.wineId);
   const [page, setPage] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState<any>({});
+  const [editData, setEditData] = useState<WineNoteRequest>({
+    who: "",
+    when: "",
+    pairing: [],
+    nose: "",
+    content: "",
+    rating: 0,
+    image: [],
+  });
 
   if (!isOpen) return null;
 
@@ -25,7 +35,7 @@ const WineSellerDetailModal = ({ isOpen, onClose, wine }: WineSellerDetailModalP
 
   const handleDelete = (noteId: number) => {
     if (window.confirm("정말 삭제하시겠습니까?")) {
-      dispatch(deleteNote(noteId));
+      dispatch(removeNote(noteId));
       if (page > 0) setPage((prev) => prev - 1);
     }
   };
@@ -45,11 +55,20 @@ const WineSellerDetailModal = ({ isOpen, onClose, wine }: WineSellerDetailModalP
 
   const cancelEdit = () => {
     setIsEditing(false);
-    setEditData({});
+    setEditData({
+      who: "",
+      when: "",
+      pairing: [],
+      nose: "",
+      content: "",
+      rating: 0,
+      image: []
+    });
   };
 
   const saveEdit = () => {
-    dispatch(updateNote({ noteId: currentNote.note_id, updatedNote: editData }));
+    // Fix the editNote parameter structure
+    dispatch(editNote({ noteId: currentNote.noteId, note: editData }));
     setIsEditing(false);
   };
 
@@ -73,11 +92,11 @@ const WineSellerDetailModal = ({ isOpen, onClose, wine }: WineSellerDetailModalP
 
         <img
           src={wine.image !== "no_image" ? wine.image : "/sample_image/wine_sample.jpg"}
-          alt={wine.kr_name}
+          alt={wine.name} // Changed from krName to name
           style={styles.wineImage}
         />
         <h3 style={styles.name}>
-          {wine.en_name} {wine.kr_name}
+          {wine.name} {/* Changed from en_name and kr_name to just name */}
         </h3>
 
         <div style={styles.noteContainer}>
@@ -167,7 +186,10 @@ const WineSellerDetailModal = ({ isOpen, onClose, wine }: WineSellerDetailModalP
                   <button style={styles.controlBtn} onClick={startEdit}>
                     수정
                   </button>
-                  <button style={styles.controlBtn} onClick={() => handleDelete(currentNote.note_id)}>
+                  <button
+                    style={styles.controlBtn}
+                    onClick={() => handleDelete(currentNote.noteId)} // Changed from note_id to noteId
+                  >
                     삭제
                   </button>
                 </>

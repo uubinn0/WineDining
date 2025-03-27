@@ -5,23 +5,56 @@ import { fetchWines } from "../store/slices/wineSlice";
 import { RootState, AppDispatch } from "../store/store";
 import WineInfoCard from "../components/WineInfoCard";
 import WineDetailModal from "../components/Modal/WineDetailModal";
-import { Wine } from "../types/wine";
+import { Wine, WineFilter } from "../types/wine";
+import { fetchWineDetailThunk } from "../store/slices/wineSlice";
+import { WineDetail } from "../types/wine";
 
 const WineList = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { wines, status, error } = useSelector((state: RootState) => state.wine);
-  const [selectedWine, setSelectedWine] = useState<Wine | null>(null);
+  const [selectedWine, setSelectedWine] = useState<WineDetail | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    if (status === "idle") dispatch(fetchWines());
+    if (status === "idle") {
+      const defaultFilter: WineFilter = {
+        keyword: "",
+        filters: {
+          type: [],
+          grape: [],
+          country: [],
+          minPrice: 0,
+          maxPrice: 1000000,
+          minSweetness: 1,
+          maxSweetness: 5,
+          minAcidity: 1,
+          maxAcidity: 5,
+          minTannin: 1,
+          maxTannin: 5,
+          minBody: 1,
+          maxBody: 5,
+          pairing: [],
+        },
+        sort: {
+          field: "price",
+          order: "desc",
+        },
+        page: 1,
+        limit: 20,
+      };
+
+      dispatch(fetchWines(defaultFilter));
+    }
   }, [dispatch, status]);
 
-  const handleWineClick = (wine: Wine) => {
-    setSelectedWine(wine);
-    setIsModalOpen(true);
+  const handleWineClick = async (wine: Wine) => {
+    const result = await dispatch(fetchWineDetailThunk(wine.wineId));
+    if (fetchWineDetailThunk.fulfilled.match(result)) {
+      setSelectedWine(result.payload); // WineDetail 객체
+      setIsModalOpen(true);
+    }
   };
 
   const handleCloseModal = () => {
@@ -29,7 +62,7 @@ const WineList = () => {
     setSelectedWine(null);
   };
 
-  const filteredWines = wines.filter((wine) => wine.kr_name.toLowerCase().includes(searchTerm.trim().toLowerCase()));
+  const filteredWines = wines.filter((wine) => wine.name.toLowerCase().includes(searchTerm.trim().toLowerCase()));
 
   if (status === "loading") {
     return <div style={styles.loading}>로딩 중...</div>;
@@ -80,7 +113,7 @@ const WineList = () => {
       {/* 와인 리스트 */}
       <div style={styles.list}>
         {filteredWines.map((wine) => (
-          <WineInfoCard key={wine.wine_id} wine={wine} onClick={handleWineClick} />
+          <WineInfoCard key={wine.wineId} wine={wine} onClick={handleWineClick} />
         ))}
       </div>
 

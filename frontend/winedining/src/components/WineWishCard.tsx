@@ -1,21 +1,29 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { removeFromWishList } from "../store/slices/wishSlice";
+import { removeWish } from "../store/slices/wishSlice";
 import { AppDispatch } from "../store/store";
-import { Wish } from "../types/wish";
-import WineDetailModal from "../components/Modal/WineDetailModal"; // ✅ 모달 파일명 변경
+import { WishItem } from "../types/wish";
+import WineDetailModal from "../components/Modal/WineDetailModal";
+import { WineDetail } from "../types/wine";
+import { fetchWineDetailThunk } from "../store/slices/wineSlice";
 
 interface WineWishCardProps {
-  wish: Wish;
+  wish: WishItem;
 }
 
 const WineWishCard = ({ wish }: WineWishCardProps) => {
+  const [selectedDetail, setSelectedDetail] = useState<WineDetail | null>(null);
   const dispatch = useDispatch<AppDispatch>();
-  const [isOpen, setIsOpen] = useState(false); // ✅ 모달 상태 추가
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleRemoveWish = () => {
-    if (!wish.wine.wine_id) return;
-    dispatch(removeFromWishList(wish.wine.wine_id));
+    dispatch(removeWish(wish.wine.wineId));
+  };
+
+  const handleWineClick = async () => {
+    const detail = await dispatch(fetchWineDetailThunk(wish.wine.wineId)).unwrap();
+    setSelectedDetail(detail);
+    setIsOpen(true);
   };
 
   return (
@@ -23,22 +31,24 @@ const WineWishCard = ({ wish }: WineWishCardProps) => {
       <div style={styles.card}>
         <img
           src={wish.wine.image !== "" ? wish.wine.image : "/sample_image/wine_sample.jpg"}
-          alt={wish.wine.kr_name}
+          alt={wish.wine.name}
           style={styles.image}
         />
-        {/* ✅ 클릭 시 모달 띄우기 */}
+
         <button style={styles.button} onClick={() => setIsOpen(true)}>
           <h3 style={styles.text}>
-            {wish.wine.kr_name} <br /> ({wish.wine.en_name})
+            {wish.wine.name} <br /> ({wish.wine.country})
           </h3>
         </button>
+
         <button onClick={handleRemoveWish} style={styles.heartButton}>
           ❤️
         </button>
       </div>
 
-      {/* ✅ WineDetailModal 추가 */}
-      {isOpen && <WineDetailModal isOpen={isOpen} onClose={() => setIsOpen(false)} wine={wish.wine} />}
+      {isOpen && selectedDetail && (
+        <WineDetailModal isOpen={isOpen} onClose={() => setIsOpen(false)} wine={selectedDetail} />
+      )}
     </>
   );
 };
