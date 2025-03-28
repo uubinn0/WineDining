@@ -12,7 +12,7 @@ function DicLoading() {
 
   return (
     <div style={styles.container}>
-      <video autoPlay muted onEnded={handleVideoEnd} style={styles.video}>
+      <video autoPlay playsInline muted onEnded={handleVideoEnd} style={styles.video}>
         <source src="/videos/bookvideos.mp4" type="video/mp4" />
       </video>
     </div>
