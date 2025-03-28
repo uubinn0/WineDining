@@ -22,16 +22,9 @@ function AppRouter() {
         <Route path="/" element={<Login />} />
         <Route path="/MBTITest" element={<MBTITest />} />
         <Route path="/MBTIresults" element={<MBTIResults />} />
+        <Route path="/home" element={<Home />} />
 
         {/* 보호된 라우트 */}
-        <Route
-          path="/home"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
         <Route
           path="/mypage"
           element={
