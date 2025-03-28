@@ -46,7 +46,7 @@ function Home() {
           setIsPreferenceModalVisible(true);
           setTimeout(() => {
             navigate("/recommendtest");
-          }, 7000); // 7초 후 자동 이동
+          }, 3000); // 3초 후 자동 이동
         }
       } catch (error) {
         console.error("실패, 사용자 정보 로딩 오류:", error);
