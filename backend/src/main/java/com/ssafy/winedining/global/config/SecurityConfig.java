@@ -105,9 +105,9 @@ public class SecurityConfig {
                     "https://localhost:5432",
                     "https://j12b202.p.ssafy.io"
             ));
+            configuration.setAllowedHeaders(Collections.singletonList("*"));
             configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
             configuration.setAllowCredentials(true);
-            configuration.setAllowedHeaders(Collections.singletonList("*"));
             configuration.setMaxAge(3600L);
 
             configuration.setExposedHeaders(Arrays.asList("Set-Cookie", "Authorization"));
