@@ -48,12 +48,6 @@ public class Preference {
     @Column
     private Boolean rose;
 
-    @Column
-    private Boolean fortified;
-
-    @Column
-    private Boolean etc;
-
     @Column(name = "created_at", nullable = false)
     private Timestamp createdAt;
 
@@ -62,7 +56,7 @@ public class Preference {
 
     @Builder
     public Preference(Long userId, int alcoholContent, int sweetness, int acidity, int tannin, int body, boolean red,
-                      boolean white, boolean sparkling, boolean rose, boolean fortified, boolean etc,
+                      boolean white, boolean sparkling, boolean rose,
                       Timestamp createdAt, Timestamp updatedAt){
         this.userId = userId;
         this.alcoholContent = alcoholContent;
@@ -74,12 +68,7 @@ public class Preference {
         this.white = white;
         this.sparkling = sparkling;
         this.rose = rose;
-        this.fortified = fortified;
-        this.etc = etc;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
-
-
-
 }

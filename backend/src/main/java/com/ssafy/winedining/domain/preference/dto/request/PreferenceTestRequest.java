@@ -6,10 +6,10 @@ import java.util.List;
 
 @Data
 public class PreferenceTestRequest {
-    private int alcoholDegree;
-    private int sweet;
-    private int acidic;
-    private int body;
+    private int alcoholContent;
+    private int sweetness;
+    private int acidity;
     private int tannin;
-    private List<String> preferredTypes;
+    private int body;
+    private String preferredTypes;
 }
