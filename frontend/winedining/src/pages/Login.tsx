@@ -6,16 +6,15 @@ import PixelButton from "../components/PixelButton";
 
 const MainPage = () => {
   const navigate = useNavigate();
-  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   const handleKakaoLogin = () => {
     localStorage.setItem("provider", "KAKAO");
-    window.location.href = `${BASE_URL}/api/v1/auth/oauth2/authorization/kakao`;
+    window.location.href = "https://j12b202.p.ssafy.io/api/v1/auth/oauth2/authorization/kakao";
   };
 
   const handleGoogleLogin = () => {
     localStorage.setItem("provider", "GOOGLE");
-    window.location.href = `${BASE_URL}/api/v1/auth/oauth2/authorization/google`;
+    window.location.href = "https://j12b202.p.ssafy.io/api/v1/auth/oauth2/authorization/google";
   };
 
   return (
