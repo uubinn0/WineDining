@@ -2,7 +2,9 @@ from sqlmodel import SQLModel, Field
 from typing import Optional
 from datetime import datetime
 from sqlalchemy import Column
-from sqlalchemy.dialects.postgresql import VECTOR  # pgvector를 위한 타입
+# from sqlalchemy.dialects.postgresql import VECTOR  # pgvector를 위한 타입
+from pgvector.sqlalchemy import Vector  # pgvector에서 Vector 타입 가져오기
+
 
 class Wine(SQLModel, table=True):
     __tablename__ = "wines"  # 명시적 선언 (옵션)
@@ -33,5 +35,7 @@ class WineVector(SQLModel, table=True):
 
     wine_id: int = Field(primary_key=True, foreign_key="wines.id")
     feature_vector: Optional[list[float]] = Field(
-        sa_column=Column(VECTOR)  # PostgreSQL vector 타입 지정
+        # sa_column=Column(VECTOR)  # PostgreSQL vector 타입 지정
+        sa_column=Column(Vector)  # PostgreSQL vector 타입 지정
+
     )
