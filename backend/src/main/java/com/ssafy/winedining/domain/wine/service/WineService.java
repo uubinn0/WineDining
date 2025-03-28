@@ -91,11 +91,12 @@ public class WineService {
                     WineListItemDTO dto = new WineListItemDTO();
                     dto.setWineId(wine.getId());
                     dto.setName(wine.getKrName());
+                    dto.setImage(wine.getImage());
                     dto.setTypeName(wine.getWineType().getTypeName());
                     dto.setCountry(wine.getCountry());
                     dto.setGrape(wine.getGrape());
                     // isWish 관련 정보는 로그인한 사용자 정보 등과 연동 필요 (여기서는 false로 처리)
-                    boolean isWish = wishItemRepository.existsByWineIdAndUserId(wine.getId(), userId);
+                    boolean isWish = wishItemRepository.existsByUserIdAndWineId(userId, wine.getId());
                     System.out.println("isWish = " + isWish);
                     dto.setWish(isWish);
                     return dto;
