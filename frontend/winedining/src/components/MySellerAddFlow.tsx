@@ -14,6 +14,7 @@ const MySellerAddFlow: React.FC = () => {
 
   const openStep1 = () => setIsStep1Open(true);
   const closeStep1 = () => setIsStep1Open(false);
+  const openStep2 = () => setIsStep2Open(true);  // Add this line
   const closeStep2 = () => setIsStep2Open(false);
   const closeStep3 = () => setIsStep3Open(false);
 
@@ -42,14 +43,27 @@ const MySellerAddFlow: React.FC = () => {
       <button onClick={openStep1}>+</button>
 
       <AddSeller1Modal isOpen={isStep1Open} onClose={closeStep1} onNext={handleNextStep} />
-      <AddSeller2Modal
-        isOpen={isStep2Open}
-        onClose={closeStep2}
-        onPrev={handlePrevStep}
-        onNext={handleNextStep2}
-        wineInfo={selectedWine!}
-      />
-      <AddSeller3Modal isOpen={isStep3Open} onClose={closeStep3} drinkData={drinkData} />
+      {selectedWine && (
+        <AddSeller2Modal
+          isOpen={isStep2Open}
+          onClose={closeStep2}
+          onPrev={handlePrevStep}
+          onNext={handleNextStep2}
+          wineInfo={selectedWine}
+        />
+      )}
+      {selectedWine && drinkData && (
+        <AddSeller3Modal 
+          isOpen={isStep3Open} 
+          onClose={closeStep3} 
+          onPrev={() => {
+            closeStep3();
+            openStep2();
+          }}
+          drinkData={drinkData} 
+          wineInfo={selectedWine}
+        />
+      )}
     </>
   );
 };
