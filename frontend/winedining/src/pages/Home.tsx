@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "../store/store";
+import { fetchUserProfile, logoutUser } from "../store/slices/authSlice";
+
 import Homebackground from "../assets/images/background/Home.png";
 import mypageIcon from "../assets/icons/mypageicon.png";
 import winelistIcon from "../assets/icons/winelisticon.png";
@@ -7,68 +11,32 @@ import dictionaryIcon from "../assets/icons/dictionaryicon.png";
 import bartender from "../assets/icons/bartender.png";
 import quest from "../assets/icons/questicon.png";
 
-import { vh } from "../utils/vh"; // 이거 calc 함수 대신 사용하면 됩니다.
-import axios from "axios";
-
-interface UserProfile {
-  userId: number;
-  nickname: string;
-  email: string | null;
-  rank: string | null;
-}
+import { vh } from "../utils/vh";
 
 function Home() {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { nickname, preference, isAuthenticated } = useSelector((state: RootState) => state.auth);
   const [isPreferenceModalVisible, setIsPreferenceModalVisible] = useState(false);
 
-  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const response = await axios.get(`/api/v1/user/profile`, {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+    dispatch(fetchUserProfile());
+  }, [dispatch]);
 
-        const data = response.data.data;
-        console.log("성공, 사용자 정보:", data);
-        setUserProfile(data);
-
-        // preference가 false일 경우, 모달 띄우고 자동 이동 타이머 설정
-        if (!data.preference) {
-          setIsPreferenceModalVisible(true);
-          setTimeout(() => {
-            navigate("/recommendtest");
-          }, 7000); // 7초 후 자동 이동
-        }
-      } catch (error) {
-        console.error("실패, 사용자 정보 로딩 오류:", error);
-        setError("사용자 정보를 불러오는 데 실패했습니다.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchUserProfile();
-  }, [BASE_URL, navigate]);
+  useEffect(() => {
+    if (preference === false && nickname) {
+      setIsPreferenceModalVisible(true);
+      const timeout = setTimeout(() => {
+        navigate("/recommendtest");
+      }, 5000);
+      return () => clearTimeout(timeout);
+    }
+  }, [preference, nickname, navigate]);
 
   const handleLogout = async () => {
-    try {
-      // 서버에 로그아웃 요청 보내기
-      const response = await axios.post(`/api/v1/auth/logout`, {}, { withCredentials: true });
-      console.log("로그아웃 응답", response.data);
-
-      navigate("/");
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
+    await dispatch(logoutUser());
+    navigate("/");
   };
 
   return (
@@ -76,11 +44,12 @@ function Home() {
       <h3 style={logoutbutton} onClick={handleLogout}>
         로그아웃
       </h3>
-      {isPreferenceModalVisible && userProfile && (
+
+      {isPreferenceModalVisible && nickname && (
         <div style={modalOverlay}>
           <div style={modalContent}>
             <p style={{ marginBottom: "8px" }}>
-              <strong>{userProfile.nickname}</strong>님, <br />
+              <strong>{nickname}</strong>님, <br />
               아직 취향을 모르겠어요!
             </p>
             <p>간단한 질문만 답해주시면</p>
