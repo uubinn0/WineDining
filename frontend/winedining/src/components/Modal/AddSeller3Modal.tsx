@@ -2,14 +2,17 @@ import React, { useState } from "react";
 import { addNote } from "../../store/slices/noteSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
+import { Wine } from "../../types/wine";
 
 interface AddSeller3ModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onPrev: () => void; // 추가
   drinkData: any;
+  wineInfo: Wine; // 추가
 }
 
-const AddSeller3Modal = ({ isOpen, onClose, drinkData }: AddSeller3ModalProps) => {
+const AddSeller3Modal = ({ isOpen, onClose, onPrev, drinkData, wineInfo }: AddSeller3ModalProps) => {
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -32,7 +35,7 @@ const AddSeller3Modal = ({ isOpen, onClose, drinkData }: AddSeller3ModalProps) =
     setSelectedImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     const bottleId = drinkData.bottleId;
 
     if (!bottleId) {
@@ -50,30 +53,39 @@ const AddSeller3Modal = ({ isOpen, onClose, drinkData }: AddSeller3ModalProps) =
       image: selectedImages,
     };
 
-    dispatch(addNote({ bottleId, note: newNote }));
-    alert("노트 저장 완료!");
-    onClose();
-  };
-
-  // 데이터 확인
-  console.log("3번 데이터 확인:", drinkData);
-
-  if (!isOpen) return null;
+    try {
+      await dispatch(addNote({ bottleId, note: newNote })).unwrap();
+      alert("와인 노트가 저장되었습니다!");
+      onClose();
+    } catch (error) {
+      alert("저장 중 오류가 발생했습니다. 다시 시도해주세요.");
+    }
+};
 
   return (
     <div style={styles.overlay} onClick={onClose}>
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button style={styles.closeButton} onClick={onClose}>
-          ✕
-        </button>
+        <button style={styles.closeButton} onClick={onClose}>✕</button>
 
         <h2 style={styles.title}>와인 수집</h2>
-        <p style={styles.subtitle}>품종이 들어가는 자리 🇫🇷</p>
+        {wineInfo && (
+          <p style={styles.subtitle}>
+            {wineInfo.grape}
+            <img src={`/flags/${wineInfo.country}.png`} alt={wineInfo.country} style={styles.flagIcon} />
+          </p>
+        )}
 
-        {/* 와인 이미지 */}
         <div style={styles.wineContainer}>
-          <img src="/sample_image/wine_bottle.png" alt="와인 이미지" style={styles.wineImage} />
-          <p style={styles.wineName}>LA MARCA WINE</p>
+          {wineInfo && (
+            <>
+              <img 
+                src={wineInfo.image || "/sample_image/wine_bottle.png"} 
+                alt={wineInfo.name} 
+                style={styles.wineImage} 
+              />
+              <p style={styles.wineName}>{wineInfo.name}</p>
+            </>
+          )}
         </div>
 
         {/* 사진 업로드 */}
@@ -100,7 +112,10 @@ const AddSeller3Modal = ({ isOpen, onClose, drinkData }: AddSeller3ModalProps) =
 
         {/* 페이지 이동 */}
         <div style={styles.pagination}>
-          <span>← 3 / 3</span>
+          <span style={styles.pageArrow} onClick={onPrev}>
+            ←
+          </span>
+          <span style={styles.pageText}>3 / 3</span>
           <button style={styles.completeButton} onClick={handleComplete}>
             완료
           </button>
@@ -110,6 +125,7 @@ const AddSeller3Modal = ({ isOpen, onClose, drinkData }: AddSeller3ModalProps) =
   );
 };
 
+// 스타일 추가
 const styles: { [key: string]: React.CSSProperties } = {
   overlay: {
     position: "fixed",

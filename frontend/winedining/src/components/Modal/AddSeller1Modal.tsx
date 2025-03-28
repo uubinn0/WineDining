@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Wine, WineFilter } from "../../types/wine"; // WineFilter 추가
+import { Wine, WineFilter } from "../../types/wine";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import closeButton from "../../assets/icons/closebutton.png";
-import { fetchFilteredWines } from "../../api/wineApi"; // Add this import
+import { fetchFilteredWines } from "../../api/wineApi";
 
 interface AddSeller1ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onNext: (wine: Wine | null) => void;
+  onNext: (wine: Wine) => void;
 }
 
 const AddSeller1Modal = ({ isOpen, onClose, onNext }: AddSeller1ModalProps) => {
@@ -16,12 +16,19 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext }: AddSeller1ModalProps) => {
   const [searchResults, setSearchResults] = useState<Wine[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedWine, setSelectedWine] = useState<Wine | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch<AppDispatch>();
 
   // 와인 검색
   const handleSearch = async () => {
-    if (!searchTerm.trim()) return;
+    if (!searchTerm.trim()) {
+      setError("검색어를 입력해주세요");
+      return;
+    }
+
     setLoading(true);
+    setError(null);
+
     try {
       const filter: WineFilter = {
         keyword: searchTerm,
@@ -42,8 +49,8 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext }: AddSeller1ModalProps) => {
           pairing: [],
         },
         sort: {
-          field: "price" as const, // Fix the type by explicitly setting it as a const
-          order: "desc" as const,
+          field: "price",
+          order: "desc",
         },
         page: 1,
         limit: 20,
@@ -53,9 +60,15 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext }: AddSeller1ModalProps) => {
       const filteredResults = response.wines.filter((wine: Wine) =>
         wine.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
+
+      if (filteredResults.length === 0) {
+        setError("검색 결과가 없습니다");
+      }
+
       setSearchResults(filteredResults);
     } catch (error) {
       console.error("와인 검색 오류:", error);
+      setError("검색 중 오류가 발생했습니다");
     } finally {
       setLoading(false);
     }
@@ -64,35 +77,37 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext }: AddSeller1ModalProps) => {
   // 검색한 와인 선택하기
   const handleSelectWine = (wine: Wine) => {
     setSelectedWine(wine);
+    setError(null);
   };
 
   // 다음 페이지로 이동
   const handleNextStep = () => {
     if (!selectedWine) {
-      alert("와인을 선택해주세요!");
+      setError("와인을 선택해주세요!");
       return;
     }
-    // console.log("선택한 와인:", selectedWine);
     onNext(selectedWine);
   };
 
+  // Enter 키로 검색
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleSearch();
     }
   };
 
+  // 모달 닫힐 때 초기화
   useEffect(() => {
     if (!isOpen) {
       setSearchTerm("");
       setSearchResults([]);
       setSelectedWine(null);
+      setError(null);
     }
   }, [isOpen]);
 
   if (!isOpen) return null;
 
-  // Update the JSX part
   return (
     <div style={styles.overlay} onClick={onClose}>
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -106,41 +121,66 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext }: AddSeller1ModalProps) => {
           <input
             type="text"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setError(null);
+            }}
             onKeyPress={handleKeyPress}
             placeholder="와인 상품명을 입력하세요"
             style={styles.searchInput}
           />
-          <button onClick={handleSearch} style={styles.searchButton} disabled={loading}>
+          <button
+            onClick={handleSearch}
+            style={{
+              ...styles.searchButton,
+              opacity: loading ? 0.5 : 1,
+            }}
+            disabled={loading}
+          >
             🔍
           </button>
         </div>
 
-        {/* 검색 리스트 */}
-        {loading && <p style={styles.loadingText}>검색 중...</p>}
-        {searchResults.length > 0 && (
-          <div style={styles.resultContainer}>
-            {searchResults.map((wine) => (
-              <div
-                key={wine.wineId}
-                style={{
-                  ...styles.wineItem,
-                  backgroundColor: selectedWine?.wineId === wine.wineId ? "#d4a017" : "transparent",
-                }}
-                onClick={() => handleSelectWine(wine)}
-              >
-                <p>{wine.name}</p>
-              </div>
-            ))}
-          </div>
+        {/* 에러 메시지 */}
+        {error && <p style={styles.errorText}>{error}</p>}
+
+        {/* 검색 결과 */}
+        {loading ? (
+          <p style={styles.loadingText}>검색 중...</p>
+        ) : (
+          searchResults.length > 0 && (
+            <div style={styles.resultContainer}>
+              {searchResults.map((wine) => (
+                <div
+                  key={wine.wineId}
+                  style={{
+                    ...styles.wineItem,
+                    backgroundColor: selectedWine?.wineId === wine.wineId ? "#d4a017" : "transparent",
+                  }}
+                  onClick={() => handleSelectWine(wine)}
+                >
+                  <div style={styles.wineItemContent}>
+                    <img
+                      src={wine.image || "/sample_image/default_wine.jpg"}
+                      alt={wine.name}
+                      style={styles.wineItemImage}
+                    />
+                    <div style={styles.wineItemInfo}>
+                      <p style={styles.wineName}>{wine.name}</p>
+                      <p style={styles.wineDetail}>
+                        {wine.country} | {wine.typeName}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )
         )}
 
-        {/* 선택 전 병 이미지 + 안내 문구 */}
-        {!selectedWine && (
+        {/* 선택 전 안내 문구 */}
+        {!selectedWine && !searchResults.length && (
           <>
-            {/* <div style={styles.centerBottleContainer}>
-              <img src="/images/wine1.png" alt="와인병" style={styles.centerBottleImage} />
-            </div> */}
             <p style={styles.bottomText}>내가 마신 와인을 찾아주세요!</p>
             <p style={styles.pagination}> 1 / 3 </p>
           </>
@@ -155,11 +195,11 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext }: AddSeller1ModalProps) => {
               alt={selectedWine.name}
               style={styles.wineImage}
             />
-            <p>{selectedWine.name}</p>
-            <p>
+            <p style={styles.selectedWineName}>{selectedWine.name}</p>
+            <p style={styles.selectedWineDetail}>
               {selectedWine.country} | {selectedWine.typeName}
             </p>
-            <p>포도 품종: {selectedWine.grape}</p>
+            <p style={styles.selectedWineGrape}>포도 품종: {selectedWine.grape}</p>
             <button onClick={handleNextStep} style={styles.nextButton}>
               다음
             </button>
@@ -170,6 +210,7 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext }: AddSeller1ModalProps) => {
   );
 };
 
+// 스타일 업데이트
 const styles: { [key: string]: React.CSSProperties } = {
   overlay: {
     position: "fixed",

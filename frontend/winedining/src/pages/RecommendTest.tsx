@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Dialogue from "../components/Modal/RecommendDialogue";
 import Homebackground from "../assets/images/background/Home.png";
-import { sendPreferenceTest } from "../api/recommendtest";
+import { sendPreferenceTest } from "../api/recommendtestApi";
 import bartender from "../assets/icons/bartender.png";
 import { setTestCompleted, setCurrentStep } from "../store/slices/testSlice"; // 액션 import
 import { vh } from "../utils/vh";
@@ -69,14 +69,26 @@ function RecommendTest() {
   const submitPreferences = async (answers: string[]) => {
     const mapToNumber = (options: string[], answer: string) => options.indexOf(answer) + 1;
     const requestData = {
-      alcohol_degree: mapToNumber(dialogues[1].options, answers[0]),
+      alcoholContent: mapToNumber(dialogues[1].options, answers[0]),
       sweetness: mapToNumber(dialogues[2].options, answers[1]),
-      aftertaste: mapToNumber(dialogues[3].options, answers[2]),
+      tannin: mapToNumber(dialogues[3].options, answers[2]),
       acidity: mapToNumber(dialogues[4].options, answers[3]),
       body: mapToNumber(dialogues[5].options, answers[4]),
-      preferred_types: [answers[6]],
-      remember_preference: answers[7] === "내 취향을 기억해줘!",
+      preferredTypes: dialogues[6].options[0],
+      // remember_preference: answers[7] === "내 취향을 기억해줘!",
     };
+
+      // 콘솔에 각 값 출력
+  console.log("Selected Options:");
+  console.log("Alcohol Content:", requestData.alcoholContent);
+  console.log("Sweetness:", requestData.sweetness);
+  console.log("Tannin:", requestData.tannin);
+  console.log("Acidity:", requestData.acidity);
+  console.log("Body:", requestData.body);
+  console.log("Preferred Types:", requestData.preferredTypes);
+
+
+
     const response = await sendPreferenceTest(requestData);
     if (response.success) {
       dispatch(setTestCompleted(true)); // **테스트 완료 표시**
