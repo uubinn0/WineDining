@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-// import { useDispatch } from "react-redux";
-import axios from "axios";
-const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/store"; // store 경로에 맞게 수정
+import { updateNickname } from "../../store/slices/authSlice";
 
 interface EditModalProps {
   isOpen: boolean;
@@ -11,9 +11,9 @@ interface EditModalProps {
 }
 
 const EditModal = ({ nickname: initialNickname, isOpen, onClose, onNicknameUpdated }: EditModalProps) => {
+  const dispatch = useDispatch<AppDispatch>();
   const [nickname, setNickname] = useState(initialNickname);
   const [error, setError] = useState("");
-  // const dispatch = useDispatch();
 
   useEffect(() => {
     setNickname(initialNickname);
@@ -28,28 +28,17 @@ const EditModal = ({ nickname: initialNickname, isOpen, onClose, onNicknameUpdat
     }
 
     try {
-      const response = await axios.patch(
-        `/api/v1/user/profile`,
-        { nickname },
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      console.log("닉네임 수정 성공:", response.data);
+      await dispatch(updateNickname(nickname)).unwrap();
       alert(`닉네임이 '${nickname}'(으)로 변경되었습니다!`);
 
       if (onNicknameUpdated) {
-        onNicknameUpdated(nickname); // 부모에게 업데이트 알림
+        onNicknameUpdated(nickname); // 부모에 전달
       }
 
       setError("");
       onClose();
     } catch (error) {
-      console.error("닉네임 수정 실패:", error);
+      console.error("닉네임 변경 실패:", error);
       setError("닉네임 변경에 실패했습니다. 다시 시도해주세요.");
     }
   };

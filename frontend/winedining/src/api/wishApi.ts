@@ -15,8 +15,21 @@ export const fetchWishlist = async (): Promise<WishListResponse> => {
 
 // 위시리스트 추가
 export const addWishlist = async (wineId: number): Promise<WishItem> => {
-  const response = await api.post(`/api/v1/collection/wish/${wineId}`);
-  return response.data.data;
+  try {
+    console.log("📦 담기 요청 보내는 중: wineId =", wineId);
+    const response = await api.post(
+      `/api/v1/collection/wish/${wineId}`,
+      {},
+      {
+        withCredentials: true, // 반드시 추가!
+      }
+    );
+    console.log("담기 성공:", response.data);
+    return response.data.data;
+  } catch (error: any) {
+    console.error("담기 실패", error.response?.data || error.message);
+    throw error;
+  }
 };
 
 // 위시리스트 제거
