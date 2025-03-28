@@ -49,6 +49,7 @@ public class SecurityConfig {
                         configuration.setAllowedOrigins(Arrays.asList(
                                 frontendUrl,
                                 "http://localhost:3000",
+                                "https://localhost:3000",
                                 "https://j12b202.p.ssafy.io"
                         ));
                         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
