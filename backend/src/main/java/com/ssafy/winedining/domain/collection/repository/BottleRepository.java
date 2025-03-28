@@ -10,4 +10,5 @@ import java.util.List;
 public interface BottleRepository extends JpaRepository<Bottle, Long> {
     List<Bottle> findByUserId(Long userId);
     List<Bottle> findByUserIdAndBestIsTrue(Long userId);
+    List<Bottle> findByUserIdOrderByCreateAtDesc(Long userId);
 }
