@@ -52,7 +52,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         // 쿠키 만료 시간도 동일하게 설정 (초 단위로 변환 필요)
         response.addCookie(createCookie("Authorization", token));
-        response.sendRedirect(frontendUrl);
+        response.sendRedirect("/home");
     }
 
     private Cookie createCookie(String key, String value) {
