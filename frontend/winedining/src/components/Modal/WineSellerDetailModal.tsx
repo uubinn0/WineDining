@@ -62,7 +62,7 @@ const WineSellerDetailModal = ({ isOpen, onClose, wine }: WineSellerDetailModalP
       nose: "",
       content: "",
       rating: 0,
-      image: []
+      image: [],
     });
   };
 
