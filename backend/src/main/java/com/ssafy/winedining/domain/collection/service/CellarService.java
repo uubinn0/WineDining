@@ -125,6 +125,7 @@ public class CellarService {
     }
 
     /**
+     * 
      * 사용자의 모든 병(와인 + 커스텀 와인) 조회
      */
     @Transactional(readOnly = true)
@@ -133,8 +134,8 @@ public class CellarService {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 사용자입니다."));
 
-        // 사용자의 모든 병 조회
-        List<Bottle> bottles = bottleRepository.findByUserId(userId);
+        // 사용자의 모든 병 조회 - 생성일 기준 내림차순 정렬
+        List<Bottle> bottles = bottleRepository.findByUserIdOrderByCreateAtDesc(userId);
 
         // 병 정보를 BottleDTO 리스트로 변환
         List<BottleDTO> bottleDTOs = bottles.stream().map(bottle -> {
@@ -171,7 +172,7 @@ public class CellarService {
                                         .name(customWine.getName())
                                         .type(customWine.getWineType().getTypeName())
                                         .country(customWine.getCountry())
-                                        .grape(customWine.getGrape()) // 포도 정보가 있다면 포함
+                                        .grape(customWine.getGrape())
                                         .image(null) // 커스텀 와인은 image null로 설정
                                         .build()
                         )
