@@ -13,7 +13,17 @@ const MBTITest = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
-  const [scores, setScores] = useState({ E: 0, I: 0, S: 0, N: 0, F: 0, T: 0, P: 0, J: 0 });
+  // const [scores, setScores] = useState({ E: 0, I: 0, S: 0, N: 0, F: 0, T: 0, P: 0, J: 0 });
+  const [scores, setScores] = useState<{ E: number; I: number; S: number; N: number; F: number; T: number; P: number; J: number }>({
+    E: 0,
+    I: 0,
+    S: 0,
+    N: 0,
+    F: 0,
+    T: 0,
+    P: 0,
+    J: 0,
+  });
 
   useEffect(() => {
     // 진행률 계산
@@ -21,28 +31,46 @@ const MBTITest = () => {
   }, [currentQuestionIndex]);
 
 
-  const handleOptionSelect = (option: string) => {
-    setSelectedOption(option);
+  // const handleOptionSelect = (option: string) => {
+  //   setSelectedOption(option);
+
+    const handleOptionSelect = (option: { option: string; personality: string }) => {
+      setSelectedOption(option.option);
+  
+      // 성격 유형 점수 증가 함수
+      const updateScores = (personality: keyof typeof scores) => {
+        const newScores = { ...scores };
+        // 선택된 personality 키에 해당하는 점수를 증가
+        if (newScores[personality] !== undefined) {
+          newScores[personality] += 1;
+        }
+              console.log(newScores)
+
+        setScores(newScores);
+      };
+  
+      // 선택된 옵션의 personality 값을 받아서 점수 업데이트
+      updateScores(option.personality as keyof typeof scores);
 
 
     // 성격 유형 점수 증가
-    const updateScores = (selectedOption: string) => {
-      const newScores = { ...scores };
+    // const updateScores = (personality: string) => {
+    //   const newScores = { ...scores };
+    //   console.log(selectedOption)
+    //   // 각 옵션에 대한 성격 유형 점수를 증가시키는 로직 (예시)
+    //   if (selectedOption === "E") newScores.E += 1;
+    //   if (selectedOption === "I") newScores.I += 1;
+    //   if (selectedOption === "S") newScores.S += 1;
+    //   if (selectedOption === "N") newScores.N += 1;
+    //   if (selectedOption === "F") newScores.F += 1;
+    //   if (selectedOption === "T") newScores.T += 1;
+    //   if (selectedOption === "P") newScores.P += 1;
+    //   if (selectedOption === "J") newScores.J += 1;
+    //   console.log(newScores)
+    //   setScores(newScores);
+    // };
 
-      // 각 옵션에 대한 성격 유형 점수를 증가시키는 로직 (예시)
-      if (selectedOption === "E") newScores.E += 1;
-      if (selectedOption === "I") newScores.I += 1;
-      if (selectedOption === "S") newScores.S += 1;
-      if (selectedOption === "N") newScores.N += 1;
-      if (selectedOption === "F") newScores.F += 1;
-      if (selectedOption === "T") newScores.T += 1;
-      if (selectedOption === "P") newScores.P += 1;
-      if (selectedOption === "J") newScores.J += 1;
-
-      setScores(newScores);
-    };
-
-    updateScores(option);
+    // updateScores(option);
 
 
     setTimeout(() => {
@@ -74,7 +102,7 @@ const MBTITest = () => {
             <button
               key={index}
               style={styles.optionButton}
-              onClick={() => handleOptionSelect(option.option)} // 옵션 텍스트 선택
+              onClick={() => handleOptionSelect(option)} // 옵션 텍스트 선택
             >
               {option.option}
             </button>

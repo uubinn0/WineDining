@@ -25,7 +25,7 @@ function MyPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  // const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -48,7 +48,7 @@ function MyPage() {
     };
 
     fetchUserProfile();
-  }, [BASE_URL]);
+  }, []);
 
   return (
     <div style={styles.container}>

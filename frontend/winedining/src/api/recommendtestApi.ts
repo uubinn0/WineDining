@@ -1,13 +1,12 @@
 import axios from "axios";
 
 export interface PreferenceRequest {
-  alcohol_degree: number;
+  alcoholContent: number;
   sweetness: number;
-  aftertaste: number;
   acidity: number;
+  tannin: number;
   body: number;
-  preferred_types: string[];
-  remember_preference: boolean;
+  preferredTypes: string;
 }
 
 interface ApiResponse {
@@ -21,12 +20,13 @@ export const sendPreferenceTest = async (
 ): Promise<ApiResponse> => {
   try {
     const response = await axios.post<ApiResponse>(
-      "/api/v1/recommend/test",
+      "/api/v1/preference/test",
       data,
       {
         headers: {
           "Content-Type": "application/json",
         },
+        withCredentials : true,
       }
     );
 
