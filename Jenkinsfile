@@ -9,7 +9,7 @@ pipeline {
         APP_NAME = 'react-container'
         DOCKER_IMAGE = 'react-container:latest'
         // FastAPI 관련 환경 변수
-        PYTHON_VERSION = 'python3.10'  // 사용할 Python 버전
+        // PYTHON_VERSION = 'python3.10'  // 사용할 Python 버전
         FASTAPI_APP_NAME = 'recommendation-api'
         FASTAPI_DOCKER_IMAGE = 'recommendation-api:latest'
         FASTAPI_PORT = '8000'  // FastAPI가 사용할 포트
@@ -164,11 +164,6 @@ pipeline {
         stage('Recommendation API Build & Deploy') {
             when {
                 expression { BRANCH_NAME == 'origin/recommendation' }
-            }
-            tools {
-                // Jenkins에 설정된 Python 도구를 사용합니다. 
-                // 없는 경우 Jenkins 글로벌 도구 설정에서 추가해야 합니다.
-                python "${PYTHON_VERSION}"
             }
             steps {
                 dir('fastapi') {  // FastAPI 코드가 있는 디렉토리로 변경하세요
