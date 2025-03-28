@@ -23,7 +23,7 @@ public class RecommendController {
     /**
      * @return
      */
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<ApiResponse<List<WineResponseDTO>>> getRecommendation(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User
     ) {
