@@ -10,4 +10,5 @@ import java.util.List;
 public interface WineNoteRepository extends JpaRepository<WineNote, Long> {
     List<WineNote> findByBottleId(Long bottleId);
     void deleteByBottleId(Long bottleId);
+    long countByBottleId(Long bottleId);
 }
