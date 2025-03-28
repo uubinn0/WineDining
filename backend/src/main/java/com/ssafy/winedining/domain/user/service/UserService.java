@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -67,7 +68,7 @@ public class UserService {
             rank = updatedUser.getRank().getName();
         }
 
-        Optional<Preference> preference = preferenceRepository.findFirstByUserIdOrderByUpdatedAtDesc(userId);
+        List<Preference> preferences = preferenceRepository.findAllByUserId(userId);
 
         // 응답 생성
         return UserResponseDTO.builder()
@@ -75,7 +76,7 @@ public class UserService {
                 .nickname(updatedUser.getName())
                 .email(updatedUser.getEmail())
                 .rank(rank)
-                .preference(preference.isPresent())
+                .preference(!preferences.isEmpty())
                 .build();
     }
 }
