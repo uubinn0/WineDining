@@ -67,7 +67,7 @@ public class UserService {
             rank = updatedUser.getRank().getName();
         }
 
-        Optional<Preference> preference = preferenceRepository.findByUserId(userId);
+        Optional<Preference> preference = preferenceRepository.findFirstByUserIdOrderByUpdatedAtDesc(userId);
 
         // 응답 생성
         return UserResponseDTO.builder()
