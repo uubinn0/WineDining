@@ -171,7 +171,7 @@ pipeline {
                         sh '''
                             echo "===== Build Environment ====="
                             echo "Python Version:"
-                            python --version
+                            python3 --version
                             echo "Pip Version:"
                             pip --version
                             echo "Docker Version:"
@@ -183,7 +183,7 @@ pipeline {
 
                         // 가상환경 설정 및 의존성 설치
                         sh '''
-                            python -m venv venv
+                            python3 -m venv venv
                             . venv/bin/activate
                             pip install --upgrade pip
                             pip install -r requirements.txt
