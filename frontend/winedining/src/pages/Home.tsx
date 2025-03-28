@@ -29,7 +29,7 @@ function Home() {
       setIsPreferenceModalVisible(true);
       const timeout = setTimeout(() => {
         navigate("/recommendtest");
-      }, 7000);
+      }, 5000);
       return () => clearTimeout(timeout);
     }
   }, [preference, nickname, navigate]);
