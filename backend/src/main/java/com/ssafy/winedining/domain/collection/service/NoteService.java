@@ -220,7 +220,18 @@ public class NoteService {
             throw new IllegalArgumentException("해당 노트에 대한 접근 권한이 없습니다.");
         }
 
+        // 노트가 연결된 bottle 참조 저장
+        Bottle bottle = wineNote.getBottle();
+
         // 노트 삭제
         wineNoteRepository.delete(wineNote);
+
+        // bottle에 연결된 다른 노트가 있는지 확인
+        long remainingNotes = wineNoteRepository.countByBottleId(bottle.getId());
+
+        // 노트가 0개이면 bottle도 삭제
+        if (remainingNotes == 0) {
+            bottleRepository.delete(bottle);
+        }
     }
 }
