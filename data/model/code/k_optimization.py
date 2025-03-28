@@ -9,6 +9,8 @@ from dotenv import load_dotenv
 import os
 from sklearn.preprocessing import LabelEncoder
 from sklearn.impute import SimpleImputer
+from scipy.stats import chi2_contingency
+from sklearn.decomposition import PCA
 
 load_dotenv('../../.env')
 
@@ -27,33 +29,42 @@ df = pd.read_sql_query(query, conn)
 conn.close()
 
 # Select features for clustering
-features = ['acidity', 'sweetness', 'alcohol_content', 'body', 'tannin', 'country', 'grape', 'type_id']  # Adjust these based on your actual columns
+features = ['acidity', 'sweetness', 'alcohol_content', 'body', 'tannin', 'country', 'type_id']
 X = df[features]
 
-# Drop rows where 'alcohol_content' is NaN
-X = X.dropna(subset=['alcohol_content'])
+# 결측값 -1로 처리
+X['alcohol_content'] = X['alcohol_content'].fillna(-1)
 
-# 레이블 인코딩
-label_encoder = LabelEncoder()
-X['country_encoded'] = label_encoder.fit_transform(X['country'])
-X['grape_encoded'] = label_encoder.fit_transform(X['grape'])
+# 알콜값 결측 여부 컬럼 추가
+# X['is_alcohol_data'] = (X['alcohol_content'] != -1).astype(int)
 
-# Drop original 'country' and 'grape' columns
-X.drop('country', axis=1, inplace=True)
-X.drop('grape', axis=1, inplace=True)
+# 원-핫 인코딩
+# X = pd.get_dummies(X, columns=['country', 'type_id', 'is_alcohol_data'], prefix=['country','type_id', 'is_alcohol_data'])
+X = pd.get_dummies(X, columns=['country', 'type_id'], prefix=['country','type_id'])
 
-# Handle missing values in other columns if necessary (now alcohol_content is cleaned)
-imputer = SimpleImputer(strategy='mean')  # Use the mean to impute missing values
-X_imputed = imputer.fit_transform(X)
+print(X)
+
+# 가중치 설정
+weights = np.ones(X.shape[1])  # 기본 가중치 1로 초기화
+
+# 특정 컬럼에 대한 가중치 설정
+for i, col in enumerate(X.columns):
+    if 'alcohol_content' in col:
+        weights[i] = 0.3  # alcohol 관련 특성의 가중치 낮춤
+    elif 'is_alcohol_data' in col:
+        weights[i] = 0.3  # alcohol 관련 특성의 가중치 낮춤 
+
+# 가중치 적용
+X_weighted = X * weights
 
 # Standardize features
 scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X_imputed)
+X_scaled = scaler.fit_transform(X_weighted)
 
 # Calculate silhouette scores for different numbers of clusters
 silhouette_scores = []
 inertias = []
-K = range(2, 12)
+K = range(2, 100)
 
 for k in K:
     kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
@@ -71,7 +82,7 @@ plt.figure(figsize=(15, 5))
 
 # Silhouette scores
 plt.subplot(1, 2, 1)
-plt.plot(K, silhouette_scores, 'bo-')
+plt.plot(K, silhouette_scores, 'ro-')
 plt.xlabel('Number of Clusters (k)')
 plt.ylabel('Silhouette Score')
 plt.title('Silhouette Score vs Number of Clusters')
@@ -79,7 +90,7 @@ plt.grid(True)
 
 # Elbow curve
 plt.subplot(1, 2, 2)
-plt.plot(K, inertias, 'ro-')
+plt.plot(K, inertias, 'bo-')
 plt.xlabel('Number of Clusters (k)')
 plt.ylabel('Inertia')
 plt.title('Elbow Method for Optimal k')
@@ -93,28 +104,29 @@ optimal_k_silhouette = K[np.argmax(silhouette_scores)]
 print(f"Optimal number of clusters (Silhouette Method): {optimal_k_silhouette}")
 print(f"Best silhouette score: {max(silhouette_scores):.3f}")
 
-# Calculate elbow point using the maximum curvature
-def find_elbow_point(x, y):
-    # Normalize the data
-    x = np.array(x)
-    y = np.array(y)
-    x_norm = (x - min(x)) / (max(x) - min(x))
-    y_norm = (y - min(y)) / (max(y) - min(y))
+def find_elbow_point(K, inertias):
+    # 1차 차분 계산
+    diffs = np.diff(inertias)
     
-    # Calculate the angles
-    angles = []
-    for i in range(1, len(x_norm)-1):
-        point = np.array([x_norm[i], y_norm[i]])
-        point1 = np.array([x_norm[i-1], y_norm[i-1]])
-        point2 = np.array([x_norm[i+1], y_norm[i+1]])
-        
-        vec1 = point1 - point
-        vec2 = point2 - point
-        
-        angle = np.arccos(np.dot(vec1, vec2) / (np.linalg.norm(vec1) * np.linalg.norm(vec2)))
-        angles.append(angle)
+    # 2차 차분 계산
+    diffs2 = np.diff(diffs)
     
-    return K[1:-1][np.argmax(angles)]
+    # 2차 차분이 가장 큰 지점이 엘보우 포인트
+    elbow_index = np.argmax(np.abs(diffs2)) + 1
+    
+    return K[elbow_index]
 
-optimal_k_elbow = find_elbow_point(K, inertias)
+# 엘보우 포인트 찾기
+optimal_k_elbow = find_elbow_point(list(K), inertias)
 print(f"Optimal number of clusters (Elbow Method): {optimal_k_elbow}")
+
+# 결과 시각화를 위한 추가 코드
+plt.figure(figsize=(10, 6))
+plt.plot(K, inertias, 'bo-')
+plt.plot(optimal_k_elbow, inertias[list(K).index(optimal_k_elbow)], 'ro', markersize=12, label='Elbow Point')
+plt.xlabel('Number of Clusters (k)')
+plt.ylabel('Inertia')
+plt.title('Elbow Method for Optimal k')
+plt.legend()
+plt.grid(True)
+plt.show()
