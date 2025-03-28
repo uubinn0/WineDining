@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder
+import numpy as np
 
 load_dotenv('../../.env')
 
@@ -24,33 +25,40 @@ query = "SELECT * FROM wines"
 df = pd.read_sql_query(query, conn)
 conn.close()
 
-# Drop rows where 'alcohol_content' is NaN
-df.dropna(subset=['alcohol_content'], inplace=True)
-# print(df.info())
-
 # Prepare features and scale them
 df = df.iloc[10:, :]
 # print(idx.info())
 # idx = df['id']
-features = ['acidity', 'sweetness', 'alcohol_content', 'body', 'tannin', 'country', 'grape', 'type_id']  # Adjust these based on your actual columns
+features = ['acidity', 'sweetness', 'alcohol_content', 'body', 'tannin', 'country', 'type_id']  # Adjust these based on your actual columns
 X = df[features]
 # print(X.info())
 
+# 결측값 -1로 처리
+X['alcohol_content'] = X['alcohol_content'].fillna(-1)
 
-# 레이블 인코딩
-label_encoder = LabelEncoder()
-X['country_encoded'] = label_encoder.fit_transform(X['country'])
-X['grape_encoded'] = label_encoder.fit_transform(X['grape'])
+# one-hot 인코딩
+X = pd.get_dummies(X, columns=['country', 'type_id'], prefix=['country','type_id'])
 
-# Drop original 'country' and 'grape' columns
-X.drop('country', axis=1, inplace=True)
-X.drop('grape', axis=1, inplace=True)
+
+
+# 가중치 설정
+weights = np.ones(X.shape[1])  # 기본 가중치 1로 초기화
+
+# 특정 컬럼에 대한 가중치 설정
+for i, col in enumerate(X.columns):
+    if 'alcohol_content' in col:
+        weights[i] = 0.3  # alcohol 관련 특성의 가중치 낮춤
+    elif 'is_alcohol_data' in col:
+        weights[i] = 0.3  # alcohol 관련 특성의 가중치 낮춤 
+
+# 가중치 적용
+X_weighted = X * weights
 
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
 # Create and train K-means model
-n_clusters = 7  # 군집 수 설정
+n_clusters = 21  # 군집 수 설정
 kmeans = KMeans(n_clusters=n_clusters, random_state=42)
 clusters = kmeans.fit_predict(X_scaled)
 # print(type(idx))
@@ -60,7 +68,7 @@ clusters = kmeans.fit_predict(X_scaled)
 # print(len(idx))
 # print(len(clusters))
 
-'''
+
 # cluster visualization
 # Reduce dimensions to 2D for visualization
 pca = PCA(n_components=2)
@@ -84,12 +92,13 @@ plt.show()
 plt.savefig('wine_clusters.png')
 plt.close()
 
-Print explained variance ratio
+# Print explained variance ratio
 print(f"Explained variance ratio: {pca.explained_variance_ratio_}")
-'''
+
 
 # Add cluster labels to original dataframe
 df['wine_group_id'] = clusters
+print(df.head())
 print(df.info())
 
 
