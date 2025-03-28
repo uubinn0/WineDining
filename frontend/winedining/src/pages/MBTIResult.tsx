@@ -84,7 +84,6 @@ function MBTIResults() {
 
   return (
     <div style={styles.container}>
-      <div>결과 페이지</div>
       <div style={styles.overlay}>
       <div style={styles.modal}>
         <img src={winemenu} alt="와인 메뉴판" style={styles.menuImage} />
@@ -114,7 +113,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     backgroundImage: `url(${Homebackground})`,
     backgroundSize: "contain",
-    width: "100%",
+    width: "100vw",
     height: "calc(100 * var(--custom-vh))",
     position: "relative",
   },  
@@ -122,9 +121,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     position: "fixed",
     top: 0,
     left: 0,
-    width: "100vw",
+    // width: "100vw",
     height: "100vh",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    // backgroundColor: "black",
+    backgroundColor: "rgba(39, 31, 31, 0.5)",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -132,24 +132,25 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   modal: {
     position: "relative",
-    width: "320px",
-    height: "550px",
+    width: "100%",
+    height: "100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
   },
   menuImage: {
     position: "absolute",
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
+    // width: "100%",
+    top : vh(10),
+    height: vh(80),
+    objectFit: "contain",
     zIndex: -1,
   },
   title: {
-    marginTop: "40px",
+    marginTop: vh(20),
     fontSize: "18px",
     fontWeight: "bold",
-    color: "#fff",
+    color: "black",
   },
   wineList: {
     listStyle: "none",
@@ -161,9 +162,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     alignItems: "center",
     marginBottom: "20px",
-    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    // backgroundColor: "rgba(255, 255, 255, 0.8)",
     padding: "10px",
     borderRadius: "10px",
+    width : vh(40),
   },
   wineImage: {
     width: "50px",

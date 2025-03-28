@@ -44,33 +44,13 @@ const MBTITest = () => {
         if (newScores[personality] !== undefined) {
           newScores[personality] += 1;
         }
-              console.log(newScores)
+        console.log(newScores)
 
         setScores(newScores);
       };
   
       // 선택된 옵션의 personality 값을 받아서 점수 업데이트
       updateScores(option.personality as keyof typeof scores);
-
-
-    // 성격 유형 점수 증가
-    // const updateScores = (personality: string) => {
-    //   const newScores = { ...scores };
-    //   console.log(selectedOption)
-    //   // 각 옵션에 대한 성격 유형 점수를 증가시키는 로직 (예시)
-    //   if (selectedOption === "E") newScores.E += 1;
-    //   if (selectedOption === "I") newScores.I += 1;
-    //   if (selectedOption === "S") newScores.S += 1;
-    //   if (selectedOption === "N") newScores.N += 1;
-    //   if (selectedOption === "F") newScores.F += 1;
-    //   if (selectedOption === "T") newScores.T += 1;
-    //   if (selectedOption === "P") newScores.P += 1;
-    //   if (selectedOption === "J") newScores.J += 1;
-    //   console.log(newScores)
-    //   setScores(newScores);
-    // };
-
-    // updateScores(option);
 
 
     setTimeout(() => {
@@ -80,7 +60,7 @@ const MBTITest = () => {
         // 마지막 질문에 도달하면 결과 페이지로 이동
         navigate("/MBTIresults", { state: scores });
       }
-    }, 500); // 선택 후 약간의 딜레이 후 다음 질문으로 이동
+    }, 100); // 선택 후 약간의 딜레이 후 다음 질문으로 이동
   };
 
   const currentQuestion = questions[currentQuestionIndex];
