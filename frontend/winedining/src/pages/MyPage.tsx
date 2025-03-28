@@ -1,54 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import EditModal from "../components/Modal/EditModal";
-import axios from "axios";
 import BackButton from "../components/BackButton";
 import PixelButton from "../components/PixelButton";
 import MySellerAddFlow from "../components/MySellerAddFlow";
-import { Wine } from "../types/wine";
 import pencilIcon from "../assets/icons/raphael_pensil.png";
-
-interface UserProfile {
-  userId: number;
-  nickname: string;
-  email: string | null;
-  rank: string | null;
-}
+import { fetchUserProfile } from "../store/slices/authSlice";
+import { RootState, AppDispatch } from "../store/store";
 
 function MyPage() {
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // const BASE_URL = process.env.REACT_APP_API_BASE_URL;
-
+  const { user, status } = useSelector((state: RootState) => state.auth);
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const response = await axios.get(`/api/v1/user/profile`, {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        console.log("성공, 사용자 정보:", response.data.data);
-        setUserProfile(response.data.data);
-      } catch (error) {
-        console.error("실패, 사용자 정보 로딩 오류:", error);
-        setError("사용자 정보를 불러오는 데 실패했습니다.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchUserProfile();
-  }, []);
+    if (status === "idle") {
+      dispatch(fetchUserProfile());
+    }
+  }, [dispatch, status]);
 
   return (
     <div style={styles.container}>
@@ -56,27 +27,27 @@ function MyPage() {
         <BackButton onClick={() => navigate("/home")} />
       </div>
       <h1 style={styles.title}>MY PAGE</h1>
+
       <img src={"/sample_image/myimg.png"} alt={"myimg"} style={styles.image} />
+
       <div style={styles.userInfo}>
-        {isLoading || !userProfile ? (
-          <div style={styles.placeholder}></div>
+        {status === "loading" || !user ? (
+          <div style={styles.placeholder}>로딩 중...</div>
         ) : (
-          <>
-            <div style={styles.nicknameColumn}>
-              <p style={styles.rank}>
-                {/* <span style={styles.crown}>👑</span> */}
-                <span style={styles.rankText}>{userProfile.rank}</span>
-                {/* <span style={styles.crown}>👑</span> */}
-              </p>
-              <div style={styles.nicknameRow}>
-                <span style={styles.nickname}>{userProfile.nickname}</span>
-                <button onClick={() => setIsEditModalOpen(true)} style={styles.editIconButton}>
-                  <img src={pencilIcon} alt="수정" style={styles.editIcon} />
-                </button>
-              </div>
+          <div style={styles.nicknameColumn}>
+            <p style={styles.rank}>
+              <span style={styles.rankText}>{user.rank}</span>
+            </p>
+            <div style={styles.nicknameRow}>
+              <span style={styles.nickname}>{user.nickname}</span>
+              <button onClick={() => setIsEditModalOpen(true)} style={styles.editIconButton}>
+                <img src={pencilIcon} alt="수정" style={styles.editIcon} />
+              </button>
             </div>
-          </>
+          </div>
         )}
+
+        <EditModal nickname={user?.nickname || ""} isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} />
       </div>
 
       <div style={styles.buttonGroup}>
@@ -85,14 +56,6 @@ function MyPage() {
         <PixelButton onClick={() => navigate("/recommendtest")}>WINE TEST</PixelButton>
       </div>
 
-      <EditModal
-        nickname={userProfile?.nickname || ""}
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        onNicknameUpdated={(newNickname) =>
-          setUserProfile((prev) => (prev ? { ...prev, nickname: newNickname } : prev))
-        }
-      />
       <div style={styles.floatingAddButton}>
         <MySellerAddFlow />
       </div>

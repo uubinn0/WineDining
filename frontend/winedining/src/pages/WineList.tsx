@@ -6,8 +6,9 @@ import { RootState, AppDispatch } from "../store/store";
 import WineInfoCard from "../components/WineInfoCard";
 import WineDetailModal from "../components/Modal/WineDetailModal";
 import { Wine, WineFilter } from "../types/wine";
-import { fetchWineDetailThunk } from "../store/slices/wineSlice";
 import { WineDetail } from "../types/wine";
+import { fetchWineDetailThunk } from "../store/slices/wineSlice";
+import { fetchWishes } from "../store/slices/wishSlice";
 
 const WineList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -44,7 +45,7 @@ const WineList = () => {
         page: 3,
         limit: 20,
       };
-
+      dispatch(fetchWishes()); // 위시리스트 불러오기
       dispatch(fetchWines(defaultFilter));
     }
   }, [dispatch, status]);

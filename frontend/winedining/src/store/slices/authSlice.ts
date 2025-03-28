@@ -1,122 +1,106 @@
+// store/slices/authSlice.ts
+
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
+export interface UserProfile {
+  userId: number;
+  nickname: string;
+  email: string | null;
+  rank: string | null;
+  preference: boolean;
+}
+
 interface AuthState {
-  username: string | null;
-  accessToken: string | null;
+  user: UserProfile | null;
   isAuthenticated: boolean;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
 
 const initialState: AuthState = {
-  username: null,
-  accessToken: null,
-  isAuthenticated: false,
+  user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null,
+  isAuthenticated: !!localStorage.getItem("user"),
   status: "idle",
   error: null,
 };
 
-// 카카오 로그인 (사용자 인증 후 카카오 로그인 페이지로 이동)
-export const kakaoLogin = createAsyncThunk(
-  "auth/kakaoLogin",
-  async ({ clientId, redirectUri }: { clientId: string; redirectUri: string }, { rejectWithValue }) => {
+//  사용자 정보 가져오기
+export const fetchUserProfile = createAsyncThunk<UserProfile, void, { rejectValue: string }>(
+  "auth/fetchUserProfile",
+  async (_, { rejectWithValue }) => {
     try {
-      const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
-      window.location.href = kakaoAuthUrl;
+      const response = await axios.get("/api/v1/user/profile", {
+        withCredentials: true,
+      });
+      return response.data.data;
     } catch (error) {
-      return rejectWithValue("카카오 로그인 실패");
+      return rejectWithValue("유저 정보 불러오기 실패");
     }
   }
 );
 
-// 구글 로그인
-export const googleLogin = createAsyncThunk(
-  "auth/googleLogin",
-  async (
-    { clientId, redirectUri, state }: { clientId: string; redirectUri: string; state: string },
-    { rejectWithValue }
-  ) => {
-    try {
-      const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=email profile&state=${state}`;
-      window.location.href = googleAuthUrl;
-    } catch (error) {
-      return rejectWithValue("구글 로그인 실패");
-    }
-  }
-);
-
-// 소셜 로그인 후 서버에서 토큰 받아오기
-export const socialLogin = createAsyncThunk(
-  "auth/socialLogin",
-  async ({ provider, code }: { provider: string; code: string }, { rejectWithValue }) => {
-    try {
-      const response = await axios.post(`/api/auth/${provider}`, { code });
-      localStorage.setItem("accessToken", response.data.accessToken);
-      localStorage.setItem("username", response.data.username);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue("소셜 로그인 실패");
-    }
-  }
-);
-
-// 닉네임 변경 API
-export const updateNickname = createAsyncThunk("auth/updateNickname", async (nickname: string, { rejectWithValue }) => {
+//  닉네임 수정하기
+export const updateNickname = createAsyncThunk<
+  string, // 새 닉네임 반환
+  string, // 새 닉네임 전달
+  { rejectValue: string }
+>("auth/updateNickname", async (nickname, { rejectWithValue }) => {
   try {
-    const response = await axios.put("/api/user/nickname", { nickname });
-    return response.data; // 서버 응답 전체 반환 ({ success, data, error })
+    const response = await axios.patch("/api/v1/user/profile", { nickname }, { withCredentials: true });
+    return response.data.data.nickname;
   } catch (error) {
     return rejectWithValue("닉네임 변경 실패");
   }
 });
 
-// 회원 탈퇴 API
-export const deleteAccount = createAsyncThunk("auth/deleteAccount", async (_, { rejectWithValue }) => {
-  try {
-    await axios.delete("/api/user/me");
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("username");
-  } catch (error) {
-    return rejectWithValue("회원 탈퇴 실패");
-  }
+//  로그아웃
+export const logoutUser = createAsyncThunk("auth/logout", async () => {
+  await axios.post("/api/v1/auth/logout", {}, { withCredentials: true });
+  localStorage.removeItem("user");
 });
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logout: (state) => {
-      state.accessToken = null;
+    clearAuth: (state) => {
+      state.user = null;
       state.isAuthenticated = false;
-      state.username = null;
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("username");
+      localStorage.removeItem("user");
     },
   },
   extraReducers: (builder) => {
     builder
-      // 소셜 로그인
-      .addCase(socialLogin.fulfilled, (state, action: PayloadAction<{ accessToken: string; username: string }>) => {
-        state.accessToken = action.payload.accessToken;
-        state.username = action.payload.username;
+      .addCase(fetchUserProfile.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchUserProfile.fulfilled, (state, action: PayloadAction<UserProfile>) => {
+        state.user = action.payload;
         state.isAuthenticated = true;
+        state.status = "succeeded";
+        localStorage.setItem("user", JSON.stringify(action.payload));
       })
-      // 닉네임 변경
-      .addCase(updateNickname.fulfilled, (state, action: PayloadAction<{ username: string }>) => {
-        state.username = action.payload.username;
-        localStorage.setItem("username", action.payload.username);
+      .addCase(fetchUserProfile.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload ?? "유저 정보 불러오기 실패";
       })
-      // 회원 탈퇴
-      .addCase(deleteAccount.fulfilled, (state) => {
-        state.accessToken = null;
+
+      .addCase(updateNickname.fulfilled, (state, action: PayloadAction<string>) => {
+        if (state.user) {
+          state.user.nickname = action.payload;
+          localStorage.setItem("user", JSON.stringify(state.user));
+        }
+      })
+
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.user = null;
         state.isAuthenticated = false;
-        state.username = null;
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("username");
+        state.status = "idle";
+        localStorage.removeItem("user");
       });
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { clearAuth } = authSlice.actions;
 export default authSlice.reducer;
