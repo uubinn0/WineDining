@@ -3,6 +3,8 @@ import { addNote } from "../../store/slices/noteSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { Wine } from "../../types/wine";
+import { registerWineCellar } from "../../api/sellerApi";
+import { createWineNote } from "../../api/noteApi";
 
 interface AddSeller3ModalProps {
   isOpen: boolean;
@@ -36,28 +38,36 @@ const AddSeller3Modal = ({ isOpen, onClose, onPrev, drinkData, wineInfo }: AddSe
   };
 
   const handleComplete = async () => {
-    const bottleId = drinkData.bottleId;
+    const wineId = wineInfo.wineId;  // wineInfo에서 wineId 가져오기
 
-    if (!bottleId) {
-      alert("bottle_id가 없습니다. 저장할 수 없습니다.");
+    if (!wineId) {
+      alert("와인 정보를 찾을 수 없습니다. 다시 시도해주세요.");
       return;
     }
 
-    const newNote = {
-      who: drinkData.companion,
-      when: drinkData.drinkDate,
-      pairing: drinkData.food ? drinkData.food.split(",") : [],
-      nose: drinkData.taste,
-      content: drinkData.note,
-      rating: drinkData.rating,
-      image: selectedImages,
-    };
-
     try {
-      await dispatch(addNote({ bottleId, note: newNote })).unwrap();
+      console.log("셀러에 와인 등록 중...", wineId);
+      // 1. 셀러에 와인 등록
+      const cellarResponse = await registerWineCellar(wineId);
+      const bottleId = cellarResponse.bottleId;
+
+      console.log("노트 생성 중...", bottleId);
+      // 2. 노트 생성
+      const noteData = {
+        who: drinkData.companion,
+        when: drinkData.drinkDate,
+        pairing: drinkData.food ? drinkData.food.split(",") : [],
+        nose: drinkData.taste,
+        content: drinkData.note,
+        rating: drinkData.rating,
+        image: selectedImages,
+      };
+
+      await createWineNote(bottleId, noteData);
       alert("와인 노트가 저장되었습니다!");
       onClose();
     } catch (error) {
+      console.error("저장 중 오류:", error);
       alert("저장 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
 };

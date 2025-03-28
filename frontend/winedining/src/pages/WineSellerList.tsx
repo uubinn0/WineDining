@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
 import { useNavigate } from "react-router-dom";
-import { fetchCellar, fetchBest } from "../store/slices/sellarSlice";
+import { fetchCellar, fetchBest, registerBest, deleteBest } from "../store/slices/sellarSlice"; // Add these imports
 import WineSellerCard from "../components/WineSellerCard";
 import WineSellerDetailModal from "../components/Modal/WineSellerDetailModal";
 import { Bottle } from "../types/seller";
@@ -31,6 +31,27 @@ const WineSellerList = () => {
   };
 
   const isBest = (bottleId: number) => bestBottles.some((b: Bottle) => b.bottleId === bottleId);
+
+  const handleBestClick = async (bottleId: number) => {
+    try {
+      if (isBest(bottleId)) {
+        // If already best, remove from best
+        await dispatch(deleteBest(bottleId)).unwrap();
+      } else {
+        // If not best, add to best
+        if (bestBottles.length >= 3) {
+          alert("베스트 와인은 최대 3개까지만 등록할 수 있습니다!");
+          return;
+        }
+        await dispatch(registerBest(bottleId)).unwrap();
+      }
+      // Refresh the lists
+      dispatch(fetchBest());
+      dispatch(fetchCellar());
+    } catch (error) {
+      alert("베스트 와인 설정 중 오류가 발생했습니다.");
+    }
+  };
 
   return (
     <div style={styles.container}>
@@ -61,7 +82,7 @@ const WineSellerList = () => {
             key={bottle.bottleId}
             wine={bottle}
             isBest={isBest(bottle.bottleId)}
-            onBestClick={() => {}} // 나중에 기능 추가 가능
+            onBestClick={handleBestClick}
             onDetailClick={() => handleDetailClick(bottle)}
           />
         ))}
