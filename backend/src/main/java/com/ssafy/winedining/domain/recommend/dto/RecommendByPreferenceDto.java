@@ -16,8 +16,6 @@ public class RecommendByPreferenceDto {
     private boolean white;
     private boolean sparkling;
     private boolean rose;
-    private boolean fortified;
-    private boolean etc;
 
     public RecommendByPreferenceDto(Preference preference){
         this.userId = preference.getUserId();
@@ -30,8 +28,6 @@ public class RecommendByPreferenceDto {
         this.white = preference.getWhite();
         this.sparkling = preference.getSparkling();
         this.rose = preference.getRose();
-        this.fortified = preference.getFortified();
-        this.etc = preference.getEtc();
     }
 
 }
