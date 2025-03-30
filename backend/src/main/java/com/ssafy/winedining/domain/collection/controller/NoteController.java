@@ -8,9 +8,13 @@ import com.ssafy.winedining.global.auth.dto.CustomOAuth2User;
 import com.ssafy.winedining.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/collection/note")
@@ -63,6 +67,29 @@ public class NoteController {
     }
 
     /**
+     * 노트 기록 저장 API (멀티파트 요청 방식 - 이미지 파일 직접 업로드)
+     */
+    @PostMapping(value = "/{bottleId}/with-images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<NoteResponseDTO>> createNoteWithImages(
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @PathVariable Long bottleId,
+            @RequestPart("note") NoteRequestDTO requestDTO,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images) {
+
+        Long userId = customOAuth2User.getUserId();
+        NoteResponseDTO responseDTO = noteService.createNoteWithImages(userId, bottleId, requestDTO, images);
+
+        ApiResponse<NoteResponseDTO> response = ApiResponse.<NoteResponseDTO>builder()
+                .status(HttpStatus.OK.value())
+                .success(true)
+                .message("와인 노트 저장 성공")
+                .data(responseDTO)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
      * 노트 기록 수정 API
      */
     @PutMapping("/{noteId}")
@@ -73,6 +100,26 @@ public class NoteController {
 
         Long userId = customOAuth2User.getUserId();
         NoteResponseDTO responseDTO = noteService.updateNote(userId, noteId, requestDTO);
+
+        ApiResponse<NoteResponseDTO> response = ApiResponse.<NoteResponseDTO>builder()
+                .status(HttpStatus.OK.value())
+                .success(true)
+                .message("와인 노트 수정 성공")
+                .data(responseDTO)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping(value = "/{noteId}/with-images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<NoteResponseDTO>> updateNoteWithImages(
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @PathVariable Long noteId,
+            @RequestPart("note") NoteRequestDTO requestDTO,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images) {
+
+        Long userId = customOAuth2User.getUserId();
+        NoteResponseDTO responseDTO = noteService.updateNoteWithImages(userId, noteId, requestDTO, images);
 
         ApiResponse<NoteResponseDTO> response = ApiResponse.<NoteResponseDTO>builder()
                 .status(HttpStatus.OK.value())
