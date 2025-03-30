@@ -1,5 +1,6 @@
 package com.ssafy.winedining.global.config;
 
+import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
@@ -23,6 +24,10 @@ public class S3Config {
     @Bean
     public AmazonS3 amazonS3Client() {
         BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
+
+        ClientConfiguration clientConfig = new ClientConfiguration();
+        clientConfig.setConnectionTimeout(30000); // 30초
+        clientConfig.setSocketTimeout(30000);     // 30초
 
         return AmazonS3ClientBuilder
                 .standard()
