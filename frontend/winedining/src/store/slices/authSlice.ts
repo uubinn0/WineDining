@@ -2,6 +2,7 @@
 
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+const hasAuthCookie = document.cookie.includes("Authorization=");
 
 export interface UserProfile {
   userId: number;
@@ -19,8 +20,8 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null,
-  isAuthenticated: !!localStorage.getItem("user"),
+  user: null,
+  isAuthenticated: false,
   status: "idle",
   error: null,
 };
@@ -77,22 +78,20 @@ const authSlice = createSlice({
       })
       .addCase(fetchUserProfile.fulfilled, (state, action: PayloadAction<UserProfile>) => {
         state.user = action.payload;
-        state.isAuthenticated = true;
+        state.isAuthenticated = true; // 실제 로그인 성공일 때만 true
         state.status = "succeeded";
-        localStorage.setItem("user", JSON.stringify(action.payload));
       })
       .addCase(fetchUserProfile.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload ?? "유저 정보 불러오기 실패";
+        state.isAuthenticated = false; // 인증 실패로 false로 명시
       })
-
       .addCase(updateNickname.fulfilled, (state, action: PayloadAction<string>) => {
         if (state.user) {
           state.user.nickname = action.payload;
           localStorage.setItem("user", JSON.stringify(state.user));
         }
       })
-
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
         state.isAuthenticated = false;

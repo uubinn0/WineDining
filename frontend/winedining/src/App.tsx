@@ -1,8 +1,12 @@
 import React, { useEffect } from "react";
 import AppRouter from "./routes/AppRouter";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "./store/store";
 import GlobalLayout from "./components/Layout/GlobalLayout";
+import { fetchUserProfile } from "./store/slices/authSlice";
 
 function App() {
+  const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     const setCustomVh = () => {
       const vh = window.innerHeight * 0.01;
@@ -11,10 +15,16 @@ function App() {
 
     setCustomVh();
     window.addEventListener("resize", setCustomVh);
+
+    // 쿠키 있을 때만 사용자 정보 요청
+    if (document.cookie.includes("Authorization=")) {
+      dispatch(fetchUserProfile());
+    }
+
     return () => {
       window.removeEventListener("resize", setCustomVh);
     };
-  }, []);
+  }, [dispatch]);
 
   return (
     <div>
