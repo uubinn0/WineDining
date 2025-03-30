@@ -27,17 +27,17 @@ body,
   display: flex;
   justify-content: center;
   align-items: center;
+  /* 전체는 스크롤 없음 */
   overflow: hidden;
 }
 
-/* 비율 유지하는 반응형 래퍼 - 개선된 버전 */
+/* 비율 유지하는 반응형 래퍼 */
 .app-wrapper {
   width: min(calc(var(--design-width) / var(--design-height) * 100vh), 100vw);
-  /* height: min(calc(var(--design-height) / var(--design-width) * 100vw), 100vh); */
   height: calc(100 * var(--custom-vh));
   max-width: 430px;
   max-height: 100vh;
-  overflow: hidden;
+  overflow: hidden; /* 내부 리스트가 스크롤하도록 함 */
   position: relative;
 }
 

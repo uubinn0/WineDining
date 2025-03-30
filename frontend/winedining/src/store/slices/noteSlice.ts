@@ -87,9 +87,13 @@ const noteSlice = createSlice({
         state.status = "loading";
       })
       .addCase(fetchNotes.fulfilled, (state, action) => {
+        console.log("노트 패치됨!", action.payload); // 노트 확인용
         state.status = "succeeded";
         state.bottle = action.payload.bottle;
-        state.notes = action.payload.notes;
+        state.notes = action.payload.notes.map((note) => ({
+          ...note,
+          bottleId: action.payload.bottle.bottleId,
+        }));
       })
       .addCase(fetchNotes.rejected, (state, action) => {
         state.status = "failed";

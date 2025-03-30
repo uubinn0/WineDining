@@ -35,10 +35,8 @@ const WineSellerList = () => {
   const handleBestClick = async (bottleId: number) => {
     try {
       if (isBest(bottleId)) {
-        // If already best, remove from best
         await dispatch(deleteBest(bottleId)).unwrap();
       } else {
-        // If not best, add to best
         if (bestBottles.length >= 3) {
           alert("베스트 와인은 최대 3개까지만 등록할 수 있습니다!");
           return;
@@ -63,7 +61,8 @@ const WineSellerList = () => {
           bestBottles.map((bottle: Bottle) => (
             <img
               key={bottle.bottleId}
-              src={bottle.wine.image !== "no_image" ? bottle.wine.image : "/sample_image/wine_sample.jpg"}
+              // src={bottle.wine.image !== "no_image" ? bottle.wine.image : "/sample_image/wine_sample.jpg"}
+              src="/sample_image/wine_sample.jpg"
               alt={bottle.wine.name}
               style={styles.carouselImage}
             />
@@ -89,7 +88,7 @@ const WineSellerList = () => {
       </div>
 
       {selectedBottle && isDetailOpen && (
-        <WineSellerDetailModal wine={selectedBottle.wine} isOpen={isDetailOpen} onClose={closeDetailModal} />
+        <WineSellerDetailModal bottle={selectedBottle} isOpen={isDetailOpen} onClose={closeDetailModal} />
       )}
     </div>
   );
@@ -124,6 +123,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     flexDirection: "column",
     gap: "12px",
+    overflowY: "auto",
+    maxHeight: "calc(100vh - 230px)",
+    paddingRight: "4px",
   },
   emptyText: {
     color: "#aaa",

@@ -1,24 +1,26 @@
 import React, { useState } from "react";
-import { addNote } from "../../store/slices/noteSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { Wine } from "../../types/wine";
+import { addNote } from "../../store/slices/noteSlice";
 import { registerWineCellar } from "../../api/sellerApi";
 import { createWineNote } from "../../api/noteApi";
 
 interface AddSeller3ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onPrev: () => void; // 추가
+  onPrev: () => void;
   drinkData: any;
-  wineInfo: Wine; // 추가
+  wineInfo: Wine;
+  mode: "new" | "add";
+  bottleId?: number;
 }
 
-const AddSeller3Modal = ({ isOpen, onClose, onPrev, drinkData, wineInfo }: AddSeller3ModalProps) => {
+const AddSeller3Modal = ({ isOpen, onClose, onPrev, drinkData, wineInfo, mode, bottleId }: AddSeller3ModalProps) => {
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const dispatch = useDispatch<AppDispatch>();
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
 
-  // 이미지 업로드
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
     const files = Array.from(event.target.files);
@@ -28,31 +30,34 @@ const AddSeller3Modal = ({ isOpen, onClose, onPrev, drinkData, wineInfo }: AddSe
       return;
     }
 
+    setImageFiles((prev) => [...prev, ...files]);
     const newImages = files.map((file) => URL.createObjectURL(file));
     setSelectedImages((prev) => [...prev, ...newImages]);
   };
 
-  // 이미지 삭제
+  // 이미지 제거
   const removeImage = (index: number) => {
     setSelectedImages((prev) => prev.filter((_, i) => i !== index));
   };
 
+  // 와인 등록
   const handleComplete = async () => {
-    const wineId = wineInfo.wineId;  // wineInfo에서 wineId 가져오기
+    const wineId = wineInfo.wineId;
 
     if (!wineId) {
       alert("와인 정보를 찾을 수 없습니다. 다시 시도해주세요.");
       return;
     }
-
     try {
-      console.log("셀러에 와인 등록 중...", wineId);
-      // 1. 셀러에 와인 등록
-      const cellarResponse = await registerWineCellar(wineId);
-      const bottleId = cellarResponse.bottleId;
-
-      console.log("노트 생성 중...", bottleId);
-      // 2. 노트 생성
+      let finalBottleId = bottleId;
+      if (mode === "new") {
+        const cellarResponse = await registerWineCellar(wineId);
+        finalBottleId = cellarResponse.bottleId;
+      }
+      if (!finalBottleId) {
+        alert("Bottle ID가 존재하지 않습니다.");
+        return;
+      }
       const noteData = {
         who: drinkData.companion,
         when: drinkData.drinkDate,
@@ -60,22 +65,40 @@ const AddSeller3Modal = ({ isOpen, onClose, onPrev, drinkData, wineInfo }: AddSe
         nose: drinkData.taste,
         content: drinkData.note,
         rating: drinkData.rating,
-        image: selectedImages,
+        image: [],
       };
 
-      await createWineNote(bottleId, noteData);
+      // 이미지 FormData
+      const formData = new FormData();
+      formData.append("note", new Blob([JSON.stringify(noteData)], { type: "application/json" }));
+
+      imageFiles.forEach((file) => {
+        formData.append("images", file);
+      });
+
+      // 실제 API 호출
+      await fetch(`/api/v1/collection/note/${finalBottleId}/with-images`, {
+        method: "POST",
+        body: formData,
+        credentials: "include", // JSESSIONID 인증 쿠키 필요 시
+      });
+
       alert("와인 노트가 저장되었습니다!");
       onClose();
     } catch (error) {
       console.error("저장 중 오류:", error);
       alert("저장 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
-};
+  };
+
+  if (!isOpen) return null;
 
   return (
     <div style={styles.overlay} onClick={onClose}>
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button style={styles.closeButton} onClick={onClose}>✕</button>
+        <button style={styles.closeButton} onClick={onClose}>
+          ✕
+        </button>
 
         <h2 style={styles.title}>와인 수집</h2>
         {wineInfo && (
@@ -86,19 +109,10 @@ const AddSeller3Modal = ({ isOpen, onClose, onPrev, drinkData, wineInfo }: AddSe
         )}
 
         <div style={styles.wineContainer}>
-          {wineInfo && (
-            <>
-              <img 
-                src={wineInfo.image || "/sample_image/wine_bottle.png"} 
-                alt={wineInfo.name} 
-                style={styles.wineImage} 
-              />
-              <p style={styles.wineName}>{wineInfo.name}</p>
-            </>
-          )}
+          <img src={wineInfo.image || "/sample_image/wine_bottle.png"} alt={wineInfo.name} style={styles.wineImage} />
+          <p style={styles.wineName}>{wineInfo.name}</p>
         </div>
 
-        {/* 사진 업로드 */}
         <p style={styles.sectionTitle}>오늘을 함께 기억할 사진</p>
         <div style={styles.imageUploadContainer}>
           {Array.from({ length: 3 }).map((_, index) => (
@@ -120,7 +134,6 @@ const AddSeller3Modal = ({ isOpen, onClose, onPrev, drinkData, wineInfo }: AddSe
           ))}
         </div>
 
-        {/* 페이지 이동 */}
         <div style={styles.pagination}>
           <span style={styles.pageArrow} onClick={onPrev}>
             ←

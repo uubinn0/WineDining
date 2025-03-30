@@ -42,8 +42,9 @@ export interface Bottle {
   bottleId: number;
   createdAt: string;
   wine: Wine;
-  custom: boolean;
-  best: boolean;
+  isCustom: boolean;
+  isBest: boolean;
+  totalNote: number;
 }
 
 // best 와인 타입
