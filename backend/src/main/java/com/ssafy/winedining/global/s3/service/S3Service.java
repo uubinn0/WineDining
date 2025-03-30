@@ -37,8 +37,8 @@ public class S3Service {
         metadata.setContentLength(multipartFile.getSize());
 
         // S3에 업로드
-        amazonS3.putObject(new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata)
-                .withCannedAcl(CannedAccessControlList.PublicRead));
+        // 수정된 코드 (ACL 설정 제거)
+        amazonS3.putObject(new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata));
 
         // 업로드된 파일의 URL 반환
         return amazonS3.getUrl(bucket, fileName).toString();
