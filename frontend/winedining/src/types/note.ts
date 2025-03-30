@@ -1,12 +1,3 @@
-// export interface Wine {
-//   wineId: number;
-//   image: string;
-//   name: string;
-//   type: string;
-//   country: string;
-//   grape: string;
-// }
-
 import { Wine } from "./wine";
 
 // 셀러에 등록된 와인 정보
@@ -22,6 +13,7 @@ export interface Bottle {
 // 노트 정보
 export interface WineNote {
   noteId: number;
+  bottleId: number;
   who: string;
   when: string;
   pairing: string[];
