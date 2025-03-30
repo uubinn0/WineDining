@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -26,14 +27,15 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("사용자를 찾을 수 없습니다."));
 
-        Optional<Preference> preference = preferenceRepository.findByUserId(userId);
+        List<Preference> preferences = preferenceRepository.findByUserId(userId);
+        boolean hasPreference = !preferences.isEmpty();
 
         return UserResponseDTO.builder()
                 .userId(user.getId())
                 .nickname(user.getName())  // name을 nickname으로 사용
                 .email(user.getEmail())
                 .rank(user.getRank() != null ? user.getRank().getName() : "초보자")
-                .preference(preference.isPresent())
+                .preference(hasPreference)
                 .build();
     }
 
@@ -67,7 +69,8 @@ public class UserService {
             rank = updatedUser.getRank().getName();
         }
 
-        Optional<Preference> preference = preferenceRepository.findFirstByUserIdOrderByUpdatedAtDesc(userId);
+        List<Preference> preferences = preferenceRepository.findByUserId(userId);
+        boolean hasPreference = !preferences.isEmpty();
 
         // 응답 생성
         return UserResponseDTO.builder()
@@ -75,7 +78,7 @@ public class UserService {
                 .nickname(updatedUser.getName())
                 .email(updatedUser.getEmail())
                 .rank(rank)
-                .preference(preference.isPresent())
+                .preference(hasPreference)
                 .build();
     }
 }
