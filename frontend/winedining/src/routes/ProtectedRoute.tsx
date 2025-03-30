@@ -7,7 +7,7 @@ interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
-const publicPaths = ["/", "/MBTITest", "/MBTIresults", "/home"];
+const publicPaths = ["/", "/MBTITest", "/MBTIresults"];
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
