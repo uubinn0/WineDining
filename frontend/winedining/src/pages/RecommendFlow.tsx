@@ -7,15 +7,27 @@ import bartender from "../assets/icons/bartender.png"
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentStep, resetTestState } from "../store/slices/testSlice"
 import { vh } from "../utils/vh";
+import { AppDispatch, RootState } from "../store/store"; // store 경로에 맞게 수정
+import { fetchUserProfile } from "../store/slices/authSlice";
+
 
 
 const RecommendFlow: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const testState = useSelector((state: any) => state.test); // Redux에서 상태 가져오기
+  const dispatch = useDispatch<AppDispatch>();
+
+  const { user, status } = useSelector((state: RootState) => state.auth);
+  const username = user?.nickname ?? "고객님";
   
-  const username = "오리통통"; // 실제 사용자 이름이 들어가도록 변경
-  
+  useEffect(() => {
+    if (status === "idle") {
+      dispatch(fetchUserProfile());
+    }
+  }, [dispatch, status]);
+
+
   const [currentStep, setCurrentStepState] = React.useState(testState.currentStep);
 
   const [userFoodInput, setUserFoodInput] = useState("");
