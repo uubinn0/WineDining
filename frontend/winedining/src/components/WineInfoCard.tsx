@@ -18,7 +18,6 @@ const WineInfoCard = ({ wine, onClick }: WineInfoCardProps) => {
 
   const handleWishToggle = () => {
     if (!wine.wineId) return;
-
     if (isInWishList) {
       dispatch(removeWish(wine.wineId));
     } else {
@@ -26,40 +25,42 @@ const WineInfoCard = ({ wine, onClick }: WineInfoCardProps) => {
     }
   };
 
-  // 이미지 처리 (여기 수정 필요함!!!!!!!!!!)
+  // 이미지 처리
   const wineImage = wine.image && wine.image !== "no_image" ? wine.image : "/sample_image/wine_sample.jpg";
 
   return (
     <div style={styles.card}>
       {/* 와인 이미지 */}
-      <div style={styles.imageContainer}>
+      <div style={styles.imageBox}>
         <img src={wineImage} alt={wine.name} style={styles.image} />
-        {/* 좋아요 버튼 */}
-        <button onClick={handleWishToggle} style={styles.heartButton}>
-          {isInWishList ? "❤️" : "🤍"}
-        </button>
       </div>
+
+      {/* 좋아요 버튼 (하트) */}
+      <button onClick={handleWishToggle} style={styles.heartButton}>
+        {isInWishList ? "❤️" : "🤍"}
+      </button>
 
       {/* 와인 정보 */}
       <div style={styles.info}>
-        <p style={styles.name}>{wine.name}</p>
-        <p style={styles.country}>
+        <div style={styles.name}>{wine.name.toUpperCase()}</div>
+        <div style={styles.grape}>
           {wine.country} / {wine.grape}
-        </p>
+        </div>
       </div>
 
       {/* 버튼 영역 */}
-      <div style={styles.buttonWrapper}>
+      <div style={styles.buttons}>
         <button
           style={{
-            ...styles.addButton,
-            backgroundColor: isInWishList ? "#9262d5" : "#5a1a5e",
+            ...styles.button,
+            backgroundColor: isInWishList ? "#5A0000" : "#FFFFFF",
+            color: isInWishList ? "#FFFFFF" : "#000000",
           }}
           onClick={handleWishToggle}
         >
           {isInWishList ? "담김" : "담기"}
         </button>
-        <button style={styles.detailButton} onClick={() => onClick(wine)}>
+        <button style={styles.button} onClick={() => onClick(wine)}>
           자세히
         </button>
       </div>
@@ -69,74 +70,77 @@ const WineInfoCard = ({ wine, onClick }: WineInfoCardProps) => {
 
 const styles: { [key: string]: React.CSSProperties } = {
   card: {
+    backgroundColor: "#27052E",
+    border: "2px solid #D6BA91",
+    borderRadius: "12px",
     display: "flex",
     alignItems: "center",
-    backgroundColor: "#2a0e35",
-    borderRadius: "8px",
-    padding: "10px",
-    width: "320px",
-    color: "white",
-    border: "2px solid #5a1a5e",
+    justifyContent: "space-between",
+    padding: "10px 15px",
     position: "relative",
+    marginBottom: "15px",
   },
-  imageContainer: {
-    position: "relative",
-    marginRight: "10px",
+  imageBox: {
+    width: "60px",
+    height: "60px",
+    marginRight: "15px",
+    borderRadius: "4px",
+    backgroundColor: "#381837",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   image: {
-    width: "50px",
-    height: "80px",
-    objectFit: "cover",
-    borderRadius: "4px",
-    backgroundColor: "#fff",
+    width: "80%",
+    height: "auto",
+    objectFit: "contain",
   },
   heartButton: {
     position: "absolute",
-    bottom: "-5px",
-    left: "50%",
-    transform: "translateX(-50%)",
+    top: "8px",
+    right: "8px",
     background: "none",
     border: "none",
     fontSize: "14px",
     cursor: "pointer",
   },
   info: {
-    flexGrow: 1,
-    textAlign: "left",
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
   },
   name: {
-    fontSize: "14px",
+    color: "#FFD447",
     fontWeight: "bold",
+    fontSize: "14px",
+    marginBottom: "3px",
+    textTransform: "uppercase",
+
+    // 한 줄 넘어가면 '...' 처리
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
-    maxWidth: "130px",
+    maxWidth: "120px", // 원하는 너비
   },
-  country: {
+  grape: {
+    color: "#FFFFFF",
     fontSize: "12px",
-    color: "#f4e4ff",
   },
-  buttonWrapper: {
+  buttons: {
     display: "flex",
     flexDirection: "column",
     gap: "5px",
+    alignItems: "flex-end",
   },
-  addButton: {
-    backgroundColor: "#5a1a5e",
-    color: "white",
+  button: {
+    backgroundColor: "#FFFFFF",
+    minWidth: "50px",
+    color: "#000000",
+    fontSize: "10px",
     border: "none",
-    padding: "5px 10px",
-    fontSize: "12px",
-    borderRadius: "4px",
-    cursor: "pointer",
-  },
-  detailButton: {
-    backgroundColor: "#fff",
-    color: "#2a0e35",
-    border: "none",
-    padding: "5px 10px",
-    fontSize: "12px",
-    borderRadius: "4px",
+    padding: "4px 8px",
+    borderRadius: "6px",
     cursor: "pointer",
   },
 };
