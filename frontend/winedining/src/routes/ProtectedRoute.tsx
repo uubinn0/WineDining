@@ -10,7 +10,8 @@ interface ProtectedRouteProps {
 const publicPaths = ["/", "/MBTITest", "/MBTIresults"];
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated, status } = useSelector((state: RootState) => state.auth);
+  const isLoading = status === "loading";
   const location = useLocation();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
@@ -28,7 +29,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     }
   }, [isAuthenticated, isPublic, navigate]);
 
-  if (!isAuthenticated && !isPublic) {
+  if (!isLoading && !isAuthenticated && !isPublic) {
     return (
       <>
         {showModal && (
@@ -42,6 +43,9 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     );
   }
 
+  if (isLoading) {
+    return null; // 또는 로딩 스피너 보여줘도 됨
+  }
   return <>{children}</>;
 };
 
