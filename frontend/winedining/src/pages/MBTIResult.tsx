@@ -93,7 +93,7 @@ function MBTIResults() {
                   <div style={styles.engName}>{matchedWine.eng_name}</div>
                   
                   <div style={styles.content}>
-                    <p>{matchedWine.content}</p>
+                    <div>{matchedWine.content}</div>
                   </div>
 
             <div style={styles.matchingContainer} >
@@ -149,8 +149,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     width: "100vw",
     maxWidth: "430px", // 디자인 한계 지정 (선택)
     maxHeight: "100vh",
-    margin: "0 auto",
     height: "calc(100 * var(--custom-vh))",
+    margin: "0 auto",
     position: "relative",
   },  
   overlay: {
@@ -263,6 +263,9 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   matchingName : {
     fontFamily : "Galmuri7"
+  },
+  content : {
+    padding : vh(2),
   },
 //   closeButton : {
 //     position: "absolute",

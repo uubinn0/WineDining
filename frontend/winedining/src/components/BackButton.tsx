@@ -19,7 +19,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundColor: "transparent",
     border: "none",
     cursor: "pointer",
-    padding: "20px",
+    // padding: "20px",
     flexShrink: 0,
   },
 };
