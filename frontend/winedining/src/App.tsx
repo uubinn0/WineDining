@@ -16,10 +16,8 @@ function App() {
     setCustomVh();
     window.addEventListener("resize", setCustomVh);
 
-    // 쿠키 있을 때만 사용자 정보 요청
-    if (document.cookie.includes("Authorization=")) {
-      dispatch(fetchUserProfile());
-    }
+    // 항상 사용자 정보 요청
+    dispatch(fetchUserProfile());
 
     return () => {
       window.removeEventListener("resize", setCustomVh);
