@@ -39,20 +39,5 @@ public class RecommendController {
 
         return ResponseEntity.ok(response);
 
-//        // RecommendService에서 Mono<String>을 받아 리턴
-//        return recommendService.recommendByPreference(userId)
-//                // 결과가 준비되면 HTTP 200 응답으로 감싸줍니다.
-//                .map(ResponseEntity::ok)
-//                // 결과가 없으면 404를 반환합니다.
-//                .defaultIfEmpty(ResponseEntity.notFound().build());
     }
-
-
-
-
-
-
-
-
-
 }
