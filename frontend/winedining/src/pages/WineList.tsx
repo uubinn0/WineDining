@@ -131,11 +131,16 @@ const WineList = () => {
       <WineFilterBar filter={filter} onChange={handleFilterChange} />
 
       {/* 와인 카드 리스트 + 무한 스크롤 */}
-      {wines.map((wine, index) => (
-        <div ref={index === wines.length - 1 ? lastWineRef : null} key={wine.wineId}>
-          <WineInfoCard wine={wine} onClick={handleWineClick} />
-        </div>
-      ))}
+      <div style={styles.wineListContainer}>
+        {wines.map((wine, index) => (
+          <div 
+            ref={index === wines.length - 1 ? lastWineRef : null} 
+            key={`${wine.wineId}-${index}`}  // 복합 key를 사용하여 유니크함 보장
+          >
+            <WineInfoCard wine={wine} onClick={handleWineClick} />
+          </div>
+        ))}
+      </div>
 
       {/* 상세 모달 */}
       {selectedWine && <WineDetailModal isOpen={isModalOpen} onClose={handleCloseModal} wine={selectedWine} />}
@@ -151,4 +156,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     top: "16px",
     left: "16px",
   },
+  wineListContainer: {
+    maxHeight: "60vh",
+    overflowY: "auto",
+    paddingRight: "8px",
+    marginTop: "20px",  // 필터바와의 간격을 위해 추가
+  }
 };
