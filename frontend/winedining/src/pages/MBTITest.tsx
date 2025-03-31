@@ -68,30 +68,34 @@ const MBTITest = () => {
   return (
     <div style={styles.container}>
       <BackButton  onClick={() => navigate("/")}/>
+        <div style={styles.mainContent}>
+        {/* <div> */}
         <div style={styles.speechBubbleContainer}>
-          당신은 어떤 와인인가요?
+          <img src={speechbubble} style={styles.speechbubble} alt="" />
+          <div style={styles.speechtext}>
+            당신은 어떤 와인인가요?
+          </div>
         </div>
         <div style={styles.chatItself}>
-      <div style={styles.chatContainer}>
-        <div style={styles.questionContainer}>
-          <p style={styles.questionText}>Q. {currentQuestion.question}</p>
-        </div>
+          <div style={styles.chatContainer}>
+            <div style={styles.questionContainer}>
+              <div style={styles.questionText}>Q. {currentQuestion.question}</div>
+            </div>
 
-        <div style={styles.optionsContainer}>
-          {currentQuestion.options.map((option, index) => (
-            <button
-              key={index}
-              style={styles.optionButton}
-              onClick={() => handleOptionSelect(option)} // 옵션 텍스트 선택
-            >
-              {option.option}
-            </button>
-          ))}
-        </div>
-      </div>
+            <div style={styles.optionsContainer}>
+              {currentQuestion.options.map((option, index) => (
+                <button
+                  key={index}
+                  style={styles.optionButton}
+                  onClick={() => handleOptionSelect(option)} // 옵션 텍스트 선택
+                >
+                  {option.option}
+                </button>
+              ))}
+            </div>
+          </div>
 
         </div>
-
       <div style={styles.progressContainer}>
         <div style={styles.progressBar}>
           <div
@@ -101,103 +105,113 @@ const MBTITest = () => {
             }}
           ></div>
         </div>
-        <p style={styles.progressText}>{currentQuestionIndex + 1} / {questions.length}</p>
+        <div style={styles.progressText}>{currentQuestionIndex + 1} / {questions.length}</div>
       </div>
+        </div>
+
     </div>
   );
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
+    color: "white",
     backgroundImage: `url(${MBTIBackground})`,
     backgroundSize: "contain",
-    backgroundRepeat : "no-repeat",
     width: "100vw",
-    height: "100vh",
-    color: "white",
-    position : "relative",
-    padding : vh(1.5)
-
+    maxWidth: "430px", // 디자인 한계 지정 (선택)
+    maxHeight: "100vh",
+    height: "calc(100 * var(--custom-vh))",
+    margin: "0 auto",
+    position: "relative",
+    // display : "flex",
+    // justifyContent : "center"
   },
   chatItself : {
     position : "absolute",
-    bottom : vh(13),
-    // width : "100vw",
+    bottom : vh(8),
+    width: "100vw",
+    maxWidth: "430px", // 디자인 한계 지정 (선택)
+    // maxHeight: "100vh",
+    // height: "calc(100 * var(--custom-vh))",
     display : "flex",
     justifyContent : "center",
   },
   chatContainer: {
     backgroundColor: "#21101B",
-    // borderRadius: "8px",
     border : "solid 5px #D6BA91",
-    padding: "20px",
+    padding: vh(3),
     borderRadius: "10px",
-    width: vh(37.5),
+    margin : vh(2)
   },
   questionContainer: {
-    // marginBottom: "20px",
+    marginBottom: "20px",
   },
   questionText: {
-    fontSize: "18px",
+    fontSize: vh(2.3),
     lineHeight: "1.5",
-    // wordWrap : "break-word",
+    // wordBreak : "keep-all"
   },
   optionsContainer: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "10px",  // 옵션 간 간격을 줌
   },
   optionButton: {
     backgroundColor: "transparent",
     color: "white",
     padding: vh(1),
     fontFamily : "Galmuri9",
-    fontSize: "16px",
+    fontSize: vh(2.2),
     border: "none",
     borderRadius: "8px",
     cursor: "pointer",
-    // wordWrap : "break-word",
+    // wordBreak : "keep-all",
+    textAlign : "start"
   },
   progressContainer: {
     position: "absolute",
-    bottom: vh(3.5),
-    left: vh(2),
-    // right: vh(4),
-    width: vh(41),
+    bottom: vh(3),
+    width: "80%",
     textAlign: "right",
   },
   progressBar: {
-    // width: vh(35),
     height: vh(1.3),
-    // backgroundColor: "#ddd",
     borderRadius: "5px",
     overflow: "hidden",
   },
   progressFill: {
-    height: "100%",
+    height: vh(1.3),
     backgroundColor: "#C9C0CA",
     transition: "width 0.5s ease",
+    bottom: vh(3.5),
+
   },
   progressText: {
-    // position : "absolute",
-
-    // marginTop: "5px",
     fontSize: vh(1.5),
+    
     
   },
   speechBubbleContainer: {
-    backgroundImage: `url(${speechbubble})`,
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
+    position: "relative",        // ✅ 기준만 설정
+    top: vh(3),
+    width: "80%",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height :vh(25),
-    width : vh(45),
-    color : "black",
-    fontFamily : "Galmuri7",
-    fontSize : vh(2.3)
   },
+  speechtext : {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)", // ✅ 정확한 중앙 배치
+    textAlign: "center",
+    color: "black",
+    fontSize: vh(2.3),
+    fontFamily: "Galmuri7",
+    width: "80%",
+  },
+  mainContent : {
+    display : "flex",
+    justifyContent : "center"
+  }
 };
 
 export default MBTITest;
