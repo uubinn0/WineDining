@@ -6,8 +6,11 @@ import {
   fetchBestWineCellar,
   cancelBestWineCellar,
   registerBestWineCellar,
+  registerCustomWineCellar,
 } from "../../api/sellerApi";
-import { Bottle } from "../../types/seller";
+import { Bottle, CustomWine } from "../../types/seller";
+import { CustomWineRegistrationRequest } from "../../types/seller";
+import { Wine } from "../../types/wine";
 
 // 셀러 상태관리
 interface CellarState {
@@ -112,6 +115,27 @@ export const deleteBest = createAsyncThunk<string, number, { rejectValue: string
   }
 );
 
+// 커스텀 와인 등록
+export const registerCustomWine = createAsyncThunk<Bottle, CustomWineRegistrationRequest, { rejectValue: string }>(
+  "cellar/registerCustomWine",
+  async (customWine, { rejectWithValue }) => {
+    try {
+      const response = await registerCustomWineCellar(customWine);
+      const bottle: Bottle = {
+        bottleId: response.data.bottleId,
+        createdAt: response.data.createdAt,
+        wine: response.data.wine,
+        isCustom: true,
+        isBest: false,
+        totalNote: 0,
+      };
+      return bottle;
+    } catch (error) {
+      return rejectWithValue("커스텀 와인 등록 실패");
+    }
+  }
+);
+
 const cellarSlice = createSlice({
   name: "cellar",
   initialState,
@@ -167,7 +191,23 @@ const cellarSlice = createSlice({
       .addCase(registerBest.fulfilled, (state, action) => {})
 
       // 베스트 셀러 해제
-      .addCase(deleteBest.fulfilled, (state, action) => {});
+      .addCase(deleteBest.fulfilled, (state, action) => {})
+
+      // 커스텀 와인 등록
+      .addCase(registerCustomWine.fulfilled, (state, action: PayloadAction<Bottle>) => {
+        const alreadyExists = state.bottles.some((bottle) => bottle.wine.name === action.payload.wine.name);
+        if (!alreadyExists) {
+          state.bottles.push(action.payload);
+          state.totalCount++;
+        }
+      })
+      .addCase(registerCustomWine.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(registerCustomWine.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload ?? "커스텀 와인 등록 실패";
+      });
   },
 });
 

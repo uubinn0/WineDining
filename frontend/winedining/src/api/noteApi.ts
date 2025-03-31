@@ -8,8 +8,6 @@ const api = axios.create({
   },
 });
 
-// console.log("최종 API 주소:", baseURL);
-
 // 노트 조회
 export const fetchWineNotes = async (bottleId: number): Promise<WineNoteResponse["data"]> => {
   const response = await api.get(`/api/v1/collection/note/${bottleId}`);

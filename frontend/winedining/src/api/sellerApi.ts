@@ -1,5 +1,11 @@
 import axios from "axios";
-import { WineCellarResponse, WineRegistrationResponse, WineCellarBestResponse } from "../types/seller";
+import {
+  WineCellarResponse,
+  WineRegistrationResponse,
+  WineCellarBestResponse,
+  CustomWineRegistrationResponse,
+  CustomWineRegistrationRequest,
+} from "../types/seller";
 
 // baseURL 제거 → proxy 설정 적용됨
 const api = axios.create({
@@ -35,7 +41,7 @@ export const fetchBestWineCellar = async (): Promise<WineCellarBestResponse> => 
 // best 와인 셀러 등록
 export const registerBestWineCellar = async (bottleId: number): Promise<string> => {
   const response = await api.patch(`/api/v1/collection/cellar/${bottleId}/best`, {
-    best: true
+    best: true,
   });
   return response.data.message;
 };
@@ -43,7 +49,15 @@ export const registerBestWineCellar = async (bottleId: number): Promise<string> 
 // best 와인 셀러 해제
 export const cancelBestWineCellar = async (bottleId: number): Promise<string> => {
   const response = await api.patch(`/api/v1/collection/cellar/${bottleId}/best`, {
-    best: false
+    best: false,
   });
   return response.data.message;
+};
+
+// custom 와인 등록
+export const registerCustomWineCellar = async (
+  wine: CustomWineRegistrationRequest
+): Promise<CustomWineRegistrationResponse> => {
+  const response = await api.post(`/api/v1/collection/cellar/custom`, wine);
+  return response.data.data;
 };
