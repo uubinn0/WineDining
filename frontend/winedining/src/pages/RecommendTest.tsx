@@ -13,7 +13,7 @@ function RecommendTest() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cameFromRecommendFlow = useSelector((state: RootState) => state.test.cameFromRecommendFlow); // 상태 가져오기
-  console.log("어디서옴?", cameFromRecommendFlow)
+  // console.log("어디서옴?", cameFromRecommendFlow)
   const [currentStep, setCurrentStepLocal] = useState(0);
 
   const [responses, setResponses] = useState<string[]>([]);
