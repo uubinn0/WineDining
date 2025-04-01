@@ -14,9 +14,19 @@ interface AddSeller3ModalProps {
   wineInfo: Wine;
   mode: "new" | "add";
   bottleId?: number;
+  isCustom?: boolean;
 }
 
-const AddSeller3Modal = ({ isOpen, onClose, onPrev, drinkData, wineInfo, mode, bottleId }: AddSeller3ModalProps) => {
+const AddSeller3Modal = ({
+  isOpen,
+  onClose,
+  onPrev,
+  drinkData,
+  wineInfo,
+  mode,
+  bottleId,
+  isCustom = false,
+}: AddSeller3ModalProps) => {
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const dispatch = useDispatch<AppDispatch>();
   const [imageFiles, setImageFiles] = useState<File[]>([]);
@@ -43,6 +53,14 @@ const AddSeller3Modal = ({ isOpen, onClose, onPrev, drinkData, wineInfo, mode, b
   // 와인 등록
   const handleComplete = async () => {
     const wineId = wineInfo.wineId;
+    const custom = isCustom;
+
+    // 디버깅용 콘솔
+    console.log("handleComplete 호출됨");
+    console.log("mode:", mode);
+    console.log("wineInfo:", wineInfo);
+    console.log("isCustom:", custom);
+    console.log("bottleId (props):", bottleId);
 
     if (!wineId) {
       alert("와인 정보를 찾을 수 없습니다. 다시 시도해주세요.");
@@ -50,7 +68,9 @@ const AddSeller3Modal = ({ isOpen, onClose, onPrev, drinkData, wineInfo, mode, b
     }
     try {
       let finalBottleId = bottleId;
-      if (mode === "new") {
+      if (isCustom) {
+        finalBottleId = bottleId;
+      } else if (mode === "new") {
         const cellarResponse = await registerWineCellar(wineId);
         finalBottleId = cellarResponse.bottleId;
       }
@@ -71,16 +91,13 @@ const AddSeller3Modal = ({ isOpen, onClose, onPrev, drinkData, wineInfo, mode, b
       // 이미지 FormData
       const formData = new FormData();
       formData.append("note", new Blob([JSON.stringify(noteData)], { type: "application/json" }));
-
       imageFiles.forEach((file) => {
         formData.append("images", file);
       });
-
-      // 실제 API 호출
       await fetch(`/api/v1/collection/note/${finalBottleId}/with-images`, {
         method: "POST",
         body: formData,
-        credentials: "include", // JSESSIONID 인증 쿠키 필요 시
+        credentials: "include",
       });
 
       alert("와인 노트가 저장되었습니다!");
@@ -109,10 +126,19 @@ const AddSeller3Modal = ({ isOpen, onClose, onPrev, drinkData, wineInfo, mode, b
         )}
 
         <div style={styles.wineContainer}>
-          <img src={wineInfo.image || "/sample_image/wine_bottle.png"} alt={wineInfo.name} style={styles.wineImage} />
-          <p style={styles.wineName}>{wineInfo.name}</p>
+          {wineInfo && (
+            <>
+              <img
+                src={wineInfo.image || "/sample_image/wine_bottle.png"}
+                alt={wineInfo.name}
+                style={styles.wineImage}
+              />
+              <p style={styles.wineName}>{wineInfo.name}</p>
+            </>
+          )}
         </div>
 
+        {/* 사진 업로드 */}
         <p style={styles.sectionTitle}>오늘을 함께 기억할 사진</p>
         <div style={styles.imageUploadContainer}>
           {Array.from({ length: 3 }).map((_, index) => (
@@ -134,6 +160,7 @@ const AddSeller3Modal = ({ isOpen, onClose, onPrev, drinkData, wineInfo, mode, b
           ))}
         </div>
 
+        {/* 페이지 이동 */}
         <div style={styles.pagination}>
           <span style={styles.pageArrow} onClick={onPrev}>
             ←
