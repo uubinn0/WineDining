@@ -10,6 +10,7 @@ interface WineState {
   totalPages: number;
   hasMore: boolean;
   wineDetail: WineDetail | null;
+  totalCount: number;
 }
 
 const initialState: WineState = {
@@ -20,6 +21,7 @@ const initialState: WineState = {
   totalPages: 1,
   hasMore: true,
   wineDetail: null,
+  totalCount: 0,
 };
 
 // 와인 리스트 가져오기
@@ -76,12 +78,13 @@ const wineSlice = createSlice({
       .addCase(fetchWines.fulfilled, (state, action: PayloadAction<WineListResponse>) => {
         state.status = "succeeded";
 
-        const { wines, page, totalPages } = action.payload;
+        const { wines, page, totalPages, totalCount } = action.payload;
 
         state.wines = [...state.wines, ...wines];
         state.page = page;
         state.totalPages = totalPages;
         state.hasMore = page < totalPages;
+        state.totalCount = totalCount;
       })
       .addCase(fetchWines.rejected, (state, action) => {
         state.status = "failed";

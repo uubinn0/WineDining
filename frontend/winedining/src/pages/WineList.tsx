@@ -14,7 +14,7 @@ import BackButton from "../components/BackButton";
 const WineList = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { wines, status, page, hasMore } = useSelector((state: RootState) => state.wine);
+  const { wines, status, page, hasMore, totalCount } = useSelector((state: RootState) => state.wine);
 
   const [selectedWine, setSelectedWine] = useState<WineDetail | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,7 +28,7 @@ const WineList = () => {
       grape: [],
       country: [],
       minPrice: 0,
-      maxPrice: 300000,
+      maxPrice: 1500000,
       minSweetness: 1,
       maxSweetness: 5,
       minAcidity: 1,
@@ -89,7 +89,7 @@ const WineList = () => {
     const keyword = e.target.value;
     setSearchTerm(keyword);
 
-    const newFilter = { ...filter, keyword, page: 1 };
+    const newFilter = { ...filter, keyword, page: 1, totalCount };
     setFilter(newFilter);
 
     dispatch(resetWines());
@@ -118,11 +118,13 @@ const WineList = () => {
           onChange={handleSearchChange}
           placeholder="와인을 검색하세요"
           style={{
-            width: "80%",
-            maxWidth: "300px",
+            backgroundColor: "#381837",
+            border: "2px solid #D6BA91",
+            color: "white",
+            width: "100%",
+            maxWidth: "320px",
             padding: "10px",
-            borderRadius: "8px",
-            border: "none",
+            borderRadius: "16px",
           }}
         />
       </div>
@@ -130,6 +132,11 @@ const WineList = () => {
       {/* 필터 드롭다운 (WineFilter 전체 전달) */}
       <WineFilterBar filter={filter} onChange={handleFilterChange} />
 
+      {totalCount > 0 && (
+        <div style={{ textAlign: "right", fontSize: "14px", color: "#ccc", marginRight: "10px" }}>
+          총 {totalCount.toLocaleString()}개의 와인 검색
+        </div>
+      )}
       {/* 와인 카드 리스트 + 무한 스크롤 */}
       <div style={styles.wineListContainer}>
         {wines.map((wine, index) => (
