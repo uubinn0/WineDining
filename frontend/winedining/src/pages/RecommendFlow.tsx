@@ -9,7 +9,7 @@ import { setCurrentStep, resetTestState } from "../store/slices/testSlice"
 import { vh } from "../utils/vh";
 import { AppDispatch, RootState } from "../store/store"; // store 경로에 맞게 수정
 import { fetchUserProfile } from "../store/slices/authSlice";
-
+import { setCameFromRecommendFlow } from "../store/slices/testSlice";
 
 
 const RecommendFlow: React.FC = () => {
@@ -19,7 +19,12 @@ const RecommendFlow: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const { user, status } = useSelector((state: RootState) => state.auth);
-  const username = user?.nickname ?? "고객님";
+  const username = user?.nickname ?? "소믈리에";
+
+  const goToRecommendTest = () => {
+    dispatch(setCameFromRecommendFlow("recommend"));  // recommendflow에서 넘어갔음을 설정
+    navigate("/recommendtest");
+  };
   
   useEffect(() => {
     if (status === "idle") {
@@ -102,7 +107,7 @@ const RecommendFlow: React.FC = () => {
 
 
     if (currentStep === 5 && selectedOption === "새로 취향테스트 하기") {
-      navigate("/recommendtest");
+      goToRecommendTest();
       return;
     }
 

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
 import { fetchUserProfile, logoutUser } from "../store/slices/authSlice";
+import { setCameFromRecommendFlow } from "../store/slices/testSlice";
 
 import Homebackground from "../assets/images/background/Home.png";
 import mypageIcon from "../assets/icons/mypageicon.png";
@@ -28,13 +29,14 @@ function Home() {
 
   useEffect(() => {
     if (user && user.preference === false) {
+      dispatch(setCameFromRecommendFlow("home"));  // 홈에서 넘어갔음을 설정
       setIsPreferenceModalVisible(true);
       const timer = setTimeout(() => {
         navigate("/recommendtest");
       }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [user, navigate]);
+  }, [user, navigate, dispatch]);
 
   const handleLogout = () => {
     dispatch(logoutUser()).then(() => {

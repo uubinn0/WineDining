@@ -3,11 +3,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface TestState {
   testCompleted: boolean; // 취향 테스트 완료 여부
   currentStep: number; // 현재 질문 단계 (RecommendFlow에서 사용할)
+  cameFromRecommendFlow: string; // string으로 변경
 }
 
 const initialState: TestState = {
   testCompleted: false, // 기본값은 false (테스트가 완료되지 않음)
   currentStep: 0, // 기본값은 0 (첫 번째 질문부터 시작)
+  cameFromRecommendFlow: "", // 초기값은 빈 문자열
 };
 
 const testSlice = createSlice({
@@ -23,6 +25,10 @@ const testSlice = createSlice({
     setCurrentStep: (state, action: PayloadAction<number>) => {
       state.currentStep = action.payload; // 현재 질문의 번호 (6번째 질문부터 시작할 수 있도록)
     },
+    
+    setCameFromRecommendFlow(state, action: PayloadAction<string>) {
+      state.cameFromRecommendFlow = action.payload; // string 값으로 설정
+    },
 
     // 테스트 상태 초기화 (testCompleted와 currentStep을 초기 상태로 리셋)
     resetTestState: (state) => {
@@ -33,7 +39,7 @@ const testSlice = createSlice({
 });
 
 // 액션과 리듀서를 export
-export const { setTestCompleted, setCurrentStep, resetTestState } = testSlice.actions;
+export const { setTestCompleted, setCurrentStep, setCameFromRecommendFlow, resetTestState } = testSlice.actions;
 
 // 상태를 선택하는 리듀서
 export const selectTestState = (state: any) => state.test;
