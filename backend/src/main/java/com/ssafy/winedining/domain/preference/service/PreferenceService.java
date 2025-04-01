@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -47,11 +48,13 @@ public class PreferenceService {
      * @return
      */
     public Preference getPreferenceByUserId(Long userId) {
-        return preferenceRepository.findByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Preference not found for user: " + userId));
+        List<Preference> preferences = preferenceRepository.findByUserIdOrderByCreatedAtDesc(userId);
+
+        if (preferences.isEmpty()) {
+            throw new IllegalArgumentException("Preference not found for user: " + userId);
+        }
+
+        // 리스트의 첫 번째 요소(가장 최근에 생성된 취향)를 반환
+        return preferences.get(0);
     }
-
-
-
-
 }
