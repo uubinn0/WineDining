@@ -1,13 +1,11 @@
 package com.ssafy.winedining.domain.wine.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -26,4 +24,6 @@ public class WineResponseDTO {
     private Integer body;
     private Integer alcoholContent;
     private List<String> pairing;
+
+    private String description;
 }
