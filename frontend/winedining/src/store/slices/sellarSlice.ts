@@ -120,11 +120,11 @@ export const registerCustomWine = createAsyncThunk<Bottle, CustomWineRegistratio
   "cellar/registerCustomWine",
   async (customWine, { rejectWithValue }) => {
     try {
-      const response = await registerCustomWineCellar(customWine);
+      const data = await registerCustomWineCellar(customWine);
       const bottle: Bottle = {
-        bottleId: response.data.bottleId,
-        createdAt: response.data.createdAt,
-        wine: response.data.wine,
+        bottleId: data.bottleId,
+        createdAt: data.createdAt,
+        wine: data.wine,
         isCustom: true,
         isBest: false,
         totalNote: 0,
@@ -195,8 +195,16 @@ const cellarSlice = createSlice({
 
       // 커스텀 와인 등록
       .addCase(registerCustomWine.fulfilled, (state, action: PayloadAction<Bottle>) => {
-        const alreadyExists = state.bottles.some((bottle) => bottle.wine.name === action.payload.wine.name);
+        if (!action.payload || !action.payload.wine) {
+          console.warn("⚠️ [cellarSlice] 응답 payload에 문제가 있습니다:", action.payload);
+          return;
+        }
+        const alreadyExists = state.bottles.some((bottle) => {
+          if (!bottle.wine) return false;
+          return bottle.wine.name === action.payload.wine.name;
+        });
         if (!alreadyExists) {
+          console.log("✅ [cellarSlice] 커스텀 와인 등록 완료:", action.payload);
           state.bottles.push(action.payload);
           state.totalCount++;
         }

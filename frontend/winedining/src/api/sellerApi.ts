@@ -57,7 +57,8 @@ export const cancelBestWineCellar = async (bottleId: number): Promise<string> =>
 // custom 와인 등록
 export const registerCustomWineCellar = async (
   wine: CustomWineRegistrationRequest
-): Promise<CustomWineRegistrationResponse> => {
+): Promise<CustomWineRegistrationResponse["data"]> => {
   const response = await api.post(`/api/v1/collection/cellar/custom`, wine);
+  console.log("✅ [API] 커스텀 와인 등록 응답:", response.data);
   return response.data.data;
 };

@@ -14,7 +14,7 @@ const AddCustomWineModal = ({ isOpen, onClose, onComplete }: AddCustomWineModalP
   const dispatch = useDispatch<AppDispatch>();
   const [form, setForm] = useState<CustomWineRegistrationRequest>({
     name: "",
-    type: 1,
+    typeId: 1,
     country: "",
     grape: "",
   });
@@ -24,16 +24,25 @@ const AddCustomWineModal = ({ isOpen, onClose, onComplete }: AddCustomWineModalP
   };
 
   const handleSubmit = async () => {
+    console.log("📦 [AddCustomWineModal] 제출 시작");
+    console.log("📝 제출 데이터:", form);
+
     if (!form.name || !form.country || !form.grape) {
       alert("모든 항목을 입력해주세요.");
       return;
     }
     try {
-      const result = await dispatch(registerCustomWine(form)).unwrap();
-      alert("커스텀 와인이 등록되었습니다!");
-      onComplete(result);
+      const resultAction = await dispatch(registerCustomWine(form));
+      console.log("✅ 커스텀 와인 등록 성공:", resultAction);
+      if (registerCustomWine.fulfilled.match(resultAction)) {
+        alert("커스텀 와인이 등록되었습니다!");
+        onComplete(resultAction.payload);
+      } else {
+        alert("등록 중 오류가 발생했습니다.");
+      }
     } catch (error) {
-      alert("등록 중 오류가 발생했습니다.");
+      console.error("❌ 커스텀 와인 등록 오류:", error);
+      alert("알 수 없는 오류가 발생했습니다.");
     }
   };
 
@@ -48,7 +57,11 @@ const AddCustomWineModal = ({ isOpen, onClose, onComplete }: AddCustomWineModalP
         <input style={styles.input} value={form.name} onChange={(e) => handleChange("name", e.target.value)} />
 
         <label style={styles.label}>타입</label>
-        <select style={styles.select} value={form.type} onChange={(e) => handleChange("type", Number(e.target.value))}>
+        <select
+          style={styles.select}
+          value={form.typeId}
+          onChange={(e) => handleChange("typeId", Number(e.target.value))}
+        >
           <option value={1}>레드</option>
           <option value={2}>화이트</option>
           <option value={3}>스파클링</option>
