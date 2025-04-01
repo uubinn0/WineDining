@@ -12,6 +12,7 @@ class RecommendByPreferenceDto(BaseModel):
     white: bool = False
     sparkling: bool = False
     rose: bool = False
+    foodIds: List[int] = []
 
 class RecommendByRatingDto(BaseModel):
     userId: int
