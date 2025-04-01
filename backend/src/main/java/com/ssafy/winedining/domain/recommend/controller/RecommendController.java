@@ -24,7 +24,7 @@ public class RecommendController {
     /**
      * @return
      */
-    @GetMapping
+    @PostMapping
     public ResponseEntity<ApiResponse<List<WineResponseDTO>>> getRecommendation(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
             @RequestBody RecommendByFoodDto recommendByFoodDto
