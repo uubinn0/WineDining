@@ -28,7 +28,7 @@ body,
   justify-content: center;
   align-items: center;
   /* 전체는 스크롤 없음 */
-  overflow: hidden;
+  overflow: auto;
 }
 
 /* 비율 유지하는 반응형 래퍼 */
