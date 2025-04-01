@@ -33,12 +33,8 @@ const WineInfoCard = ({ wine, onClick }: WineInfoCardProps) => {
       {/* 와인 이미지 */}
       <div style={styles.imageBox}>
         <img src={wineImage} alt={wine.name} style={styles.image} />
+        {/* {isInWishList ? "❤️" : "🤍"} */}
       </div>
-
-      {/* 좋아요 버튼 (하트) */}
-      <button onClick={handleWishToggle} style={styles.heartButton}>
-        {isInWishList ? "❤️" : "🤍"}
-      </button>
 
       {/* 와인 정보 */}
       <div style={styles.info}>
@@ -121,7 +117,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
-    maxWidth: "120px", // 원하는 너비
+    maxWidth: "150px", // 최대 너비
   },
   grape: {
     color: "#FFFFFF",
