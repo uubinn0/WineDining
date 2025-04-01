@@ -12,8 +12,6 @@ class RecommendByPreferenceDto(BaseModel):
     white: bool = False
     sparkling: bool = False
     rose: bool = False
-    fortified: bool = False
-    etc: bool = False
 
 class RecommendByRatingDto(BaseModel):
     userId: int
