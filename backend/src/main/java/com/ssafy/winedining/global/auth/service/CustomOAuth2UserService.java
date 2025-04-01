@@ -76,20 +76,20 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             return new CustomOAuth2User(userDTO);
         }
         else {
-            existData.setEmail(oAuth2Response.getEmail());
-            existData.setName(oAuth2Response.getName());
+//            existData.setEmail(oAuth2Response.getEmail());
+//            existData.setName(oAuth2Response.getName());
 
-            User updatedUser = userRepository.save(existData);
+//            User updatedUser = userRepository.findBy(existData);
 
             UserDTO userDTO = new UserDTO();
-            userDTO.setId(updatedUser.getId()); // userId 설정
+            userDTO.setId(existData.getId()); // userId 설정
             userDTO.setUsername(existData.getUsername());
-            userDTO.setName(oAuth2Response.getName());
+            userDTO.setName(existData.getName());
             userDTO.setRole(existData.getRole());
 
             // 랭크 정보 설정
-            if (updatedUser.getRank() != null) {
-                userDTO.setRankName(updatedUser.getRank().getName());
+            if (existData.getRank() != null) {
+                userDTO.setRankName(existData.getRank().getName());
             } else {
                 userDTO.setRankName("초보자"); // 기본값
             }
