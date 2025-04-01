@@ -4,7 +4,7 @@ import os
 import pandas as pd
 import numpy as np
 from psycopg2.extras import execute_values
-
+from psycopg2 import Binary
 load_dotenv('../../.env')
 
 # PostgreSQL 연결 정보
@@ -44,11 +44,11 @@ def create_wine_vector(row):
     # 정규화 0 ~ 1 사이 값으로
     # Normalize numerical features to range [0,1]
     numerical_features = [
-        float(row['acidity']) / 5,
-        float(row['alcohol_content']) / 100,
-        float(row['body']) / 5,
-        float(row['sweetness']) / 5,
-        float(row['tannin']) / 5
+        float(row['acidity']) / 6,  # 0 ~ 6
+        float(row['alcohol_content']) / 100,  # 0 ~ 100
+        float(row['body']) / 6,  # 0 ~ 6
+        float(row['sweetness']) / 5,  # 0 ~ 5
+        float(row['tannin']) / 6  # 0 ~ 6
     ]
     
     # Get one-hot encoded categorical features
@@ -98,7 +98,7 @@ for wine_id, vector in zip(wine_ids, wine_vectors):
         VALUES (%s, %s)
         ON CONFLICT (wine_id) DO UPDATE 
         SET feature_vector = EXCLUDED.feature_vector
-    """, (wine_id, vector))
+    """, (wine_id, Binary(vector)))
 
 conn.commit()
 cursor.close()
