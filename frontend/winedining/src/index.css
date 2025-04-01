@@ -28,7 +28,7 @@ body,
   justify-content: center;
   align-items: center;
   /* 전체는 스크롤 없음 */
-  overflow: auto;
+  overflow: hidden;
 }
 
 /* 비율 유지하는 반응형 래퍼 */
@@ -37,7 +37,7 @@ body,
   height: calc(100 * var(--custom-vh));
   max-width: 430px;
   max-height: 100vh;
-  overflow: hidden; /* 내부 리스트가 스크롤하도록 함 */
+  overflow: auto; /* 내부 리스트가 스크롤하도록 함 */
   position: relative;
 }
 
