@@ -10,13 +10,12 @@ import { fetchUserProfile } from "../store/slices/authSlice";
 import { RootState, AppDispatch } from "../store/store";
 import { setCameFromRecommendFlow } from "../store/slices/testSlice";
 
-
 function MyPage() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   const goToRecommendTest = () => {
-    dispatch(setCameFromRecommendFlow("mypage"));  // 마이페이지에서 넘어갔음을 설정
+    dispatch(setCameFromRecommendFlow("mypage")); // 마이페이지에서 넘어갔음을 설정
     navigate("/recommendtest");
   };
 

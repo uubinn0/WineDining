@@ -7,6 +7,7 @@ import { RootState, AppDispatch } from "../store/store";
 import WineWishCard from "../components/WineWishCard";
 import WineDetailModal from "../components/Modal/WineDetailModal";
 import { WineDetail } from "../types/wine";
+import BackButton from "../components/BackButton";
 
 const WishList = () => {
   const navigate = useNavigate();
@@ -27,7 +28,9 @@ const WishList = () => {
 
   return (
     <div style={styles.container}>
-      <button onClick={() => navigate("/mypage")}>뒤로가기</button>
+      <div style={styles.backButtonWrapper}>
+        <BackButton onClick={() => navigate("/mypage")} />
+      </div>
       <h1 style={styles.headertext}>
         <img src={"/sample_image/yellow_lightning.png"} alt="번개" style={styles.image} />
         MY WISH LIST
@@ -58,6 +61,7 @@ const WishList = () => {
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
+    position: "relative",
     padding: "20px",
     textAlign: "center",
     backgroundColor: "#27052E",
@@ -84,6 +88,11 @@ const styles: { [key: string]: React.CSSProperties } = {
   image: {
     width: "18px",
     height: "20px",
+  },
+  backButtonWrapper: {
+    position: "absolute",
+    top: "16px",
+    left: "16px",
   },
 };
 
