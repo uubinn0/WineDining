@@ -23,6 +23,7 @@ public class RecommendService {
     private final RecommendFastApiService recommendFastApiService;
     private final WineService wineService;
     private final FoodSimilarityService foodSimilarityService;
+    private final OpenAIService openAIService; // OpenAI 서비스 추가
 
     /**
      * 취향 테스트를 바탕으로 와인을 추천 받습니다.
@@ -70,13 +71,16 @@ public class RecommendService {
                                 recommendedIds.add(idNode.asLong());
                             }
                         }
+
                         // 각 추천 와인 ID마다 WineService의 getWineDetail() 호출
                         List<WineResponseDTO> wineDetails = new ArrayList<>();
                         for (Long wineId : recommendedIds) {
                             WineResponseDTO detail = wineService.getWineDetail(wineId);
                             wineDetails.add(detail);
                         }
-                        return Mono.just(wineDetails);
+
+                        // OpenAI 서비스를 이용해 설명 생성 및 와인 정보에 추가
+                        return openAIService.enrichWinesWithDescriptions(wineDetails);
                     } catch (Exception e) {
                         return Mono.error(e);
                     }
@@ -84,7 +88,7 @@ public class RecommendService {
     }
 
 //    /**
-//     * 페어링 음식을 바탕으로 와인을 추천 받습니다.
+//     * 페어링 음식을 바탕으로 와인을 추천 받습니다.x
 //     * FastAPI에 전달하여 처리 결과를 받아옵니다.
 //     *
 //     * @param userId 추천을 요청한 사용자 ID
