@@ -129,9 +129,9 @@ function MBTIResults() {
           </ul>
       </div>
 
-          <button style={styles.shareButton} onClick={() => nav("/")}>
-           홈으로 이동
-          </button>
+        <button style={styles.shareButton} onClick={() => nav("/")}>
+          홈으로 이동
+        </button>
 
       </div>
       <div>
@@ -156,11 +156,13 @@ const styles: { [key: string]: React.CSSProperties } = {
     position: "fixed",
     top: 0,
     left: 0,
+    paddingTop : vh(3),
     width : "100vw",
     height: "100vh",
     backgroundColor: "rgba(39, 31, 31, 0.5)",
     display: "flex",
-    justifyContent: "center",
+    flexDirection : "column",
+    // justifyContent: "center",
     alignItems: "center",
     zIndex: 1000,
   },
@@ -169,9 +171,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     width: "70%",
     maxWidth: "280px", // 디자인 width 기준
     height: "100%",
-    maxHeight: "calc(100vh - " + vh(10) + ")", // 공유 버튼 영역 확보
+    // maxHeight: "calc(100vh - " + vh(10) + ")", // 공유 버튼 영역 확보
     display: "flex",
-    // justifyContent : "center"
     flexDirection: "column",
     alignItems: "center",
   },
@@ -266,20 +267,9 @@ const styles: { [key: string]: React.CSSProperties } = {
   content : {
     padding : vh(2),
   },
-//   closeButton : {
-//     position: "absolute",
-//     bottom: vh(2),
-//     left: "50%",
-//     transform: "translateX(-50%)",
-//     padding: `${vh(1.5)} ${vh(3)}`,
-//     zIndex: 1010,
-//     cursor: "pointer",
-// }
-shareButton: {
-  position: "absolute",
-  bottom: vh(4),
-  left: "50%",
-  transform: "translateX(-50%)",
+  shareButton: {
+  position: "relative", /* absolute에서 relative로 변경 */
+  bottom: vh(8),
   padding: `${vh(1.5)} ${vh(3)}`,
   backgroundColor: "#fff",
   border: `1px solid #333`,
