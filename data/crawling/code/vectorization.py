@@ -83,13 +83,13 @@ print(wine_vectors[10])
 
 ### 벡터화 데이터를 DB에 저장 ###
 # 테이블이 이미 존재한다면 제거 후 다시 생성
-cursor.execute("""
-    DROP TABLE IF EXISTS preference_wine_vectors;
-    CREATE TABLE preference_wine_vectors (
-        wine_id INTEGER PRIMARY KEY REFERENCES wines(id),
-        feature_vector vector(%s) 
-    )
-""", (len(wine_vectors[0]),))
+# cursor.execute("""
+#     DROP TABLE IF EXISTS preference_wine_vectors;
+#     CREATE TABLE preference_wine_vectors (
+#         wine_id INTEGER PRIMARY KEY REFERENCES wines(id),
+#         feature_vector vector(%s) 
+#     )
+# """, (len(wine_vectors[0]),))
 
 # Insert vectors into database
 for wine_id, vector in zip(wine_ids, wine_vectors):
