@@ -6,6 +6,8 @@ import { fetchCellar, fetchBest, registerBest, deleteBest } from "../store/slice
 import WineSellerCard from "../components/WineSellerCard";
 import WineSellerDetailModal from "../components/Modal/WineSellerDetailModal";
 import { Bottle } from "../types/seller";
+import MySellerAddFlow from "../components/MySellerAddFlow";
+import BackButton from "../components/BackButton";
 
 const WineSellerList = () => {
   const navigate = useNavigate();
@@ -43,7 +45,6 @@ const WineSellerList = () => {
         }
         await dispatch(registerBest(bottleId)).unwrap();
       }
-      // Refresh the lists
       dispatch(fetchBest());
       dispatch(fetchCellar());
     } catch (error) {
@@ -53,7 +54,12 @@ const WineSellerList = () => {
 
   return (
     <div style={styles.container}>
-      <button onClick={() => navigate("/mypage")}>뒤로가기</button>
+      <div style={styles.backButtonWrapper}>
+        <BackButton onClick={() => navigate("/mypage")} />
+      </div>
+      <div style={styles.floatingAddButton}>
+        <MySellerAddFlow />
+      </div>
       <h1 style={styles.title}>⚡ MY WINE SELLER ⚡</h1>
 
       <div style={styles.carousel}>
@@ -61,7 +67,6 @@ const WineSellerList = () => {
           bestBottles.map((bottle: Bottle) => (
             <img
               key={bottle.bottleId}
-              // src={bottle.wine.image !== "no_image" ? bottle.wine.image : "/sample_image/wine_sample.jpg"}
               src="/sample_image/wine_sample.jpg"
               alt={bottle.wine.name}
               style={styles.carouselImage}
@@ -130,6 +135,16 @@ const styles: { [key: string]: React.CSSProperties } = {
   emptyText: {
     color: "#aaa",
     fontSize: "14px",
+  },
+  floatingAddButton: {
+    position: "absolute",
+    bottom: "24px",
+    right: "24px",
+  },
+  backButtonWrapper: {
+    position: "absolute",
+    top: "16px",
+    left: "16px",
   },
 };
 

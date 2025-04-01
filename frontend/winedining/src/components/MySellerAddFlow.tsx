@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import AddSeller1Modal from "../components/Modal/AddSeller1Modal";
 import AddSeller2Modal from "../components/Modal/AddSeller2Modal";
 import AddSeller3Modal from "../components/Modal/AddSeller3Modal";
-import PixelButton from "../components/PixelButton";
 import { Wine } from "../types/wine";
 
 const MySellerAddFlow: React.FC = () => {
@@ -11,6 +10,8 @@ const MySellerAddFlow: React.FC = () => {
   const [isStep3Open, setIsStep3Open] = useState(false);
   const [selectedWine, setSelectedWine] = useState<Wine | null>(null);
   const [drinkData, setDrinkData] = useState<any>(null);
+  const [isCustom, setIsCustom] = useState(false);
+  const [customBottleId, setCustomBottleId] = useState<number | undefined>();
 
   const openStep1 = () => setIsStep1Open(true);
   const closeStep1 = () => setIsStep1Open(false);
@@ -18,13 +19,14 @@ const MySellerAddFlow: React.FC = () => {
   const closeStep2 = () => setIsStep2Open(false);
   const closeStep3 = () => setIsStep3Open(false);
 
-  const handleNextStep = (wine: Wine | null) => {
-    if (!wine) return;
+  const handleNextStep = (wine: Wine, custom: boolean, bottleId?: number) => {
     setSelectedWine(wine);
-    setTimeout(() => {
-      closeStep1();
-      setIsStep2Open(true);
-    }, 100);
+    setIsCustom(custom);
+    if (custom && bottleId) {
+      setCustomBottleId(bottleId);
+    }
+    closeStep1();
+    setIsStep2Open(true);
   };
 
   const handleNextStep2 = (drinkInfo: any) => {
@@ -42,7 +44,13 @@ const MySellerAddFlow: React.FC = () => {
     <>
       <button onClick={openStep1}>+</button>
 
-      <AddSeller1Modal isOpen={isStep1Open} onClose={closeStep1} onNext={handleNextStep} />
+      <AddSeller1Modal
+        isOpen={isStep1Open}
+        onClose={closeStep1}
+        onNext={(wine) => handleNextStep(wine, false)} // 일반 와인
+        onCustomNext={(customBottle) => handleNextStep(customBottle.wine, true, customBottle.bottleId)} // 커스텀 와인
+      />
+
       {selectedWine && (
         <AddSeller2Modal
           isOpen={isStep2Open}
@@ -52,6 +60,7 @@ const MySellerAddFlow: React.FC = () => {
           wineInfo={selectedWine}
         />
       )}
+
       {selectedWine && drinkData && (
         <AddSeller3Modal
           isOpen={isStep3Open}
@@ -62,7 +71,9 @@ const MySellerAddFlow: React.FC = () => {
           }}
           drinkData={drinkData}
           wineInfo={selectedWine}
-          mode="new"
+          mode={isCustom ? "add" : "new"}
+          bottleId={isCustom ? customBottleId : undefined}
+          isCustom={isCustom}
         />
       )}
     </>

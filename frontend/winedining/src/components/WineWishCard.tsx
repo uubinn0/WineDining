@@ -16,7 +16,8 @@ const WineWishCard = ({ wish }: WineWishCardProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleRemoveWish = () => {
+  const handleRemoveWish = (e: React.MouseEvent) => {
+    e.stopPropagation();
     dispatch(removeWish(wish.wine.wineId));
   };
 

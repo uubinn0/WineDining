@@ -55,7 +55,7 @@ export interface CustomWine {
 // 커스텀 와인 등록 요청
 export interface CustomWineRegistrationRequest {
   name: string;
-  type: number;
+  typeId: number;
   country: string;
   grape: string;
 }

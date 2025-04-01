@@ -8,10 +8,16 @@ import MySellerAddFlow from "../components/MySellerAddFlow";
 import pencilIcon from "../assets/icons/raphael_pensil.png";
 import { fetchUserProfile } from "../store/slices/authSlice";
 import { RootState, AppDispatch } from "../store/store";
+import { setCameFromRecommendFlow } from "../store/slices/testSlice";
 
 function MyPage() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+
+  const goToRecommendTest = () => {
+    dispatch(setCameFromRecommendFlow("mypage")); // 마이페이지에서 넘어갔음을 설정
+    navigate("/recommendtest");
+  };
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { user, status } = useSelector((state: RootState) => state.auth);
@@ -53,7 +59,7 @@ function MyPage() {
       <div style={styles.buttonGroup}>
         <PixelButton onClick={() => navigate("/winesellerlist")}>MY WINE SELLER</PixelButton>
         <PixelButton onClick={() => navigate("/wishlist")}>WISH LIST</PixelButton>
-        <PixelButton onClick={() => navigate("/recommendtest")}>WINE TEST</PixelButton>
+        <PixelButton onClick={goToRecommendTest}>WINE TEST</PixelButton>
       </div>
 
       <div style={styles.floatingAddButton}>

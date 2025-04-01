@@ -4,15 +4,17 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import closeButton from "../../assets/icons/closebutton.png";
 import { fetchFilteredWines } from "../../api/wineApi";
-import AddCustomWineModal from "./AddCustomWineModal"; // 새로 만들 모달!
+import AddCustomWineModal from "./AddCustomWineModal";
+import { Bottle } from "../../types/seller";
 
 interface AddSeller1ModalProps {
   isOpen: boolean;
   onClose: () => void;
   onNext: (wine: Wine) => void;
+  onCustomNext: (customBottle: Bottle) => void;
 }
 
-const AddSeller1Modal = ({ isOpen, onClose, onNext }: AddSeller1ModalProps) => {
+const AddSeller1Modal = ({ isOpen, onClose, onNext, onCustomNext }: AddSeller1ModalProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<Wine[]>([]);
   const [loading, setLoading] = useState(false);
@@ -107,9 +109,9 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext }: AddSeller1ModalProps) => {
         <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
           <img src={closeButton} alt="닫기" style={styles.closeButton} onClick={onClose} />
           <h2 style={styles.title}>와인 수집</h2>
-          <p style={styles.subtitle}>내가 마신 와인 등록</p>
+          {/* <p style={styles.subtitle}>내가 마신 와인 등록</p> */}
+          <p style={styles.bottomText}>내가 마신 와인을 찾아주세요!</p>
 
-          {/* 검색창 */}
           <div style={styles.searchContainer}>
             <input
               type="text"
@@ -130,11 +132,11 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext }: AddSeller1ModalProps) => {
           {error && (
             <>
               <p style={styles.errorText}>{error}</p>
-              {error === "검색 결과가 없습니다" && (
+              {/* {error === "검색 결과가 없습니다" && (
                 <button onClick={() => setIsCustomModalOpen(true)} style={styles.customButton}>
                   직접 와인 등록하기
                 </button>
-              )}
+              )} */}
             </>
           )}
 
@@ -169,8 +171,10 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext }: AddSeller1ModalProps) => {
             </div>
           ) : (
             <>
-              <p style={styles.bottomText}>내가 마신 와인을 찾아주세요!</p>
               <p style={styles.pagination}>1 / 3</p>
+              <button onClick={() => setIsCustomModalOpen(true)} style={styles.customButton}>
+                직접 와인 등록하기
+              </button>
             </>
           )}
 
@@ -195,14 +199,14 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext }: AddSeller1ModalProps) => {
         </div>
       </div>
 
-      {/* 커스텀 와인 모달 */}
+      {/* 커스텀 와인 등록 모달 */}
       {isCustomModalOpen && (
         <AddCustomWineModal
           isOpen={isCustomModalOpen}
           onClose={() => setIsCustomModalOpen(false)}
           onComplete={(newBottle) => {
             setIsCustomModalOpen(false);
-            onNext(newBottle.wine);
+            onCustomNext(newBottle);
           }}
         />
       )}
@@ -217,7 +221,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.7)",
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -235,48 +239,131 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontFamily: "Galmuri9",
     textAlign: "center",
   },
-  closeButton: { position: "absolute", top: "12px", right: "12px", width: "24px", cursor: "pointer" },
-  title: { fontSize: "18px", fontWeight: "bold" },
-  subtitle: { fontSize: "13px", color: "#ccc", marginBottom: "12px" },
-  searchContainer: { display: "flex", gap: "6px", marginBottom: "10px" },
+  closeButton: {
+    position: "absolute",
+    top: "12px",
+    right: "12px",
+    width: "24px",
+    height: "24px",
+    cursor: "pointer",
+  },
+  title: {
+    fontSize: "18px",
+    fontWeight: "bold",
+    marginBottom: "4px",
+  },
+  subtitle: {
+    fontSize: "13px",
+    marginBottom: "16px",
+    color: "#ccc",
+  },
+  searchContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: "8px",
+    gap: "4px",
+  },
   searchInput: {
     flex: 1,
-    background: "transparent",
+    padding: "8px",
+    fontSize: "14px",
+    backgroundColor: "transparent",
     border: "none",
     borderBottom: "1px solid white",
     color: "white",
     outline: "none",
   },
-  searchButton: { background: "transparent", color: "white", border: "none", cursor: "pointer" },
-  loadingText: { fontSize: "14px", marginTop: "10px" },
-  errorText: { fontSize: "13px", color: "#ff8888", marginTop: "6px" },
-  resultContainer: { maxHeight: "200px", overflowY: "auto", borderTop: "1px solid #ccc", marginTop: "10px" },
-  wineItem: { padding: "10px", borderBottom: "1px solid #ccc", cursor: "pointer" },
-  wineItemContent: { display: "flex", gap: "10px", alignItems: "center" },
-  wineItemImage: { width: "40px", height: "60px", objectFit: "cover" },
-  wineName: { fontWeight: "bold", fontSize: "14px" },
-  wineDetail: { fontSize: "12px", color: "#aaa" },
-  bottomText: { fontSize: "14px", color: "#ffcc00", fontWeight: "bold", marginTop: "20px" },
-  pagination: { fontSize: "12px", color: "white", marginTop: "5px" },
-  customButton: {
-    marginTop: "12px",
-    backgroundColor: "#ffcc00",
-    color: "#2a0e35",
-    padding: "8px 12px",
+  searchButton: {
+    fontSize: "16px",
+    backgroundColor: "transparent",
     border: "none",
-    borderRadius: "5px",
+    color: "white",
     cursor: "pointer",
   },
-  selectedWineContainer: { marginTop: "16px", padding: "12px", background: "#3b1845", borderRadius: "6px" },
-  selectedTitle: { fontSize: "16px", fontWeight: "bold", marginBottom: "6px" },
-  wineImage: { width: "100px", height: "150px" },
-  selectedWineName: { fontSize: "14px", fontWeight: "bold", margin: "6px 0" },
-  selectedWineDetail: { fontSize: "12px", color: "#ccc" },
-  selectedWineGrape: { fontSize: "12px", color: "#ccc", marginBottom: "10px" },
+  errorText: { fontSize: "13px", color: "tomato", marginTop: "6px" },
+  loadingText: {
+    fontSize: "14px",
+    marginTop: "10px",
+  },
+  resultContainer: {
+    marginTop: "10px",
+    maxHeight: "200px",
+    overflowY: "auto",
+    borderTop: "1px solid #ccc",
+  },
+  wineItem: {
+    padding: "10px",
+    cursor: "pointer",
+    borderBottom: "1px solid #ccc",
+    transition: "background 0.2s",
+  },
+  wineItemContent: {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+  },
+  wineItemImage: {
+    width: "50px",
+    height: "75px",
+    objectFit: "cover",
+    borderRadius: "4px",
+  },
+  wineName: { fontSize: "14px", fontWeight: "bold" },
+  wineDetail: { fontSize: "12px", color: "#aaa" },
+  bottomText: {
+    fontSize: "14px",
+    color: "#ffcc00",
+    fontWeight: "bold",
+    marginTop: "12px",
+  },
+  pagination: {
+    fontSize: "12px",
+    color: "white",
+    marginBottom: "8px",
+  },
+  customButton: {
+    backgroundColor: "#FFD447",
+    color: "#2a0e35",
+    padding: "8px 12px",
+    borderRadius: "6px",
+    border: "none",
+    cursor: "pointer",
+    fontWeight: "bold",
+  },
+  selectedWineContainer: {
+    marginTop: "15px",
+    padding: "10px",
+    background: "#3b1845",
+    borderRadius: "5px",
+  },
+  selectedTitle: {
+    fontSize: "16px",
+    fontWeight: "bold",
+  },
+  wineImage: {
+    width: "100px",
+    height: "150px",
+    marginTop: "10px",
+  },
+  selectedWineName: {
+    fontWeight: "bold",
+    marginTop: "10px",
+  },
+  selectedWineDetail: {
+    fontSize: "12px",
+    color: "#ccc",
+  },
+  selectedWineGrape: {
+    fontSize: "12px",
+    marginTop: "4px",
+  },
   nextButton: {
+    marginTop: "10px",
+    padding: "10px",
     backgroundColor: "#ffcc00",
     color: "#2a0e35",
-    padding: "10px",
+    fontWeight: "bold",
     border: "none",
     borderRadius: "4px",
     cursor: "pointer",

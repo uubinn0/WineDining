@@ -87,13 +87,29 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   modal: {
     backgroundColor: "#2a0e35",
-    padding: "20px",
-    borderRadius: "12px",
-    width: "350px",
+    // padding: "20px",
+    borderRadius: "1.3vh",
+    // width: "350px",
     maxWidth: "90%",
     color: "#fff",
     position: "relative",
-    border: "3px solid #d4a5ff",
+    border: "1vh solid #d4a5ff",
+
+    // 추가 부분
+    top: "6vh",
+    width: "calc( 50 * var(--custom-vh))",
+    height: "80%",
+    padding: "2.5vh",
+    paddingTop: "1vh",
+
+    overflowY: "auto", // ✅ 스크롤 가능하게 수정
+    scrollbarWidth: "none", // ✅ Firefox용 (선택)
+    msOverflowStyle: "none", // ✅ IE/Edge용 (선택)
+    boxSizing: "border-box",
+    // scrollbarWidth: "none",
+    transition: "transform 0.3s ease",
+    display: "flex",
+    flexDirection: "column",
   },
   closeButton: {
     position: "absolute",
@@ -139,10 +155,13 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     gap: "4px",
   },
+  // 프로그레스 바
   progressDot: {
     width: "12px",
     height: "12px",
     borderRadius: "50%",
+    backgroundColor: "#7a4a8b",
+    boxShadow: "inset 0 0 3px #000",
   },
   pairingSection: {
     backgroundColor: "#3b1845",
@@ -150,6 +169,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: "8px",
     textAlign: "center",
     marginBottom: "15px",
+    fontSize: "13px",
+    color: "#f3f3f3",
   },
   sectionTitle: {
     fontSize: "14px",
@@ -158,17 +179,23 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   detailInfo: {
     backgroundColor: "#3b1845",
-    padding: "10px",
+    padding: "12px",
     borderRadius: "8px",
     textAlign: "left",
     marginBottom: "15px",
+    fontSize: "13px",
+    color: "#fff",
+    lineHeight: "1.6",
   },
   imageContainer: {
     textAlign: "center",
+    marginTop: "10px",
   },
   image: {
-    width: "60px",
-    height: "150px",
+    width: "70px",
+    height: "160px",
+    objectFit: "contain",
+    filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.4))",
   },
 };
 

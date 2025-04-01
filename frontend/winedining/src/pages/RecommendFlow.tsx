@@ -9,7 +9,8 @@ import { setCurrentStep, resetTestState } from "../store/slices/testSlice"
 import { vh } from "../utils/vh";
 import { AppDispatch, RootState } from "../store/store"; // store 경로에 맞게 수정
 import { fetchUserProfile } from "../store/slices/authSlice";
-
+import { setCameFromRecommendFlow } from "../store/slices/testSlice";
+import { getWineRecommendations } from "../api/recommendResultApi";
 
 
 const RecommendFlow: React.FC = () => {
@@ -19,7 +20,14 @@ const RecommendFlow: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const { user, status } = useSelector((state: RootState) => state.auth);
-  const username = user?.nickname ?? "고객님";
+  const username = user?.nickname ?? "소믈리에";
+  const [wineRecommendations, setWineRecommendations] = useState<any[]>([]); // 와인 추천 리스트 상태 추가
+
+
+  const goToRecommendTest = () => {
+    dispatch(setCameFromRecommendFlow("recommend"));  // recommendflow에서 넘어갔음을 설정
+    navigate("/recommendtest");
+  };
   
   useEffect(() => {
     if (status === "idle") {
@@ -48,23 +56,23 @@ const RecommendFlow: React.FC = () => {
   ];
 
   
-  const wineRecommendations = [
-    {
-      name: "LA MARCA",
-      description: "이 와인은 해산물과 어울리는 달달한 와인이에요. 배럴 향이 많이 나는 모제카입니다.",
-      image: "/assets/images/wine1.png",
-    },
-    {
-      name: "LA MARCA",
-      description: "이 와인은 해산물과 어울리는 달달한 와인이에요. 배럴 향이 많이 나는 모제카입니다.",
-      image: "/assets/images/wine2.png",
-    },
-    {
-      name: "LA MARCA",
-      description: "이 와인은 해산물과 어울리는 달달한 와인이에요. 배럴 향이 많이 나는 모제카입니다.",
-      image: "/assets/images/wine3.png",
-    },
-  ];
+  // const wineRecommendations = [
+  //   {
+  //     name: "LA MARCA",
+  //     description: "이 와인은 해산물과 어울리는 달달한 와인이에요. 배럴 향이 많이 나는 모제카입니다.",
+  //     image: "/assets/images/wine1.png",
+  //   },
+  //   {
+  //     name: "LA MARCA",
+  //     description: "이 와인은 해산물과 어울리는 달달한 와인이에요. 배럴 향이 많이 나는 모제카입니다.",
+  //     image: "/assets/images/wine2.png",
+  //   },
+  //   {
+  //     name: "LA MARCA",
+  //     description: "이 와인은 해산물과 어울리는 달달한 와인이에요. 배럴 향이 많이 나는 모제카입니다.",
+  //     image: "/assets/images/wine3.png",
+  //   },
+  // ];
 
   useEffect(() => {
     if (testState.testCompleted && currentStep === 0) {
@@ -102,7 +110,7 @@ const RecommendFlow: React.FC = () => {
 
 
     if (currentStep === 5 && selectedOption === "새로 취향테스트 하기") {
-      navigate("/recommendtest");
+      goToRecommendTest();
       return;
     }
 
@@ -114,14 +122,32 @@ const RecommendFlow: React.FC = () => {
   };
 
 
-  const handleInputSubmit = () => {
+  const handleInputSubmit = async () => {
+    const pairingValue = userFoodInput ? userFoodInput : "";  // userFoodInput이 null이면 빈 문자열로 설정
+
+    console.log("pairing 값:", pairingValue);  // 디버깅을 위한 로그
+
     // `input` 답변 저장
-    const updatedResponses = [...responses, userFoodInput];
+    const updatedResponses = [...responses, pairingValue];
     setResponses(updatedResponses);
 
-    // `input`을 입력한 후, 다음 질문으로 이동
-    setCurrentStepState(currentStep + 1);
-    setUserFoodInput(""); // 입력창 초기화
+    try {
+      const response = await getWineRecommendations({pairing: pairingValue })
+    
+      if (response.success) {
+        setWineRecommendations(response.data.recommendations)
+        setShowModal(true)
+      } else {
+        console.log("추천실패:", response.message)
+      }    
+      // `input`을 입력한 후, 다음 질문으로 이동
+      setCurrentStepState(currentStep + 1);
+      setUserFoodInput(""); // 입력창 초기화
+    } catch (error) {
+      console.log("api 호출 중 오류 발생: ", error)
+    }
+
+
   };
 
   const handleReturnToHome = () => {
