@@ -3,10 +3,7 @@ package com.ssafy.winedining.domain.wine.service;
 import com.ssafy.winedining.domain.collection.repository.WishItemRepository;
 import com.ssafy.winedining.domain.food.entity.Food;
 import com.ssafy.winedining.domain.food.repository.PairingSetRepository;
-import com.ssafy.winedining.domain.wine.dto.WineListItemDTO;
-import com.ssafy.winedining.domain.wine.dto.WineListRequestDTO;
-import com.ssafy.winedining.domain.wine.dto.WineListResponseDTO;
-import com.ssafy.winedining.domain.wine.dto.WineResponseDTO;
+import com.ssafy.winedining.domain.wine.dto.*;
 import com.ssafy.winedining.domain.wine.entity.Wine;
 import com.ssafy.winedining.domain.wine.repository.WineRepository;
 import com.ssafy.winedining.domain.wine.repository.WineSpecification;
@@ -68,21 +65,73 @@ public class WineService {
     public WineListResponseDTO getWineListByFilter(
             WineListRequestDTO request, Long userId) {
 
-        // 동적 조건 생성
-        Specification<Wine> spec = Specification.where(WineSpecification.keywordContains(request.getKeyword()))
-                .and(WineSpecification.priceBetween(request.getFilters().getMinPrice(), request.getFilters().getMaxPrice()));
-        // 추가 필터 조건들을 and()로 연결할 수 있습니다.
+        // 초기 명세 설정
+        Specification<Wine> spec = Specification.where(null);
 
-        // 페이징, 정렬 처리 (예: PageRequest.of(page, limit, sort))
+        // 키워드 필터 적용
+        if (request.getKeyword() != null && !request.getKeyword().isEmpty()) {
+            spec = spec.and(WineSpecification.keywordContains(request.getKeyword()));
+        }
+
+        // 필터가 null이 아닌 경우에만 처리
+        if (request.getFilters() != null) {
+            WineListRequestFilterDTO filters = request.getFilters();
+
+            // 가격 범위 필터 적용
+            spec = spec.and(WineSpecification.priceBetween(filters.getMinPrice(), filters.getMaxPrice()));
+
+            // 와인 타입 필터 적용
+            if (filters.getType() != null && !filters.getType().isEmpty()) {
+                spec = spec.and(WineSpecification.typeIn(filters.getType()));
+            }
+
+            // 포도 품종 필터 적용
+            if (filters.getGrape() != null && !filters.getGrape().isEmpty()) {
+                spec = spec.and(WineSpecification.grapeContains(filters.getGrape()));
+            }
+
+            // 국가 필터 적용
+            if (filters.getCountry() != null && !filters.getCountry().isEmpty()) {
+                spec = spec.and(WineSpecification.countryIn(filters.getCountry()));
+            }
+
+            // 당도 범위 필터 적용
+            spec = spec.and(WineSpecification.sweetnessBetween(filters.getMinSweetness(), filters.getMaxSweetness()));
+
+            // 산미 범위 필터 적용
+            spec = spec.and(WineSpecification.acidityBetween(filters.getMinAcidity(), filters.getMaxAcidity()));
+
+            // 타닌 범위 필터 적용 (레드 와인에만 해당)
+            spec = spec.and(WineSpecification.tanninBetween(filters.getMinTannin(), filters.getMaxTannin()));
+
+            // 바디감 범위 필터 적용
+            spec = spec.and(WineSpecification.bodyBetween(filters.getMinBody(), filters.getMaxBody()));
+
+            // 페어링 음식 필터 적용 (ID 기반)
+            if (filters.getPairing() != null && !filters.getPairing().isEmpty()) {
+                spec = spec.and(WineSpecification.hasPairing(filters.getPairing()));
+            }
+        }
+
+        // 페이징, 정렬 처리
         int page = request.getPage() != null ? request.getPage() - 1 : 0;
         int limit = request.getLimit() != null ? request.getLimit() : 20;
+
+        // 정렬 처리
         Sort sort = Sort.unsorted();
-        if (request.getSort() != null) {
-            sort = Sort.by(Sort.Direction.fromString(request.getSort().getOrder()), request.getSort().getField());
+        if (request.getSort() != null && request.getSort().getField() != null && request.getSort().getOrder() != null) {
+            try {
+                Sort.Direction direction = Sort.Direction.fromString(request.getSort().getOrder());
+                sort = Sort.by(direction, request.getSort().getField());
+            } catch (IllegalArgumentException e) {
+                // 잘못된 정렬 방향이 주어진 경우 기본 정렬 사용
+                sort = Sort.by(Sort.Direction.ASC, "id");
+            }
         }
+
         Pageable pageable = PageRequest.of(page, limit, sort);
 
-        // 실제 DB 조회 (Page<Wine> 형태)
+        // 실제 DB 조회
         Page<Wine> winePage = wineRepository.findAll(spec, pageable);
 
         // DTO 변환
@@ -95,9 +144,12 @@ public class WineService {
                     dto.setTypeName(wine.getWineType().getTypeName());
                     dto.setCountry(wine.getCountry());
                     dto.setGrape(wine.getGrape());
-                    // isWish 관련 정보는 로그인한 사용자 정보 등과 연동 필요 (여기서는 false로 처리)
-                    boolean isWish = wishItemRepository.existsByUserIdAndWineId(userId, wine.getId());
-                    System.out.println("isWish = " + isWish);
+
+                    // 사용자가 로그인한 경우에만 위시리스트 체크
+                    boolean isWish = false;
+                    if (userId != null) {
+                        isWish = wishItemRepository.existsByUserIdAndWineId(userId, wine.getId());
+                    }
                     dto.setWish(isWish);
                     return dto;
                 })
