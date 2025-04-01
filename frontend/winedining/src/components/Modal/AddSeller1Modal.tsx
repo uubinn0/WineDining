@@ -109,7 +109,8 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext, onCustomNext }: AddSeller1Mo
         <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
           <img src={closeButton} alt="닫기" style={styles.closeButton} onClick={onClose} />
           <h2 style={styles.title}>와인 수집</h2>
-          <p style={styles.subtitle}>내가 마신 와인 등록</p>
+          {/* <p style={styles.subtitle}>내가 마신 와인 등록</p> */}
+          <p style={styles.bottomText}>내가 마신 와인을 찾아주세요!</p>
 
           <div style={styles.searchContainer}>
             <input
@@ -131,11 +132,11 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext, onCustomNext }: AddSeller1Mo
           {error && (
             <>
               <p style={styles.errorText}>{error}</p>
-              {error === "검색 결과가 없습니다" && (
+              {/* {error === "검색 결과가 없습니다" && (
                 <button onClick={() => setIsCustomModalOpen(true)} style={styles.customButton}>
                   직접 와인 등록하기
                 </button>
-              )}
+              )} */}
             </>
           )}
 
@@ -170,8 +171,10 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext, onCustomNext }: AddSeller1Mo
             </div>
           ) : (
             <>
-              <p style={styles.bottomText}>내가 마신 와인을 찾아주세요!</p>
               <p style={styles.pagination}>1 / 3</p>
+              <button onClick={() => setIsCustomModalOpen(true)} style={styles.customButton}>
+                직접 와인 등록하기
+              </button>
             </>
           )}
 

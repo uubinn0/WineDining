@@ -32,7 +32,14 @@ const WineInfoCard = ({ wine, onClick }: WineInfoCardProps) => {
     <div style={styles.card}>
       {/* 와인 이미지 */}
       <div style={styles.imageBox}>
-        <img src={wineImage} alt={wine.name} style={styles.image} />
+        <img
+          src={wineImage}
+          alt={wine.name}
+          style={styles.image}
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = "/sample_image/wine_sample.jpg";
+          }}
+        />
       </div>
 
       {/* 좋아요 버튼 (하트) */}

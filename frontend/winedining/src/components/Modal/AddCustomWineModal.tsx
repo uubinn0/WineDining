@@ -24,8 +24,7 @@ const AddCustomWineModal = ({ isOpen, onClose, onComplete }: AddCustomWineModalP
   };
 
   const handleSubmit = async () => {
-    console.log("📦 [AddCustomWineModal] 제출 시작");
-    console.log("📝 제출 데이터:", form);
+    console.log("제출 데이터:", form);
 
     if (!form.name || !form.country || !form.grape) {
       alert("모든 항목을 입력해주세요.");
@@ -33,7 +32,7 @@ const AddCustomWineModal = ({ isOpen, onClose, onComplete }: AddCustomWineModalP
     }
     try {
       const resultAction = await dispatch(registerCustomWine(form));
-      console.log("✅ 커스텀 와인 등록 성공:", resultAction);
+      console.log("커스텀 와인 등록 성공:", resultAction);
       if (registerCustomWine.fulfilled.match(resultAction)) {
         alert("커스텀 와인이 등록되었습니다!");
         onComplete(resultAction.payload);
@@ -41,7 +40,7 @@ const AddCustomWineModal = ({ isOpen, onClose, onComplete }: AddCustomWineModalP
         alert("등록 중 오류가 발생했습니다.");
       }
     } catch (error) {
-      console.error("❌ 커스텀 와인 등록 오류:", error);
+      console.error("커스텀 와인 등록 오류:", error);
       alert("알 수 없는 오류가 발생했습니다.");
     }
   };

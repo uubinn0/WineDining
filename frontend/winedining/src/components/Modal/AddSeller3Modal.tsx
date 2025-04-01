@@ -175,7 +175,6 @@ const AddSeller3Modal = ({
   );
 };
 
-// 스타일 추가
 const styles: { [key: string]: React.CSSProperties } = {
   overlay: {
     position: "fixed",

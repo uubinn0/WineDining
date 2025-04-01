@@ -160,7 +160,6 @@ const AddSeller2Modal = ({ isOpen, onClose, onPrev, onNext, wineInfo }: AddSelle
   );
 };
 
-// 기존 스타일에 추가
 const styles: { [key: string]: React.CSSProperties } = {
   overlay: {
     position: "fixed",

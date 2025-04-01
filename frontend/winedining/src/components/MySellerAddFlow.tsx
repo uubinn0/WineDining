@@ -48,7 +48,7 @@ const MySellerAddFlow: React.FC = () => {
         isOpen={isStep1Open}
         onClose={closeStep1}
         onNext={(wine) => handleNextStep(wine, false)} // 일반 와인
-        onCustomNext={(customBottle) => handleNextStep(customBottle.wine, true, customBottle.bottleId)}
+        onCustomNext={(customBottle) => handleNextStep(customBottle.wine, true, customBottle.bottleId)} // 커스텀 와인
       />
 
       {selectedWine && (

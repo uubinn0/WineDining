@@ -133,9 +133,9 @@ const WineList = () => {
       {/* 와인 카드 리스트 + 무한 스크롤 */}
       <div style={styles.wineListContainer}>
         {wines.map((wine, index) => (
-          <div 
-            ref={index === wines.length - 1 ? lastWineRef : null} 
-            key={`${wine.wineId}-${index}`}  // 복합 key를 사용하여 유니크함 보장
+          <div
+            ref={index === wines.length - 1 ? lastWineRef : null}
+            key={`${wine.wineId}-${index}`} // 복합 key를 사용하여 유니크함 보장
           >
             <WineInfoCard wine={wine} onClick={handleWineClick} />
           </div>
@@ -160,6 +160,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     maxHeight: "60vh",
     overflowY: "auto",
     paddingRight: "8px",
-    marginTop: "20px",  // 필터바와의 간격을 위해 추가
-  }
+    marginTop: "20px", // 필터바와의 간격을 위해 추가
+  },
 };
