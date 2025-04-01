@@ -5,6 +5,7 @@ import wineReducer from "./slices/wineSlice";
 import testReducer from "./slices/testSlice";
 import noteReducer from "./slices/noteSlice";
 import sellarReducer from "./slices/sellarSlice";
+import infoReducer from "./slices/infoSlice";
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     test: testReducer,
     note: noteReducer,
     cellar: sellarReducer,
+    info: infoReducer,
   },
 });
 
