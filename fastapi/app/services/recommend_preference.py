@@ -26,6 +26,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
         SELECT wine_id, feature_vector <=> CAST(:user_vector AS vector) as cos
         FROM preference_wine_vectors
         WHERE wine_id NOT IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+                 and price <= 130000
         ORDER BY cos DESC
         LIMIT 3
     """)
