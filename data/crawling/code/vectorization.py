@@ -3,8 +3,7 @@ from dotenv import load_dotenv
 import os
 import pandas as pd
 import numpy as np
-from psycopg2.extras import execute_values
-from psycopg2 import Binary
+
 load_dotenv('../../.env')
 
 # PostgreSQL 연결 정보
@@ -61,20 +60,11 @@ def create_wine_vector(row):
     return numerical_features + categorical_features
     # return numerical_features
 
-# 희소 벡터화
-def to_sparse_vector(vector):
-    # 벡터에서 0이 아닌 값들의 인덱스와 값을 튜플로 묶어 리스트로 반환
-    sparse_vector = [{str(i): value} for i, value in enumerate(vector) if value != 0]
-    return sparse_vector
-
-
 # Create vectors for each wine
 wine_vectors = []
 wine_ids = []
 for idx, row in wine_data_encoded.iterrows():
     vector = create_wine_vector(row)
-    # vector = to_sparse_vector(vector)
-    # print(vector)
     wine_vectors.append(vector)
     wine_ids.append(row['id'])
 
@@ -98,7 +88,7 @@ for wine_id, vector in zip(wine_ids, wine_vectors):
         VALUES (%s, %s)
         ON CONFLICT (wine_id) DO UPDATE 
         SET feature_vector = EXCLUDED.feature_vector
-    """, (wine_id, Binary(vector)))
+    """, (wine_id, vector))
 
 conn.commit()
 cursor.close()
