@@ -128,12 +128,11 @@ function MBTIResults() {
             )}
           </ul>
       </div>
-      {/* <div style={styles.closeButton}> */}
-          {/* <PixelButton>Home</PixelButton> */}
+
           <button style={styles.shareButton} onClick={() => nav("/")}>
            홈으로 이동
           </button>
-      {/* </div> */}
+
       </div>
       <div>
 
