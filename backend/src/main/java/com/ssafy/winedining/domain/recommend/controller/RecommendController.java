@@ -1,5 +1,6 @@
 package com.ssafy.winedining.domain.recommend.controller;
 
+import com.ssafy.winedining.domain.recommend.dto.RecommendByFoodDto;
 import com.ssafy.winedining.domain.recommend.service.RecommendService;
 import com.ssafy.winedining.domain.wine.dto.WineResponseDTO;
 import com.ssafy.winedining.global.auth.dto.CustomOAuth2User;
@@ -25,10 +26,12 @@ public class RecommendController {
      */
     @GetMapping
     public ResponseEntity<ApiResponse<List<WineResponseDTO>>> getRecommendation(
-            @AuthenticationPrincipal CustomOAuth2User customOAuth2User
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @RequestBody RecommendByFoodDto recommendByFoodDto
     ) {
         Long userId = customOAuth2User.getUserId();
-        List<WineResponseDTO> recommendedWines = recommendService.getRecommendedWineDetails(userId).block();
+        String paring = recommendByFoodDto.getPairing();
+        List<WineResponseDTO> recommendedWines = recommendService.getRecommendedWineDetails(userId, paring).block();
 
         ApiResponse<List<WineResponseDTO>> response = ApiResponse.<List<WineResponseDTO>>builder()
                 .status(HttpStatus.OK.value())
