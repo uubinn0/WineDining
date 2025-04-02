@@ -70,6 +70,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   title: {
     fontSize : vh(2.5),
+    marginBottom : vh(1),
     textAlign : "center",
     fontFamily : "Galmuri7",
   },
@@ -82,8 +83,14 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   wineItem: {
     display: "flex",
-    alignItems: "center",
-    margin: vh(3),
+    justifyContent : "center",
+    marginLeft : vh(3),
+    marginRight : vh(3),
+    marginBottom : vh(2),
+    
+    // alignItems: "stretch",
+    
+    // margin: vh(1),
     backgroundColor: "rgba(255, 255, 255, 0.5)",
     padding : vh(1),
     // padding: "10px",
