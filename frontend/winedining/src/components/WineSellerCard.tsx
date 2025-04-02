@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, memo } from "react";
 import { Bottle } from "../types/seller";
 
 interface WineSellerCardProps {
@@ -8,30 +8,18 @@ interface WineSellerCardProps {
   isBest: boolean;
 }
 
-const WineSellerCard = ({ wine, onBestClick, onDetailClick, isBest }: WineSellerCardProps) => {
-  // 와인 이미지 디버깅용
-  useEffect(() => {
-    console.log("wine image:", wine.wine.image, wine.wine.wineId);
-  }, [wine.wine.image]);
-
+const WineSellerCard = memo(({ wine, onBestClick, onDetailClick, isBest }: WineSellerCardProps) => {
   const isValidImage =
     wine.wine.image &&
     wine.wine.image !== "no_image" &&
     wine.wine.image.trim() !== "" &&
     wine.wine.image.startsWith("http");
 
-  // const imageSrc = isValidImage ? wine.wine.image : "/sample_image/wine_sample.jpg";
-
-  const imageSrc = "/sample_image/wine_sample.jpg";
+  const imageSrc = isValidImage ? wine.wine.image : "/sample_image/wine_sample.jpg";
 
   return (
     <div style={styles.card}>
-      <img
-        // src={wine.wine.image !== "no_image" ? wine.wine.image : "/sample_image/wine_sample.jpg"}
-        src={imageSrc}
-        alt={wine.wine.name}
-        style={styles.image}
-      />
+      <img src={imageSrc} alt={wine.wine.name} style={styles.image} />
 
       <div style={styles.info}>
         <div style={styles.name}>{wine.wine.name.toUpperCase()}</div>
@@ -55,7 +43,7 @@ const WineSellerCard = ({ wine, onBestClick, onDetailClick, isBest }: WineSeller
       </div>
     </div>
   );
-};
+});
 
 const styles: { [key: string]: React.CSSProperties } = {
   card: {
