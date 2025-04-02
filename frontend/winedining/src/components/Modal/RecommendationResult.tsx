@@ -2,13 +2,9 @@ import React from "react";
 import winemenu from "../../assets/images/modal/winemenu.png";
 import { WineRecommendation } from "../../types/wine";
 import defaultwineimg from "../../assets/images/winesample/defaultwine.png"
-
-// interface Wine {
-//     name: string;
-//     description: string;
-//     image: string;
-//   }
+import { vh } from "../../utils/vh";
   
+
   interface ModalProps {
     wines: WineRecommendation[];
     onClose: () => void;
@@ -20,18 +16,21 @@ const RecommendationResult: React.FC<ModalProps> = ({ wines, onClose }) => {
     <div style={styles.overlay}>
       <div style={styles.modal}>
         <img src={winemenu} alt="와인 메뉴판" style={styles.menuImage} />
-        <h2 style={styles.title}>✨ 추천 리스트 ✨</h2>
-        <ul style={styles.wineList}>
+        <div style={styles.textContainer}>
+        <div style={styles.title}>✨ 추천 리스트 ✨</div>
+        <div style={styles.wineList}>
           {wines.map((wine, index) => (
-            <li key={index} style={styles.wineItem}>
+            <div key={index} style={styles.wineItem}>
               <img src={wine.image || defaultwineimg} alt={wine.krName} style={styles.wineImage} />
-              <div style={styles.wineText}>
-                <h3>{wine.krName}</h3>
-                <p>{wine.description}</p>
+              <div >
+                <div style={styles.krName}>{wine.krName}</div>
+                <div style={styles.wineText}>{wine.description}</div>
               </div>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
+                  
+        </div>
         <button style={styles.closeButton} onClick={onClose}>
           메인으로 돌아가기
         </button>
@@ -45,18 +44,19 @@ const styles: { [key: string]: React.CSSProperties } = {
     position: "fixed",
     top: 0,
     left: 0,
-    width: "100vw",
+    paddingTop : vh(3),
+    width : "100vw",
     height: "100vh",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(39, 31, 31, 0.5)",
     display: "flex",
-    justifyContent: "center",
+    flexDirection : "column",
+    // justifyContent: "center",
     alignItems: "center",
     zIndex: 1000,
   },
   modal: {
-    position: "relative",
-    width: "320px",
-    height: "550px",
+    width: "90%",
+    height: "100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -64,48 +64,60 @@ const styles: { [key: string]: React.CSSProperties } = {
   menuImage: {
     position: "absolute",
     width: "100%",
-    height: "100%",
-    objectFit: "cover",
+    height : "90%",
+    objectFit: "fill",
     zIndex: -1,
   },
   title: {
-    marginTop: "40px",
-    fontSize: "18px",
-    fontWeight: "bold",
-    color: "#fff",
+    fontSize : vh(2.5),
+    textAlign : "center",
+    fontFamily : "Galmuri7",
   },
-  wineList: {
-    listStyle: "none",
-    padding: 0,
-    width: "85%",
-    marginTop: "30px",
+  textContainer: {
+    marginTop : vh(14),
+    width: "100%",
+    maxHeight: "70%",
+    overflow: "auto", // 넘치는 부분에 스크롤을 추가
+    zIndex: 1, // 텍스트가 이미지 위에 보이도록 설정
   },
   wineItem: {
     display: "flex",
     alignItems: "center",
-    marginBottom: "20px",
-    backgroundColor: "rgba(255, 255, 255, 0.8)",
-    padding: "10px",
-    borderRadius: "10px",
+    margin: vh(3),
+    backgroundColor: "rgba(255, 255, 255, 0.5)",
+    padding : vh(1),
+    // padding: "10px",
+    borderRadius: vh(2),
   },
   wineImage: {
-    width: "50px",
-    height: "120px",
+    width: vh(7),
+    minWidth : vh(7),
+    margin : vh(1),
     objectFit: "contain",
-    marginRight: "10px",
+    zIndex : 1,
   },
+  krName : {
+    fontSize: vh(2.2),
+    marginTop : vh(1),
+    marginBottom : vh(1),
+  },
+
   wineText: {
     flex: 1,
-    fontSize: "14px",
+    fontSize: vh(1.8),
     color: "#333",
   },
   closeButton: {
-    marginTop: "10px",
-    padding: "8px 16px",
-    border: "none",
-    backgroundColor: "#d32f2f",
-    color: "white",
-    borderRadius: "5px",
+    position: "fixed", /* absolute에서 relative로 변경 */
+    bottom: vh(6),
+    padding: `${vh(1.5)} ${vh(3)}`,
+    backgroundColor: "#fff",
+    border: `1px solid #333`,
+    borderRadius: vh(1),
+    fontFamily: "Galmuri7",
+    fontSize: vh(1.8),
+    boxShadow: "0 0.3vh 0.8vh rgba(0,0,0,0.3)",
+    zIndex: 1010,
     cursor: "pointer",
   },
 };
