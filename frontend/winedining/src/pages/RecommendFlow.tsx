@@ -11,17 +11,16 @@ import { AppDispatch, RootState } from "../store/store"; // store 경로에 맞�
 import { fetchUserProfile } from "../store/slices/authSlice";
 import { setCameFromRecommendFlow } from "../store/slices/testSlice";
 import { getWineRecommendations } from "../api/recommendResultApi";
-
+import { WineRecommendation } from "../types/wine";
 
 const RecommendFlow: React.FC = () => {
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
   const testState = useSelector((state: any) => state.test); // Redux에서 상태 가져오기
   const dispatch = useDispatch<AppDispatch>();
 
   const { user, status } = useSelector((state: RootState) => state.auth);
   const username = user?.nickname ?? "소믈리에";
-  const [wineRecommendations, setWineRecommendations] = useState<any[]>([]); // 와인 추천 리스트 상태 추가
+  const [wineRecommendations, setWineRecommendations] = useState<WineRecommendation[]>([]); // 와인 추천 리스트 상태
 
 
   const goToRecommendTest = () => {
@@ -35,9 +34,7 @@ const RecommendFlow: React.FC = () => {
     }
   }, [dispatch, status]);
 
-
-  const [currentStep, setCurrentStepState] = React.useState(testState.currentStep);
-
+  const currentStep = useSelector((state: RootState) => state.test.currentStep);
   const [userFoodInput, setUserFoodInput] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [responses, setResponses] = useState<string[]>([]);
@@ -55,28 +52,9 @@ const RecommendFlow: React.FC = () => {
     { question: "이런 와인은 어떠신가요?", options: ["추천 리스트 보기"] },
   ];
 
-  
-  // const wineRecommendations = [
-  //   {
-  //     name: "LA MARCA",
-  //     description: "이 와인은 해산물과 어울리는 달달한 와인이에요. 배럴 향이 많이 나는 모제카입니다.",
-  //     image: "/assets/images/wine1.png",
-  //   },
-  //   {
-  //     name: "LA MARCA",
-  //     description: "이 와인은 해산물과 어울리는 달달한 와인이에요. 배럴 향이 많이 나는 모제카입니다.",
-  //     image: "/assets/images/wine2.png",
-  //   },
-  //   {
-  //     name: "LA MARCA",
-  //     description: "이 와인은 해산물과 어울리는 달달한 와인이에요. 배럴 향이 많이 나는 모제카입니다.",
-  //     image: "/assets/images/wine3.png",
-  //   },
-  // ];
-
   useEffect(() => {
     if (testState.testCompleted && currentStep === 0) {
-      setCurrentStepState(6); // **6번째 질문부터 시작**
+      // setCurrentStepState(6); // **6번째 질문부터 시작**
       dispatch(setCurrentStep(6)); // Redux에서 currentStep 업데이트
     }
   }, [testState.testCompleted, currentStep, dispatch]);
@@ -84,27 +62,35 @@ const RecommendFlow: React.FC = () => {
 
   useEffect(() => {
     if (currentStep === 0) {
-      setTimeout(() => setCurrentStepState(1), 2000);
+      setTimeout(() => dispatch(setCurrentStep(1)), 2000); // 0 단계 후 1 단계로 이동
+      // setTimeout(() => setCurrentStepState(1), 2000);
     } else if (currentStep === 2) {
       setTimeout(() => navigate("/home"), 2000);
     } else if (currentStep === 3) {
-      setTimeout(() => setCurrentStepState(4), 1500);
+      // setTimeout(() => setCurrentStepState(4), 1500);
+      setTimeout(() => dispatch(setCurrentStep(4)), 2000);
     } else if (currentStep === 4) {
-      setTimeout(() => setCurrentStepState(5), 1500);
+      // setTimeout(() => setCurrentStepState(5), 1500);
+      setTimeout(() => dispatch(setCurrentStep(5)), 2000);
+
     } else if (currentStep === 7) {
-      setTimeout(() => setCurrentStepState(8), 1500);
+      // setTimeout(() => setCurrentStepState(8), 1500);
+      setTimeout(() => dispatch(setCurrentStep(8)), 2000);
+
     }
-  }, [currentStep, navigate]);
+  }, [currentStep, dispatch, navigate]);
 
 
   const handleSelectOption = (selectedOption: string) => {
     if (currentStep === 1 && selectedOption === "아니오") {
-      setCurrentStepState(2);
+      dispatch(setCurrentStep(2));
+      // setCurrentStepState(2);
       return;
     }
 
     if (currentStep === 1 && selectedOption === "예") {
-      setCurrentStepState(3);
+      // setCurrentStepState(3);
+      dispatch(setCurrentStep(3));
       return;
     }
 
@@ -115,7 +101,8 @@ const RecommendFlow: React.FC = () => {
     }
 
     if (currentStep + 1 < dialogues.length) {
-      setCurrentStepState(currentStep + 1);
+      // setCurrentStepState(currentStep + 1);
+      dispatch(setCurrentStep(currentStep + 1));
     } else if (selectedOption === "추천 리스트 보기") {
       setShowModal(true); // 추천 리스트 모달 표시
     }
@@ -133,15 +120,17 @@ const RecommendFlow: React.FC = () => {
 
     try {
       const response = await getWineRecommendations({pairing: pairingValue })
+      console.log("data : ", response.data)
     
       if (response.success) {
-        setWineRecommendations(response.data.recommendations)
+        setWineRecommendations(response.data)
         setShowModal(true)
       } else {
         console.log("추천실패:", response.message)
       }    
       // `input`을 입력한 후, 다음 질문으로 이동
-      setCurrentStepState(currentStep + 1);
+      // setCurrentStepState(currentStep + 1);
+      dispatch(setCurrentStep(currentStep + 1));
       setUserFoodInput(""); // 입력창 초기화
     } catch (error) {
       console.log("api 호출 중 오류 발생: ", error)
@@ -149,14 +138,6 @@ const RecommendFlow: React.FC = () => {
 
 
   };
-
-  const handleReturnToHome = () => {
-    dispatch(resetTestState()); // **Redux 상태 초기화**
-    setCurrentStepState(0); // currentStep을 0으로 리셋
-    navigate("/home"); // 메인 화면으로 이동
-    console.log(currentStep, testState)
-  };
-
 
   return (
 <div style={styles.container}>
@@ -174,7 +155,9 @@ const RecommendFlow: React.FC = () => {
         />
       </div>
         
-      {showModal && <RecommendationResult wines={wineRecommendations} onClose={() => {setShowModal(false); handleReturnToHome()}} />}    </div>
+      {showModal && <RecommendationResult wines={wineRecommendations} onClose={() => {setShowModal(false); navigate("/home")}} />}
+
+      </div>
   );
 };
 
