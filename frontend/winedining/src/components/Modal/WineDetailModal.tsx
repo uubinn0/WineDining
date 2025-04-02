@@ -1,5 +1,10 @@
 import React from "react";
 import { Wine, WineDetail } from "../../types/wine";
+import { useDispatch, UseDispatch, useSelector, UseSelector } from "react-redux";
+import { addWish, removeWish } from "../../store/slices/wishSlice";
+import { RootState, AppDispatch } from "../../store/store";
+import { WishItem } from "../../types/wish";
+import closeButton from "../../assets/icons/closebutton.png";
 
 interface WineDetailModalProps {
   isOpen: boolean;
@@ -8,14 +13,25 @@ interface WineDetailModalProps {
 }
 
 const WineDetailModal = ({ isOpen, onClose, wine }: WineDetailModalProps) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const wishList = useSelector((state: RootState) => state.wish.items);
+  const isInWishList = wishList.some((wish: WishItem) => wish.wine.wineId === wine.wineId);
+
+  const handleWishToggle = () => {
+    if (!wine.wineId) return;
+    if (isInWishList) {
+      dispatch(removeWish(wine.wineId));
+    } else {
+      dispatch(addWish(wine.wineId));
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
     <div style={styles.overlay} onClick={onClose}>
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button style={styles.closeButton} onClick={onClose}>
-          ✕
-        </button>
+        <img src={closeButton} alt="닫기" style={styles.closeButton} onClick={onClose} />
 
         {/* 와인 제목 */}
         <h2 style={styles.title}>{wine.enName.toUpperCase()}</h2>
@@ -44,21 +60,35 @@ const WineDetailModal = ({ isOpen, onClose, wine }: WineDetailModalProps) => {
           <p>{wine.pairing ? wine.pairing.join(" · ") : "-"}</p>
         </div>
 
-        {/* 와인 상세 정보 */}
-        <div style={styles.detailInfo}>
-          <h3 style={styles.sectionTitle}>{wine.enName.toUpperCase()}</h3>
-          <p>✦ {wine.price ? `${wine.price.toLocaleString()}원` : "가격 정보 없음"}</p>
-          <p>✦ 도수 {wine.alcoholContent ? `${wine.alcoholContent}%` : "정보 없음"}</p>
+        <div style={styles.detailWrapper}>
+          {/* 와인 상세 정보 */}
+          <div style={styles.detailInfo}>
+            <h3 style={styles.sectionTitle}>{wine.enName.toUpperCase()}</h3>
+            <p>✦ {wine.price ? `${wine.price.toLocaleString()}원` : "가격 정보 없음"}</p>
+            <p>✦ 도수 {wine.alcoholContent ? `${wine.alcoholContent}%` : "정보 없음"}</p>
+          </div>
+
+          {/* 와인 이미지 */}
+          <div style={styles.imageContainer}>
+            <img
+              src={wine.image !== "no_image" ? wine.image : "/sample_image/wine_sample.jpg"}
+              alt={wine.krName}
+              style={styles.image}
+            />
+          </div>
         </div>
 
-        {/* 와인 이미지 */}
-        <div style={styles.imageContainer}>
-          <img
-            src={wine.image !== "no_image" ? wine.image : "/sample_image/wine_sample.jpg"}
-            alt={wine.krName}
-            style={styles.image}
-          />
-        </div>
+        {/* 담기 버튼 */}
+        <button
+          style={{
+            ...styles.button,
+            backgroundColor: isInWishList ? "#5A0000" : "#FFFFFF",
+            color: isInWishList ? "#FFFFFF" : "#000000",
+          }}
+          onClick={handleWishToggle}
+        >
+          {isInWishList ? "담김" : "담기"}
+        </button>
       </div>
     </div>
   );
@@ -87,39 +117,36 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   modal: {
     backgroundColor: "#2a0e35",
-    // padding: "20px",
     borderRadius: "1.3vh",
-    // width: "350px",
     maxWidth: "90%",
     color: "#fff",
     position: "relative",
     border: "1vh solid #d4a5ff",
-
-    // 추가 부분
-    top: "6vh",
+    // top: "0vh",
     width: "calc( 50 * var(--custom-vh))",
-    height: "80%",
+    height: "95%",
     padding: "2.5vh",
     paddingTop: "1vh",
-
-    overflowY: "auto", // ✅ 스크롤 가능하게 수정
-    scrollbarWidth: "none", // ✅ Firefox용 (선택)
-    msOverflowStyle: "none", // ✅ IE/Edge용 (선택)
+    overflowY: "auto",
+    scrollbarWidth: "none",
+    msOverflowStyle: "none",
     boxSizing: "border-box",
-    // scrollbarWidth: "none",
     transition: "transform 0.3s ease",
     display: "flex",
     flexDirection: "column",
   },
   closeButton: {
     position: "absolute",
-    right: "10px",
-    top: "10px",
-    background: "none",
-    border: "none",
-    fontSize: "20px",
-    color: "#fff",
+    top: "1vh",
+    right: "1vh",
+    width: "5vh",
+    height: "5vh",
     cursor: "pointer",
+    zIndex: 2000,
+    // alignSelf: "flex-end",
+  },
+  detailWrapper: {
+    display: "flex",
   },
   title: {
     fontSize: "20px",
@@ -196,6 +223,18 @@ const styles: { [key: string]: React.CSSProperties } = {
     height: "160px",
     objectFit: "contain",
     filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.4))",
+  },
+  button: {
+    backgroundColor: "#FFFFFF",
+    width: "5vh",
+    color: "#000000",
+    fontSize: "1.5vh",
+    border: "none",
+    padding: "4px 8px",
+    borderRadius: "6px",
+    cursor: "pointer",
+    alignSelf: "center",
+    marginTop: "2vh",
   },
 };
 

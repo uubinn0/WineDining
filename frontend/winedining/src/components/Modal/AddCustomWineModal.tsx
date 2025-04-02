@@ -3,15 +3,15 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { CustomWineRegistrationRequest, Bottle } from "../../types/seller";
 import { registerCustomWine } from "../../store/slices/sellarSlice";
+import { Wine } from "../../types/wine";
 
 interface AddCustomWineModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onComplete: (bottle: Bottle) => void;
+  onComplete: (data: { wine: Wine; customWineForm: CustomWineRegistrationRequest }) => void;
 }
 
 const AddCustomWineModal = ({ isOpen, onClose, onComplete }: AddCustomWineModalProps) => {
-  const dispatch = useDispatch<AppDispatch>();
   const [form, setForm] = useState<CustomWineRegistrationRequest>({
     name: "",
     typeId: 1,
@@ -23,26 +23,29 @@ const AddCustomWineModal = ({ isOpen, onClose, onComplete }: AddCustomWineModalP
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = async () => {
-    console.log("제출 데이터:", form);
-
+  const handleSubmit = () => {
     if (!form.name || !form.country || !form.grape) {
       alert("모든 항목을 입력해주세요.");
       return;
     }
-    try {
-      const resultAction = await dispatch(registerCustomWine(form));
-      console.log("커스텀 와인 등록 성공:", resultAction);
-      if (registerCustomWine.fulfilled.match(resultAction)) {
-        alert("커스텀 와인이 등록되었습니다!");
-        onComplete(resultAction.payload);
-      } else {
-        alert("등록 중 오류가 발생했습니다.");
-      }
-    } catch (error) {
-      console.error("커스텀 와인 등록 오류:", error);
-      alert("알 수 없는 오류가 발생했습니다.");
-    }
+
+    // 임시 와인 객체 생성
+    const tempWine = {
+      wineId: -1, // 임시 ID
+      name: form.name,
+      type: ["레드", "화이트", "스파클링", "로제"][form.typeId - 1],
+      country: form.country,
+      grape: form.grape,
+      image: undefined,
+      typeName: ["레드", "화이트", "스파클링", "로제"][form.typeId - 1],
+      wish: false,
+    };
+
+    // form 데이터와 임시 와인 정보를 함께 전달
+    onComplete({
+      wine: tempWine,
+      customWineForm: form,
+    });
   };
 
   if (!isOpen) return null;
