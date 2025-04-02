@@ -17,6 +17,7 @@ import { vh } from "../utils/vh";
 function Home() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  //console.l
 
   const { user, status } = useSelector((state: RootState) => state.auth);
   const [isPreferenceModalVisible, setIsPreferenceModalVisible] = useState(false);
