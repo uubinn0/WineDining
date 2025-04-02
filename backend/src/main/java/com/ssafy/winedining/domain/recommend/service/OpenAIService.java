@@ -157,7 +157,7 @@ public class OpenAIService {
             promptBuilder.append("어울리는 음식: ").append(String.join(", ", wine.getPairing())).append("\n");
         }
 
-        promptBuilder.append("\n어울리는 음식과 맛, 향 특징을 포함한 매력적인 설명을 작성해주세요. 와인 초보자들이 이해하기 쉽게 설명해주세요.");
+        promptBuilder.append("\n어울리는 음식과 맛, 향 특징을 포함한 매력적인 설명을 작성해주세요. 설명의 시작을 (와인이름)은 ~ 으로 시작하지 말고 이 와인은 ~ 으로 시작하는 문장으로 작성해 주세요. 와인 초보자들이 이해하기 쉽게 70자 이내로 설명해주세요.");
 
         return promptBuilder.toString();
     }
