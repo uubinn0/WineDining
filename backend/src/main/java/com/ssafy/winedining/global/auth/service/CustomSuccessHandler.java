@@ -24,11 +24,11 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     @Value("${jwt.access-token-expiration}")
     private long accessTokenExpiration;
 
-    @Value("${frontend.url}")
-    private String frontendUrl;
-
-    @Value("${server.domain}")
-    private String serverDomain;
+//    @Value("${frontend.url}")
+//    private String frontendUrl;
+//
+//    @Value("${server.domain}")
+//    private String serverDomain;
 
     public CustomSuccessHandler(JWTUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
@@ -40,37 +40,44 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         CustomOAuth2User customUserDetails = (CustomOAuth2User) authentication.getPrincipal();
 
         String username = customUserDetails.getUsername();
-        Long userId = customUserDetails.getUserId(); // userId 가져오기
+        Long userId = customUserDetails.getUserId();
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
+        // 현재 요청 도메인 가져오기
+        String requestDomain = request.getServerName();
+
         // userId를 포함한 토큰 생성
         String token = jwtUtil.createJwt(username, role, userId, accessTokenExpiration);
 
-        // 쿠키 만료 시간도 동일하게 설정 (초 단위로 변환 필요)
-        response.addCookie(createCookie("Authorization", token));
-        response.sendRedirect("/home");
+        // 현재 요청 도메인 기반으로 쿠키 생성
+        response.addCookie(createCookie("Authorization", token, requestDomain));
+
+        // 동일한 도메인으로 리다이렉트
+        String redirectUrl = "https://" + requestDomain + "/home";
+        response.sendRedirect(redirectUrl);
     }
 
-    private Cookie createCookie(String key, String value) {
+    // createCookie 메서드에 도메인 파라미터 추가
+    private Cookie createCookie(String key, String value, String domain) {
         Cookie cookie = new Cookie(key, value);
         // 밀리초를 초로 변환 (쿠키의 maxAge는 초 단위)
         cookie.setMaxAge((int)(accessTokenExpiration / 1000));
 
-        // 서버 도메인에 따라 secure 설정
-        if (!serverDomain.equals("localhost")) {
+        // localhost가 아닌 경우 secure 설정
+        if (!domain.equals("localhost")) {
             cookie.setSecure(true);
         }
 
         cookie.setPath("/");
         cookie.setHttpOnly(true);
 
-        // 서버 도메인이 localhost가 아닐 경우 도메인 설정
-        if (!serverDomain.equals("localhost")) {
-            cookie.setDomain(serverDomain);
+        // localhost가 아닌 경우 도메인 설정
+        if (!domain.equals("localhost")) {
+            cookie.setDomain(domain);
         }
 
         return cookie;
