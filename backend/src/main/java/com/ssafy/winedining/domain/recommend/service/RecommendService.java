@@ -2,16 +2,25 @@ package com.ssafy.winedining.domain.recommend.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.winedining.domain.info.entity.Info;
+import com.ssafy.winedining.domain.info.entity.InfoDetail;
+import com.ssafy.winedining.domain.info.repository.InfoRepository;
 import com.ssafy.winedining.domain.recommend.dto.RecommendByPreferenceDto;
 import com.ssafy.winedining.domain.recommend.service.moduleService.FoodSimilarityService;
 import com.ssafy.winedining.domain.recommend.service.moduleService.RecommendDomainService;
 import com.ssafy.winedining.domain.recommend.service.moduleService.RecommendFastApiService;
 import com.ssafy.winedining.domain.wine.dto.WineResponseDTO;
+import com.ssafy.winedining.domain.wine.entity.Wine;
 import com.ssafy.winedining.domain.wine.service.WineService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+import java.time.temporal.WeekFields;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,6 +33,7 @@ public class RecommendService {
     private final WineService wineService;
     private final FoodSimilarityService foodSimilarityService;
     private final OpenAIService openAIService; // OpenAI 서비스 추가
+    private final InfoRepository infoRepository;
 
     /**
      * 취향 테스트를 바탕으로 와인을 추천 받습니다.
@@ -85,6 +95,15 @@ public class RecommendService {
                         return Mono.error(e);
                     }
                 });
+    }
+
+    public List<WineResponseDTO> getWeeklyRecommendations() {
+        // "WEEKLY_RECOMMEND" 타입으로 저장된 Info 찾기
+        Pageable pageable = PageRequest.of(1 - 1, 6);
+        LocalDate today = LocalDate.now(); // 현재 날짜
+        int weekNumber = today.get(WeekFields.of(Locale.getDefault()).weekOfYear());
+        Page<Info> infoPage = infoRepository.findByType("weekly_recommend" + weekNumber, pageable);
+
     }
 
 //    /**
