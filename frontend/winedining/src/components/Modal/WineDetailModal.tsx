@@ -102,9 +102,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     padding: "2.5vh",
     paddingTop: "1vh",
 
-    overflowY: "auto", // ✅ 스크롤 가능하게 수정
-    scrollbarWidth: "none", // ✅ Firefox용 (선택)
-    msOverflowStyle: "none", // ✅ IE/Edge용 (선택)
+    overflowY: "auto",
+    scrollbarWidth: "none",
+    msOverflowStyle: "none",
     boxSizing: "border-box",
     // scrollbarWidth: "none",
     transition: "transform 0.3s ease",

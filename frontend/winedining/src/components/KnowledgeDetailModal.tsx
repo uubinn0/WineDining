@@ -1,24 +1,29 @@
-import React from "react";
-import closeButton from "../assets/icons/closebutton.png"
-
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
+import closeButton from "../assets/icons/closebutton.png";
+import MarkdownRenderer from "./MarkdownRenderer";
 
 interface KnowledgeDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
-  knowledge: { title: string; content: string };
 }
 
-const KnowledgeDetailModal: React.FC<KnowledgeDetailModalProps> = ({ isOpen, onClose, knowledge }) => {
-  if (!isOpen) return null;
+const KnowledgeDetailModal: React.FC<KnowledgeDetailModalProps> = ({ isOpen, onClose }) => {
+  const { selectedInfo } = useSelector((state: RootState) => state.info);
+
+  if (!isOpen || !selectedInfo) return null;
 
   return (
     <div style={styles.overlay} onClick={onClose}>
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button style={styles.closeButton} onClick={onClose}  >
-        <img src={closeButton} alt="Close" style={styles.closeIcon} /> {/* 이미지 버튼 */}
+        <button style={styles.closeButton} onClick={onClose}>
+          <img src={closeButton} alt="Close" style={styles.closeIcon} /> {/* 이미지 버튼 */}
         </button>
-        <h2 style={styles.title}>{knowledge.title}</h2>
-        <p style={styles.content}>{knowledge.content}</p>
+        {/* <h2 style={styles.title}>{selectedInfo.title}</h2>
+        <p style={styles.content}>{selectedInfo.content}</p> */}
+        <MarkdownRenderer markdownContent={selectedInfo.title} customStyle={styles.title} />
+        <MarkdownRenderer markdownContent={selectedInfo.content} customStyle={styles.content} />
       </div>
     </div>
   );
@@ -39,12 +44,21 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   modal: {
     backgroundColor: "#21101B",
-    border : "solid 5px #D6BA91",
-    padding: "20px",
-    borderRadius: "8px",
-    width: "75%",
+    border: "solid 5px #D6BA91",
+    padding: "2vh",
+    paddingTop: "1vh",
+    borderRadius: "1.3vh",
+    width: "calc( 40 * var(--custom-vh))",
     color: "white",
     position: "relative",
+    height: "80%",
+    overflowY: "auto",
+    scrollbarWidth: "none",
+    msOverflowStyle: "none",
+    boxSizing: "border-box",
+    transition: "transform 0.3s ease",
+    display: "flex",
+    flexDirection: "column",
   },
   closeButton: {
     position: "absolute",
@@ -56,29 +70,28 @@ const styles: { [key: string]: React.CSSProperties } = {
     cursor: "pointer",
   },
   closeIcon: {
-    width: "30px",   // 아이콘 크기 조정
-    height: "30px",  // 아이콘 크기 조정
+    width: "30px", // 아이콘 크기 조정
+    height: "30px", // 아이콘 크기 조정
   },
   title: {
     fontSize: "20px",
     color: "#FFF7F7",
     textAlign: "center",
     // WebkitTextStroke: "1px #6A3512",
-    textShadow: "1px 1px 0 #6A3512, -1px -1px 0 #6A3512, 1px -1px 0 #6A3512, -1px 1px 0 #6A3512", 
+    textShadow: "1px 1px 0 #6A3512, -1px -1px 0 #6A3512, 1px -1px 0 #6A3512, -1px 1px 0 #6A3512",
     fontFamily: "Galmuri7",
     fontStyle: "normal",
-    fontWeight : "400",
+    fontWeight: "400",
   },
   content: {
     textAlign: "start",
     color: "white",
     fontSize: "14px",
-    fontFamily: "Galmuri9",  
-    fontStyle: "normal",     
-    fontWeight: "400",       
-    lineHeight: "170%", 
-  }
-  
+    fontFamily: "Galmuri9",
+    fontStyle: "normal",
+    fontWeight: "400",
+    lineHeight: "170%",
+  },
 };
 
 export default KnowledgeDetailModal;
