@@ -4,14 +4,37 @@ from app.schemas.recommendDto import RecommendByPreferenceDto, RecommendationRes
 from sqlalchemy import text
 
 def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) -> RecommendationResponse:
-
     print("🚀 recommend_by_preference 호출됨")
+
+    # 0. 사용자 입력값 전처리
+    # 산도
+    if data.acidity == 1:
+        data.acidity = 0.5
+    elif data.acidity == 2:
+        data.acidity = 2.5
+    elif data.acidity == 3:
+        data.acidity = 4.5
+
+    # 바디감
+    if data.body == 1:
+        data.body = 0.5
+    elif data.body == 2:
+        data.body = 2.5
+    elif data.body == 3:
+        data.body = 4.5
+
+    # 타닌
+    if data.tannin == 1:
+        data.tannin = 1
+    elif data.tannin == 2:
+        data.tannin = 4
+
     # 1. 사용자 벡터 생성 (numerical features + type one-hot encoding)
     user_vector = [
         data.acidity / 5,  
         data.alcoholContent / 100,
         data.body / 5,
-        data.sweetness / 5,
+        (data.sweetness + 1) / 5,   # 당도는 단계가1부터 시작
         data.tannin / 5,
         int(data.red),
         int(data.white), 
