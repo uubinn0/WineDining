@@ -2,7 +2,7 @@
   "name": "winedining",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://j12b202.p.ssafy.io",
+  "proxy": "https://winedining.store",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
