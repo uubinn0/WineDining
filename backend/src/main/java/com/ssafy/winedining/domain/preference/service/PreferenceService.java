@@ -32,7 +32,7 @@ public class PreferenceService {
                 .body(preferenceTest.getBody())
                 .red(preferenceTest.getPreferredTypes().equals("레드"))
                 .white(preferenceTest.getPreferredTypes().equals("화이트"))
-                .sparkling(preferenceTest.getPreferredTypes().equals("스파크링"))
+                .sparkling(preferenceTest.getPreferredTypes().equals("스파클링"))
                 .rose(preferenceTest.getPreferredTypes().equals("로제"))
                 .createdAt(new Timestamp(System.currentTimeMillis()))
                 .updatedAt(null)
