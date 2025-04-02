@@ -5,7 +5,7 @@ from sqlalchemy import text
 
 def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) -> RecommendationResponse:
     print("🚀 recommend_by_preference 호출됨")
-    print("foodIds", data.foodIds)
+    print("foodIds",   data.foodIds)
 
 
     # 0. 사용자 입력값 전처리
@@ -51,7 +51,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
             SELECT wine_id, feature_vector <=> CAST(:user_vector AS vector) AS cos
             FROM preference_wine_vectors
             WHERE wine_id > 10
-            ORDER BY cos DESC
+            ORDER BY cos ASC
             LIMIT 3
         """)
         params = {"user_vector": user_vector}
@@ -65,7 +65,6 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
                     feature_vector <=> CAST(:user_vector AS vector) AS cos
                 FROM preference_wine_vectors
                 WHERE wine_id NOT BETWEEN 1 AND 10
-                ORDER BY cos DESC
             )
             SELECT S.WINE_ID, P.FOOD_ID
             FROM SIM_TBL S
