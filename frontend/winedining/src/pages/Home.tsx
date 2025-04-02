@@ -13,14 +13,17 @@ import bartender from "../assets/icons/bartender.png";
 import quest from "../assets/icons/questicon.png";
 
 import { vh } from "../utils/vh";
+// GA 이벤트 헬퍼 (유틸리티 함수)
+// utils/analytics.ts 에 정의되어 있다고 가정합니다.
+import { trackEvent } from "../utils/analytics";
 
 function Home() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  //console.l
-
   const { user, status } = useSelector((state: RootState) => state.auth);
   const [isPreferenceModalVisible, setIsPreferenceModalVisible] = useState(false);
+  // 최초 클릭 여부를 기록할 상태
+  const [firstButtonClicked, setFirstButtonClicked] = useState(false);
 
   useEffect(() => {
     if (status === "idle") {
@@ -30,7 +33,7 @@ function Home() {
 
   useEffect(() => {
     if (user && user.preference === false) {
-      dispatch(setCameFromRecommendFlow("home"));  // 홈에서 넘어갔음을 설정
+      dispatch(setCameFromRecommendFlow("home")); // 홈에서 넘어갔음을 설정
       setIsPreferenceModalVisible(true);
       const timer = setTimeout(() => {
         navigate("/recommendtest");
@@ -43,6 +46,15 @@ function Home() {
     dispatch(logoutUser()).then(() => {
       navigate("/");
     });
+  };
+
+  // 공통 클릭 핸들러: 최초 클릭일 경우 이벤트 추적 후 이동
+  const handleNavigationClick = (destination: string, targetName: string) => {
+    if (!firstButtonClicked) {
+      trackEvent("home_first_click", { target: targetName });
+      setFirstButtonClicked(true);
+    }
+    navigate(destination);
   };
 
   if (status === "loading") return null;
@@ -67,22 +79,40 @@ function Home() {
         </div>
       )}
 
-      <button style={{ ...buttonStyle, ...wineListPositionStyle }} onClick={() => navigate("/winelist")}>
+      <button
+        style={{ ...buttonStyle, ...wineListPositionStyle }}
+        onClick={() => handleNavigationClick("/winelist", "winelist")}
+      >
         <img src={winelistIcon} alt="와인리스트" style={wineListStyle} />
       </button>
-      <button style={{ ...buttonStyle, ...dictionaryPositionStyle }} onClick={() => navigate("/dictionaryloading")}>
+      <button
+        style={{ ...buttonStyle, ...dictionaryPositionStyle }}
+        onClick={() => handleNavigationClick("/dictionaryloading", "dictionary")}
+      >
         <img src={dictionaryIcon} alt="알쓸신잡" style={navIconStyle} />
       </button>
-      <button style={{ ...buttonStyle, ...myPagePositionStyle }} onClick={() => navigate("/mypage")}>
+      <button
+        style={{ ...buttonStyle, ...myPagePositionStyle }}
+        onClick={() => handleNavigationClick("/mypage", "mypage")}
+      >
         <img src={mypageIcon} alt="마이페이지" style={navIconStyle} />
       </button>
-      <img src={bartender} alt="바텐더" style={bartenderStyle} onClick={() => navigate("/recommendflow")} />
-      <img src={quest} alt="대화창" style={questStyle} onClick={() => navigate("/recommendflow")} />
+      <img
+        src={bartender}
+        alt="바텐더"
+        style={bartenderStyle}
+        onClick={() => handleNavigationClick("/recommendflow", "recommendflow_bartender")}
+      />
+      <img
+        src={quest}
+        alt="대화창"
+        style={questStyle}
+        onClick={() => handleNavigationClick("/recommendflow", "recommendflow_quest")}
+      />
     </div>
   );
 }
 
-// 스타일 정의는 이전과 동일하게 유지
 const homeContainer: React.CSSProperties = {
   backgroundImage: `url(${Homebackground})`,
   backgroundSize: "cover",

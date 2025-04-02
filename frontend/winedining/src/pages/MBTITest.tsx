@@ -1,12 +1,11 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import BackButton from "../components/BackButton";
 import MBTIBackground from "../assets/images/background/wineMbti.png";
 import questions from "../data/MBTIQuestion";
 import speechbubble from "../assets/icons/speechbubble.png";
 import { vh } from "../utils/vh";
-
-
+import { trackEvent } from "../utils/analytics";
 
 const MBTITest = () => {
   const navigate = useNavigate();
@@ -14,7 +13,16 @@ const MBTITest = () => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
   // const [scores, setScores] = useState({ E: 0, I: 0, S: 0, N: 0, F: 0, T: 0, P: 0, J: 0 });
-  const [scores, setScores] = useState<{ E: number; I: number; S: number; N: number; F: number; T: number; P: number; J: number }>({
+  const [scores, setScores] = useState<{
+    E: number;
+    I: number;
+    S: number;
+    N: number;
+    F: number;
+    T: number;
+    P: number;
+    J: number;
+  }>({
     E: 0,
     I: 0,
     S: 0,
@@ -30,33 +38,33 @@ const MBTITest = () => {
     setProgress(((currentQuestionIndex + 1) / questions.length) * 100);
   }, [currentQuestionIndex]);
 
-
   // const handleOptionSelect = (option: string) => {
   //   setSelectedOption(option);
 
-    const handleOptionSelect = (option: { option: string; personality: string }) => {
-      setSelectedOption(option.option);
-  
-      // 성격 유형 점수 증가 함수
-      const updateScores = (personality: keyof typeof scores) => {
-        const newScores = { ...scores };
-        // 선택된 personality 키에 해당하는 점수를 증가
-        if (newScores[personality] !== undefined) {
-          newScores[personality] += 1;
-        }
-        console.log(newScores)
+  const handleOptionSelect = (option: { option: string; personality: string }) => {
+    setSelectedOption(option.option);
 
-        setScores(newScores);
-      };
-  
-      // 선택된 옵션의 personality 값을 받아서 점수 업데이트
-      updateScores(option.personality as keyof typeof scores);
+    // 성격 유형 점수 증가 함수
+    const updateScores = (personality: keyof typeof scores) => {
+      const newScores = { ...scores };
+      // 선택된 personality 키에 해당하는 점수를 증가
+      if (newScores[personality] !== undefined) {
+        newScores[personality] += 1;
+      }
+      console.log(newScores);
 
+      setScores(newScores);
+    };
+
+    // 선택된 옵션의 personality 값을 받아서 점수 업데이트
+    updateScores(option.personality as keyof typeof scores);
 
     setTimeout(() => {
       if (currentQuestionIndex < questions.length - 1) {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
       } else {
+        // 테스트 완료 이벤트 추적
+        trackEvent("mbti_test_completed", { scores });
         // 마지막 질문에 도달하면 결과 페이지로 이동
         navigate("/MBTIresults", { state: scores });
       }
@@ -67,14 +75,12 @@ const MBTITest = () => {
 
   return (
     <div style={styles.container}>
-      <BackButton  onClick={() => navigate("/")}/>
-        <div style={styles.mainContent}>
+      <BackButton onClick={() => navigate("/")} />
+      <div style={styles.mainContent}>
         {/* <div> */}
         <div style={styles.speechBubbleContainer}>
           <img src={speechbubble} style={styles.speechbubble} alt="" />
-          <div style={styles.speechtext}>
-            당신은 어떤 와인인가요?
-          </div>
+          <div style={styles.speechtext}>당신은 어떤 와인인가요?</div>
         </div>
         <div style={styles.chatItself}>
           <div style={styles.chatContainer}>
@@ -94,21 +100,21 @@ const MBTITest = () => {
               ))}
             </div>
           </div>
-
         </div>
-      <div style={styles.progressContainer}>
-        <div style={styles.progressBar}>
-          <div
-            style={{
-              ...styles.progressFill,
-              width: `${progress}%`,
-            }}
-          ></div>
+        <div style={styles.progressContainer}>
+          <div style={styles.progressBar}>
+            <div
+              style={{
+                ...styles.progressFill,
+                width: `${progress}%`,
+              }}
+            ></div>
+          </div>
+          <div style={styles.progressText}>
+            {currentQuestionIndex + 1} / {questions.length}
+          </div>
         </div>
-        <div style={styles.progressText}>{currentQuestionIndex + 1} / {questions.length}</div>
       </div>
-        </div>
-
     </div>
   );
 };
@@ -127,22 +133,22 @@ const styles: { [key: string]: React.CSSProperties } = {
     // display : "flex",
     // justifyContent : "center"
   },
-  chatItself : {
-    position : "absolute",
-    bottom : vh(8),
+  chatItself: {
+    position: "absolute",
+    bottom: vh(8),
     width: "100vw",
     maxWidth: "430px", // 디자인 한계 지정 (선택)
     // maxHeight: "100vh",
     // height: "calc(100 * var(--custom-vh))",
-    display : "flex",
-    justifyContent : "center",
+    display: "flex",
+    justifyContent: "center",
   },
   chatContainer: {
     backgroundColor: "#21101B",
-    border : "solid 5px #D6BA91",
+    border: "solid 5px #D6BA91",
     padding: vh(3),
     borderRadius: "10px",
-    margin : vh(2)
+    margin: vh(2),
   },
   questionContainer: {
     marginBottom: "20px",
@@ -152,19 +158,18 @@ const styles: { [key: string]: React.CSSProperties } = {
     lineHeight: "1.5",
     // wordBreak : "keep-all"
   },
-  optionsContainer: {
-  },
+  optionsContainer: {},
   optionButton: {
     backgroundColor: "transparent",
     color: "white",
     padding: vh(1),
-    fontFamily : "Galmuri9",
+    fontFamily: "Galmuri9",
     fontSize: vh(2.2),
     border: "none",
     borderRadius: "8px",
     cursor: "pointer",
     // wordBreak : "keep-all",
-    textAlign : "start"
+    textAlign: "start",
   },
   progressContainer: {
     position: "absolute",
@@ -182,22 +187,19 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundColor: "#C9C0CA",
     transition: "width 0.5s ease",
     bottom: vh(3.5),
-
   },
   progressText: {
     fontSize: vh(1.5),
-    
-    
   },
   speechBubbleContainer: {
-    position: "relative",        // ✅ 기준만 설정
+    position: "relative", // ✅ 기준만 설정
     top: vh(3),
     width: "80%",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
   },
-  speechtext : {
+  speechtext: {
     position: "absolute",
     top: "50%",
     left: "50%",
@@ -208,10 +210,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontFamily: "Galmuri7",
     width: "80%",
   },
-  mainContent : {
-    display : "flex",
-    justifyContent : "center"
-  }
+  mainContent: {
+    display: "flex",
+    justifyContent: "center",
+  },
 };
 
 export default MBTITest;

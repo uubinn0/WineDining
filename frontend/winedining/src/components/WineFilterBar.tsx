@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { WineFilter } from "../types/wine";
+import { trackEvent } from "../utils/analytics";
 
 interface WineFilterBarProps {
   filter: WineFilter;
@@ -185,8 +186,10 @@ const WineFilterBar = ({ filter, onChange }: WineFilterBarProps) => {
 
   const toggleOption = (category: keyof typeof filterOptions, value: string) => {
     const current = filter.filters[category];
+    let action = "";
     if (Array.isArray(current)) {
       const updated = current.includes(value) ? current.filter((v) => v !== value) : [...current, value];
+      action = current.includes(value) ? "remove" : "add";
       onChange({
         ...filter,
         page: 1,
@@ -195,6 +198,8 @@ const WineFilterBar = ({ filter, onChange }: WineFilterBarProps) => {
           [category]: updated,
         },
       });
+      // 이벤트 추적: 필터 옵션 토글
+      trackEvent("filter_change", { filter_type: category, value, action });
     }
   };
 
@@ -210,6 +215,8 @@ const WineFilterBar = ({ filter, onChange }: WineFilterBarProps) => {
         maxPrice: max,
       },
     });
+    // 이벤트 추적: 가격 필터 변경
+    trackEvent("filter_change", { filter_type: "price", min, max });
   };
 
   const handleTasteRangeChange = (
@@ -229,6 +236,8 @@ const WineFilterBar = ({ filter, onChange }: WineFilterBarProps) => {
         [maxKey]: max,
       },
     });
+    // 이벤트 추적: 맛(당도, 산도, 바디, 타닌) 필터 변경
+    trackEvent("filter_change", { filter_type: "taste", taste_filter: { [minKey]: min, [maxKey]: max } });
   };
 
   const tasteFields: {
@@ -242,7 +251,6 @@ const WineFilterBar = ({ filter, onChange }: WineFilterBarProps) => {
     { label: "타닌", minKey: "minTannin", maxKey: "maxTannin" },
   ];
 
-  // 전체여도 선택된게 아니라고 하기 위해 처리
   const hasAnyFilter = Object.entries(filter.filters).some(([key, value]) => {
     if (Array.isArray(value)) return value.length > 0;
     if (key === "minPrice" && value !== 0) return true;
@@ -262,7 +270,11 @@ const WineFilterBar = ({ filter, onChange }: WineFilterBarProps) => {
         {categories.map(({ key, label, icon }) => (
           <button
             key={key}
-            onClick={() => setOpenFilter(openFilter === key ? null : key)}
+            onClick={() => {
+              // 탭 전환 이벤트 추적
+              trackEvent("filter_tab_change", { tab: key });
+              setOpenFilter(openFilter === key ? null : key);
+            }}
             style={{
               ...styles.tabButton,
               ...(openFilter === key ? styles.activeTab : {}),

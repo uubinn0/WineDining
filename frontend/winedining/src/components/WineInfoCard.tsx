@@ -4,6 +4,7 @@ import { addWish, removeWish } from "../store/slices/wishSlice";
 import { RootState, AppDispatch } from "../store/store";
 import { Wine } from "../types/wine";
 import { WishItem } from "../types/wish";
+import { trackEvent } from "../utils/analytics";
 
 interface WineInfoCardProps {
   wine: Wine;
@@ -19,9 +20,18 @@ const WineInfoCard = ({ wine, onClick }: WineInfoCardProps) => {
   const handleWishToggle = () => {
     if (!wine.wineId) return;
     if (isInWishList) {
-      dispatch(removeWish(wine.wineId));
+      trackEvent("toggle_wish", {
+        item_id: wine.wineId,
+        item_name: wine.name,
+        action: "remove",
+      });
     } else {
       dispatch(addWish(wine.wineId));
+      trackEvent("toggle_wish", {
+        item_id: wine.wineId,
+        item_name: wine.name,
+        action: "add",
+      });
     }
   };
 
