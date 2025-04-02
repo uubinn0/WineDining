@@ -12,7 +12,14 @@ interface AddSeller2ModalProps {
 
 const AddSeller2Modal = ({ isOpen, onClose, onPrev, onNext, wineInfo }: AddSeller2ModalProps) => {
   // 상태 관리
-  const [drinkDate, setDrinkDate] = useState("");
+  const getTodayDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+  const [drinkDate, setDrinkDate] = useState(getTodayDate());
   const [selectedCompanion, setSelectedCompanion] = useState<string>("혼자");
   const [food, setFood] = useState("");
   const [note, setNote] = useState("");

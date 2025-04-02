@@ -5,6 +5,8 @@ import { Wine } from "../../types/wine";
 import { addNote } from "../../store/slices/noteSlice";
 import { registerWineCellar } from "../../api/sellerApi";
 import { createWineNote } from "../../api/noteApi";
+import { registerCustomWine } from "../../store/slices/sellarSlice";
+import { CustomWineRegistrationRequest } from "../../types/seller";
 
 interface AddSeller3ModalProps {
   isOpen: boolean;
@@ -15,6 +17,7 @@ interface AddSeller3ModalProps {
   mode: "new" | "add";
   bottleId?: number;
   isCustom?: boolean;
+  customWineForm?: CustomWineRegistrationRequest;  // 추가
 }
 
 const AddSeller3Modal = ({
@@ -26,6 +29,7 @@ const AddSeller3Modal = ({
   mode,
   bottleId,
   isCustom = false,
+  customWineForm,  // 추가
 }: AddSeller3ModalProps) => {
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const dispatch = useDispatch<AppDispatch>();
@@ -52,28 +56,23 @@ const AddSeller3Modal = ({
 
   // 와인 등록
   const handleComplete = async () => {
-    const wineId = wineInfo.wineId;
-    const custom = isCustom;
-
-    // 디버깅용 콘솔
-    console.log("handleComplete 호출됨");
-    console.log("mode:", mode);
-    console.log("wineInfo:", wineInfo);
-    console.log("isCustom:", custom);
-    console.log("bottleId (props):", bottleId);
-
-    if (!wineId) {
-      alert("와인 정보를 찾을 수 없습니다. 다시 시도해주세요.");
-      return;
-    }
     try {
       let finalBottleId = bottleId;
-      if (isCustom) {
-        finalBottleId = bottleId;
+      
+      if (isCustom && customWineForm) {
+        // 커스텀 와인 등록
+        const customWineResult = await dispatch(registerCustomWine(customWineForm));
+        if (registerCustomWine.fulfilled.match(customWineResult)) {
+          finalBottleId = customWineResult.payload.bottleId;
+        } else {
+          throw new Error("커스텀 와인 등록 실패");
+        }
       } else if (mode === "new") {
-        const cellarResponse = await registerWineCellar(wineId);
+        // 일반 와인 등록
+        const cellarResponse = await registerWineCellar(wineInfo.wineId);
         finalBottleId = cellarResponse.bottleId;
       }
+
       if (!finalBottleId) {
         alert("Bottle ID가 존재하지 않습니다.");
         return;
