@@ -9,12 +9,12 @@ const MainPage = () => {
 
   const handleKakaoLogin = () => {
     localStorage.setItem("provider", "KAKAO");
-    window.location.href = "https://j12b202.p.ssafy.io/api/v1/auth/oauth2/authorization/kakao";
+    window.location.href = "https://winedining.store/api/v1/auth/oauth2/authorization/kakao";
   };
 
   const handleGoogleLogin = () => {
     localStorage.setItem("provider", "GOOGLE");
-    window.location.href = "https://j12b202.p.ssafy.io/api/v1/auth/oauth2/authorization/google";
+    window.location.href = "https://winedining.store/api/v1/auth/oauth2/authorization/google";
   };
 
   return (
