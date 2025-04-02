@@ -38,7 +38,7 @@ public class RecommendService {
 
         // 2. DTO에 음식 ID 목록 설정
         preferenceData.setFoodIds(similarFoodIds);
-
+        System.out.println(preferenceData);
         // 3. FastAPI에 DTO 전송
         return recommendFastApiService.sendData(preferenceData, "preference");
     }
