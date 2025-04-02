@@ -98,12 +98,76 @@ public class RecommendService {
     }
 
     public List<WineResponseDTO> getWeeklyRecommendations() {
-        // "WEEKLY_RECOMMEND" 타입으로 저장된 Info 찾기
-        Pageable pageable = PageRequest.of(1 - 1, 6);
-        LocalDate today = LocalDate.now(); // 현재 날짜
+        // 현재 주차 계산
+        LocalDate today = LocalDate.now();
         int weekNumber = today.get(WeekFields.of(Locale.getDefault()).weekOfYear());
-        Page<Info> infoPage = infoRepository.findByType("weekly_recommend" + weekNumber, pageable);
+        System.out.println("weekNumber: " + weekNumber);
 
+        // "weekly_recommend" + 주차로 저장된 Info 찾기
+        Pageable pageable = PageRequest.of(0, 1); // 첫 번째 결과만 가져옴
+        Page<Info> infoPage = infoRepository.findByTypeStartingWith("weekly_recommend" + weekNumber, pageable);
+
+        if (infoPage.isEmpty()) {
+            // 저장된 주간 추천이 없는 경우, 기본 추천 목록 반환
+            return getDefaultRecommendations();
+        }
+
+        Info weeklyInfo = infoPage.getContent().get(0);
+
+        try {
+            // title 필드에서 와인 ID 배열 파싱 (예: [1, 2, 3])
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode wineIdsNode = mapper.readTree(weeklyInfo.getTitle());
+
+            List<WineResponseDTO> weeklyRecommendations = new ArrayList<>();
+
+            if (wineIdsNode.isArray()) {
+                for (JsonNode idNode : wineIdsNode) {
+                    Long wineId = idNode.asLong();
+                    try {
+                        WineResponseDTO wineDetail = wineService.getWineDetail(wineId);
+                        weeklyRecommendations.add(wineDetail);
+                    } catch (NoSuchElementException e) {
+                        // 와인이 존재하지 않는 경우 로깅 처리
+                        System.err.println("추천된 와인 ID가 존재하지 않습니다: " + wineId);
+                    }
+                }
+            }
+
+            // 추천 와인이 3개 미만인 경우, 기본 추천으로 보충
+            if (weeklyRecommendations.size() < 3) {
+                List<WineResponseDTO> defaultRecommendations = getDefaultRecommendations();
+                int remainingCount = 3 - weeklyRecommendations.size();
+
+                for (int i = 0; i < Math.min(remainingCount, defaultRecommendations.size()); i++) {
+                    weeklyRecommendations.add(defaultRecommendations.get(i));
+                }
+            }
+
+            return weeklyRecommendations;
+        } catch (Exception e) {
+            // JSON 파싱 오류 등 예외 발생 시 기본 추천 목록 반환
+            System.err.println("주간 추천 와인 정보 파싱 중 오류: " + e.getMessage());
+            return getDefaultRecommendations();
+        }
+    }
+
+    private List<WineResponseDTO> getDefaultRecommendations() {
+        // 기본적으로 추천할 와인 ID 목록 (인기 있거나 대표적인 와인 ID를 선택)
+        List<Long> defaultWineIds = Arrays.asList(1L, 2L, 3L);
+
+        List<WineResponseDTO> defaultRecommendations = new ArrayList<>();
+        for (Long wineId : defaultWineIds) {
+            try {
+                WineResponseDTO wineDetail = wineService.getWineDetail(wineId);
+                defaultRecommendations.add(wineDetail);
+            } catch (NoSuchElementException e) {
+                // 와인이 존재하지 않는 경우 로깅 처리
+                System.err.println("기본 추천 와인 ID가 존재하지 않습니다: " + wineId);
+            }
+        }
+
+        return defaultRecommendations;
     }
 
 //    /**
