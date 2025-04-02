@@ -54,7 +54,6 @@ const RecommendFlow: React.FC = () => {
 
   useEffect(() => {
     if (testState.testCompleted && currentStep === 0) {
-      // setCurrentStepState(6); // **6번째 질문부터 시작**
       dispatch(setCurrentStep(6)); // Redux에서 currentStep 업데이트
     }
   }, [testState.testCompleted, currentStep, dispatch]);
@@ -62,19 +61,15 @@ const RecommendFlow: React.FC = () => {
 
   useEffect(() => {
     if (currentStep === 0) {
-      setTimeout(() => dispatch(setCurrentStep(1)), 2000); // 0 단계 후 1 단계로 이동
-      // setTimeout(() => setCurrentStepState(1), 2000);
+      setTimeout(() => dispatch(setCurrentStep(1)), 2000);
     } else if (currentStep === 2) {
-      setTimeout(() => navigate("/home"), 2000);
+      setTimeout(() => {navigate("/home"); dispatch(setCurrentStep(0))}, 2000);
     } else if (currentStep === 3) {
-      // setTimeout(() => setCurrentStepState(4), 1500);
       setTimeout(() => dispatch(setCurrentStep(4)), 2000);
     } else if (currentStep === 4) {
-      // setTimeout(() => setCurrentStepState(5), 1500);
       setTimeout(() => dispatch(setCurrentStep(5)), 2000);
 
     } else if (currentStep === 7) {
-      // setTimeout(() => setCurrentStepState(8), 1500);
       setTimeout(() => dispatch(setCurrentStep(8)), 2000);
 
     }
@@ -84,6 +79,7 @@ const RecommendFlow: React.FC = () => {
   const handleSelectOption = (selectedOption: string) => {
     if (currentStep === 1 && selectedOption === "아니오") {
       dispatch(setCurrentStep(2));
+      
       // setCurrentStepState(2);
       return;
     }
@@ -124,7 +120,7 @@ const RecommendFlow: React.FC = () => {
     
       if (response.success) {
         setWineRecommendations(response.data)
-        setShowModal(true)
+        
       } else {
         console.log("추천실패:", response.message)
       }    
@@ -155,7 +151,7 @@ const RecommendFlow: React.FC = () => {
         />
       </div>
         
-      {showModal && <RecommendationResult wines={wineRecommendations} onClose={() => {setShowModal(false); navigate("/home")}} />}
+      {showModal && <RecommendationResult wines={wineRecommendations} onClose={() => {setShowModal(false); navigate("/home"); dispatch(setCurrentStep(0));}} />}
 
       </div>
   );
@@ -166,11 +162,20 @@ const RecommendFlow: React.FC = () => {
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
+    // backgroundImage: `url(${Homebackground})`,
+    // backgroundSize: "contain",
+    // width: "100%",
+    // height: "calc(100 * var(--custom-vh))",
+    // position: "relative",
     backgroundImage: `url(${Homebackground})`,
     backgroundSize: "contain",
-    width: "100%",
+    width: "100vw",
+    maxWidth: "430px", // 디자인 한계 지정 (선택)
+    maxHeight: "100vh",
     height: "calc(100 * var(--custom-vh))",
+    margin: "0 auto",
     position: "relative",
+  
   },
   bartenderStyle: {
     position: "absolute",
