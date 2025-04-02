@@ -66,6 +66,11 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         // 동적 리다이렉트 URL 생성
         String redirectUrl = "https://" + requestDomain + "/home";
         response.sendRedirect(redirectUrl);
+
+        System.out.println("Detected domain: " + requestDomain);
+        System.out.println("X-Forwarded-Host: " + request.getHeader("X-Forwarded-Host"));
+        System.out.println("Host Header: " + request.getHeader("Host"));
+        System.out.println("Server Name: " + request.getServerName());
     }
 
     private Cookie createCookie(String key, String value, String domain) {
