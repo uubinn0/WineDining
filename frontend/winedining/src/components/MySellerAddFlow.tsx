@@ -5,7 +5,11 @@ import AddSeller3Modal from "../components/Modal/AddSeller3Modal";
 import { Wine } from "../types/wine";
 import { CustomWineRegistrationRequest } from "../types/seller";
 
-const MySellerAddFlow: React.FC = () => {
+interface MySellerAddFlowProps {
+  buttonText?: string;
+}
+
+const MySellerAddFlow = ({ buttonText = "+" }: MySellerAddFlowProps) => {
   const [isStep1Open, setIsStep1Open] = useState(false);
   const [isStep2Open, setIsStep2Open] = useState(false);
   const [isStep3Open, setIsStep3Open] = useState(false);
@@ -16,16 +20,44 @@ const MySellerAddFlow: React.FC = () => {
   const [customWineForm, setCustomWineForm] = useState<CustomWineRegistrationRequest | undefined>(undefined);
 
   const openStep1 = () => setIsStep1Open(true);
-  const closeStep1 = () => setIsStep1Open(false);
   const openStep2 = () => setIsStep2Open(true);
-  const closeStep2 = () => setIsStep2Open(false);
-  const closeStep3 = () => setIsStep3Open(false);
+
+  const closeStep1 = () => {
+    setIsStep1Open(false);
+    if (!isStep2Open) {
+      setSelectedWine(null);
+      setDrinkData(null);
+      setIsCustom(false);
+      setCustomBottleId(undefined);
+      setCustomWineForm(undefined);
+    }
+  };
+
+  const closeStep2 = () => {
+    setIsStep2Open(false);
+    if (!isStep3Open) {
+      setSelectedWine(null);
+      setDrinkData(null);
+      setIsCustom(false);
+      setCustomBottleId(undefined);
+      setCustomWineForm(undefined);
+    }
+  };
+
+  const closeStep3 = () => {
+    setIsStep3Open(false);
+    setSelectedWine(null);
+    setDrinkData(null);
+    setIsCustom(false);
+    setCustomBottleId(undefined);
+    setCustomWineForm(undefined);
+  };
 
   const handleNextStep = (
     wineData: Wine | { wine: Wine; customWineForm: CustomWineRegistrationRequest },
     isCustomWine: boolean
   ) => {
-    if ('customWineForm' in wineData) {
+    if ("customWineForm" in wineData) {
       setSelectedWine(wineData.wine);
       setCustomWineForm(wineData.customWineForm);
       setIsCustom(true);
@@ -33,14 +65,14 @@ const MySellerAddFlow: React.FC = () => {
       setSelectedWine(wineData);
       setIsCustom(false);
     }
-    closeStep1();
     setIsStep2Open(true);
+    setIsStep1Open(false);
   };
 
   const handleNextStep2 = (drinkInfo: any) => {
     setDrinkData(drinkInfo);
-    closeStep2();
     setIsStep3Open(true);
+    setIsStep2Open(false);
   };
 
   const handlePrevStep = () => {
@@ -80,7 +112,7 @@ const MySellerAddFlow: React.FC = () => {
           drinkData={drinkData}
           wineInfo={selectedWine}
           mode={isCustom ? "add" : "new"}
-          customWineForm={customWineForm}  // 커스텀 와인 폼 데이터 전달
+          customWineForm={customWineForm}
           isCustom={isCustom}
         />
       )}

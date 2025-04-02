@@ -7,6 +7,7 @@ import { registerWineCellar } from "../../api/sellerApi";
 import { createWineNote } from "../../api/noteApi";
 import { registerCustomWine } from "../../store/slices/sellarSlice";
 import { CustomWineRegistrationRequest } from "../../types/seller";
+import { fetchCellar, fetchBest } from "../../store/slices/sellarSlice";
 
 interface AddSeller3ModalProps {
   isOpen: boolean;
@@ -17,7 +18,7 @@ interface AddSeller3ModalProps {
   mode: "new" | "add";
   bottleId?: number;
   isCustom?: boolean;
-  customWineForm?: CustomWineRegistrationRequest;  // 추가
+  customWineForm?: CustomWineRegistrationRequest; // 추가
 }
 
 const AddSeller3Modal = ({
@@ -29,7 +30,7 @@ const AddSeller3Modal = ({
   mode,
   bottleId,
   isCustom = false,
-  customWineForm,  // 추가
+  customWineForm, // 추가
 }: AddSeller3ModalProps) => {
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const dispatch = useDispatch<AppDispatch>();
@@ -58,7 +59,7 @@ const AddSeller3Modal = ({
   const handleComplete = async () => {
     try {
       let finalBottleId = bottleId;
-      
+
       if (isCustom && customWineForm) {
         // 커스텀 와인 등록
         const customWineResult = await dispatch(registerCustomWine(customWineForm));
@@ -100,6 +101,11 @@ const AddSeller3Modal = ({
       });
 
       alert("와인 노트가 저장되었습니다!");
+
+      // 셀러 리스트 새로고침
+      await dispatch(fetchCellar());
+      await dispatch(fetchBest());
+
       onClose();
     } catch (error) {
       console.error("저장 중 오류:", error);
