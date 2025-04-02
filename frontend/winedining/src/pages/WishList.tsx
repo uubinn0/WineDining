@@ -1,99 +1,182 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { fetchWishes } from "../store/slices/wishSlice";
-import { fetchWineDetailThunk } from "../store/slices/wineSlice";
 import { RootState, AppDispatch } from "../store/store";
-import WineWishCard from "../components/WineWishCard";
+import { useNavigate } from "react-router-dom";
+import { fetchWines, resetWines } from "../store/slices/wineSlice";
+import { fetchWishes } from "../store/slices/wishSlice";
+import WineInfoCard from "../components/WineInfoCard";
+import WineFilterBar from "../components/WineFilterBar";
 import WineDetailModal from "../components/Modal/WineDetailModal";
-import { WineDetail } from "../types/wine";
+import { Wine, WineDetail, WineFilter } from "../types/wine";
+import { fetchWineDetailThunk } from "../store/slices/wineSlice";
 import BackButton from "../components/BackButton";
+import { trackEvent } from "../utils/analytics"; // 추가
 
-const WishList = () => {
-  const navigate = useNavigate();
+const WineList = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { items, status } = useSelector((state: RootState) => state.wish);
-  const { wineDetail } = useSelector((state: RootState) => state.wine); // wineSlice에서 가져온 상세
+  const navigate = useNavigate();
+  const { wines, status, page, hasMore, totalCount } = useSelector((state: RootState) => state.wine);
 
+  const [selectedWine, setSelectedWine] = useState<WineDetail | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // WineFilter 전체 관리
+  const [filter, setFilter] = useState<WineFilter>({
+    keyword: "",
+    filters: {
+      type: [],
+      grape: [],
+      country: [],
+      minPrice: 0,
+      maxPrice: 1500000,
+      minSweetness: 1,
+      maxSweetness: 5,
+      minAcidity: 1,
+      maxAcidity: 5,
+      minTannin: 1,
+      maxTannin: 5,
+      minBody: 1,
+      maxBody: 5,
+      pairing: [],
+    },
+    sort: { field: "krName", order: "desc" },
+    page: 1,
+    limit: 20,
+  });
+
+  // 무한 스크롤 옵저버
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastWineRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (status === "loading") return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          const nextPage = page + 1;
+          // 무한 스크롤 이벤트 추적
+          trackEvent("infinite_scroll", { page: nextPage });
+          // filter.page를 nextPage로 업데이트
+          setFilter((prev) => ({ ...prev, page: nextPage }));
+          dispatch(fetchWines({ ...filter, page: nextPage }));
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [status, hasMore, page, filter, dispatch]
+  );
 
   useEffect(() => {
+    dispatch(resetWines());
     dispatch(fetchWishes());
+    dispatch(fetchWines(filter));
   }, [dispatch]);
 
-  const handleWishClick = (wineId: number) => {
-    dispatch(fetchWineDetailThunk(wineId));
-    setIsModalOpen(true);
+  // 와인 카드 클릭 시 상세 정보 (자세히 보기)
+  const handleWineClick = async (wine: Wine) => {
+    // 이벤트 추적: 와인 상세보기
+    trackEvent("view_item_detail", {
+      item_id: wine.wineId,
+      item_name: wine.name,
+    });
+    const result = await dispatch(fetchWineDetailThunk(wine.wineId));
+    if (fetchWineDetailThunk.fulfilled.match(result)) {
+      setSelectedWine(result.payload);
+      setIsModalOpen(true);
+    }
+  };
+
+  // 모달 닫기
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedWine(null);
+  };
+
+  // 검색어 입력
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const keyword = e.target.value;
+    setSearchTerm(keyword);
+
+    // 검색 이벤트 추적 (검색어가 3글자 이상일 때 전송 등 조건 추가 가능)
+    trackEvent("search", { query: keyword });
+
+    const newFilter = { ...filter, keyword, page: 1, totalCount };
+    setFilter(newFilter);
+
+    dispatch(resetWines());
+    dispatch(fetchWines(newFilter));
+  };
+
+  // 필터 변경 (WineFilter 통째로)
+  const handleFilterChange = (newFilter: WineFilter) => {
+    // 필터 변경 이벤트 추적
+    trackEvent("filter_change", { new_filter: newFilter });
+    setFilter(newFilter);
+    dispatch(resetWines());
+    dispatch(fetchWines(newFilter));
   };
 
   return (
-    <div style={styles.container}>
+    <div style={{ backgroundColor: "#2a0e35", color: "white", minHeight: "100vh", padding: "20px" }}>
       <div style={styles.backButtonWrapper}>
-        <BackButton onClick={() => navigate("/mypage")} />
+        <BackButton onClick={() => navigate("/home")} />
       </div>
-      <h1 style={styles.headertext}>
-        <img src={"/sample_image/yellow_lightning.png"} alt="번개" style={styles.image} />
-        MY WISH LIST
-        <img src={"/sample_image/yellow_lightning.png"} alt="번개" style={styles.image} />
-      </h1>
+      <h2 style={{ textAlign: "center", fontSize: "22px" }}>⚡ WINE LIST ⚡</h2>
 
-      {status === "loading" && <p>위시리스트를 불러오는 중...</p>}
-      {status === "failed" && <p>위시리스트를 불러오는 데 실패했습니다.</p>}
+      {/* 검색 */}
+      <div style={{ display: "flex", justifyContent: "center", margin: "10px 0" }}>
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          placeholder="와인을 검색하세요"
+          style={{
+            backgroundColor: "#381837",
+            border: "2px solid #D6BA91",
+            color: "white",
+            width: "100%",
+            maxWidth: "320px",
+            padding: "10px",
+            borderRadius: "16px",
+          }}
+        />
+      </div>
 
-      {items.length === 0 ? (
-        <p>위시리스트가 비어 있습니다.</p>
-      ) : (
-        <div style={styles.grid}>
-          {items.map((wish) => (
-            <div key={wish.id} onClick={() => handleWishClick(wish.wine.wineId)}>
-              <WineWishCard wish={wish} />
-            </div>
-          ))}
+      {/* 필터 드롭다운 (WineFilter 전체 전달) */}
+      <WineFilterBar filter={filter} onChange={handleFilterChange} />
+
+      {totalCount > 0 && (
+        <div style={{ textAlign: "right", fontSize: "14px", color: "#ccc", marginRight: "10px" }}>
+          총 {totalCount.toLocaleString()}개의 와인 검색
         </div>
       )}
+      {/* 와인 카드 리스트 + 무한 스크롤 */}
+      <div style={styles.wineListContainer}>
+        {wines.map((wine, index) => (
+          <div ref={index === wines.length - 1 ? lastWineRef : null} key={`${wine.wineId}-${index}`}>
+            <WineInfoCard wine={wine} onClick={handleWineClick} />
+          </div>
+        ))}
+      </div>
 
-      {isModalOpen && wineDetail && (
-        <WineDetailModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} wine={wineDetail} />
-      )}
+      {/* 상세 모달 */}
+      {selectedWine && <WineDetailModal isOpen={isModalOpen} onClose={handleCloseModal} wine={selectedWine} />}
     </div>
   );
 };
 
+export default WineList;
+
 const styles: { [key: string]: React.CSSProperties } = {
-  container: {
-    position: "relative",
-    padding: "20px",
-    textAlign: "center",
-    backgroundColor: "#27052E",
-    height: "100vh",
-  },
-  headertext: {
-    fontSize: "24px",
-    color: "#FFFFFF",
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: "16px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "8px",
-  },
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(2, 1fr)",
-    gap: "12px",
-    justifyContent: "center",
-    padding: "10px",
-  },
-  image: {
-    width: "18px",
-    height: "20px",
-  },
   backButtonWrapper: {
     position: "absolute",
     top: "16px",
     left: "16px",
   },
+  wineListContainer: {
+    maxHeight: "60vh",
+    overflowY: "auto",
+    paddingRight: "8px",
+    marginTop: "20px",
+  },
 };
-
-export default WishList;

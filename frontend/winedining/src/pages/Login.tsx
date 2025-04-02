@@ -3,18 +3,25 @@ import { useNavigate } from "react-router-dom";
 import kakao from "../assets/icons/kakao.png";
 import google from "../assets/icons/google.png";
 import PixelButton from "../components/PixelButton";
+import { trackEvent } from "../utils/analytics";
 
 const MainPage = () => {
   const navigate = useNavigate();
+  // const baseUrl = window.location.origin;
 
   const handleKakaoLogin = () => {
     localStorage.setItem("provider", "KAKAO");
-    window.location.href = "https://winedining.store/api/v1/auth/oauth2/authorization/kakao";
+    window.location.href = "https://j12b202.p.ssafy.io/api/v1/auth/oauth2/authorization/kakao";
   };
 
   const handleGoogleLogin = () => {
     localStorage.setItem("provider", "GOOGLE");
-    window.location.href = "https://winedining.store/api/v1/auth/oauth2/authorization/google";
+    window.location.href = "https://j12b202.p.ssafy.io/api/v1/auth/oauth2/authorization/google";
+  };
+
+  const handleMBTITestClick = () => {
+    trackEvent("mainpage_mbti_test_click");
+    navigate("/MBTITest");
   };
 
   return (
@@ -40,7 +47,7 @@ const MainPage = () => {
           </button>
         </div>
         <div style={styles.mbtiBtn}>
-          <PixelButton onClick={() => navigate("/MBTITest")}>WINE MBTI TEST</PixelButton>
+          <PixelButton onClick={handleMBTITestClick}>WINE MBTI TEST</PixelButton>
         </div>
       </div>
     </div>
