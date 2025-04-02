@@ -103,7 +103,9 @@ public class SecurityConfig {
                     "https://localhost:8080",
                     "https://localhost:5432",
                     "https://localhost:5432",
-                    "https://j12b202.p.ssafy.io"
+                    "https://j12b202.p.ssafy.io",
+                    "https://winedining.store",
+                    "https://www.winedining.store"
             ));
             configuration.setAllowedHeaders(Collections.singletonList("*"));
             configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
