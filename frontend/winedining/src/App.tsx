@@ -4,9 +4,27 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "./store/store";
 import GlobalLayout from "./components/Layout/GlobalLayout";
 import { fetchUserProfile } from "./store/slices/authSlice";
+import { useLocation } from "react-router-dom";
+
+// gtag
+declare global {
+  interface Window {
+    gtag: (...args: any[]) => void;
+  }
+}
 
 function App() {
+  const location = useLocation();
   const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    if (window.gtag) {
+      window.gtag("event", "page_view", {
+        page_path: location.pathname,
+      });
+    }
+  }, [location]);
+
   useEffect(() => {
     // 화면 높이 계산
     const setCustomVh = () => {
