@@ -2,6 +2,7 @@ package com.ssafy.winedining.domain.collection.controller;
 
 import com.ssafy.winedining.domain.collection.dto.*;
 import com.ssafy.winedining.domain.collection.service.CellarService;
+import com.ssafy.winedining.domain.wine.dto.WineResponseDTO;
 import com.ssafy.winedining.global.auth.dto.CustomOAuth2User;
 import com.ssafy.winedining.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -55,6 +58,25 @@ public class CellarController {
                 .status(HttpStatus.CREATED.value())
                 .success(true)
                 .message("커스텀 와인을 생성하고 셀러에 추가했습니다")
+                .data(responseDTO)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    /**
+     * 이미지로 와인을 찾아서 와인 아이디를 반환하는 API
+     */
+    @PostMapping("/image")
+    public ResponseEntity<ApiResponse<WineResponseDTO>> findWineToImage(
+            @RequestPart(value = "images") MultipartFile image) throws Exception {
+
+        WineResponseDTO responseDTO = cellarService.findWineToImage(image);
+
+        ApiResponse<WineResponseDTO> response = ApiResponse.<WineResponseDTO>builder()
+                .status(HttpStatus.CREATED.value())
+                .success(true)
+                .message("이미지를 통해 와인을 찾았습니다.")
                 .data(responseDTO)
                 .build();
 

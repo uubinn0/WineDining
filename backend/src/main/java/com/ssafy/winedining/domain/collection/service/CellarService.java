@@ -5,16 +5,21 @@ import com.ssafy.winedining.domain.collection.entity.Bottle;
 import com.ssafy.winedining.domain.collection.repository.BottleRepository;
 import com.ssafy.winedining.domain.user.entity.User;
 import com.ssafy.winedining.domain.user.repository.UserRepository;
+import com.ssafy.winedining.domain.wine.dto.WineResponseDTO;
 import com.ssafy.winedining.domain.wine.entity.CustomWine;
 import com.ssafy.winedining.domain.wine.entity.Wine;
 import com.ssafy.winedining.domain.wine.entity.WineType;
 import com.ssafy.winedining.domain.wine.repository.CustomWineRepository;
 import com.ssafy.winedining.domain.wine.repository.WineRepository;
 import com.ssafy.winedining.domain.wine.repository.WineTypeRepository;
+import com.ssafy.winedining.domain.wine.service.OcrService;
+import com.ssafy.winedining.domain.wine.service.WineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -29,6 +34,8 @@ public class CellarService {
     private final CustomWineRepository customWineRepository;
     private final WineTypeRepository wineTypeRepository;
     private final UserRepository userRepository;
+    private final WineService wineService;
+    private final OcrService ocrService;
 
     /**
      * 기존 와인을 사용자 셀러에 추가
@@ -269,5 +276,11 @@ public class CellarService {
 
         // 저장
         bottleRepository.save(bottle);
+    }
+
+    public WineResponseDTO findWineToImage(MultipartFile image) throws Exception {
+        String wineId = ocrService.extractText(image);
+        System.out.println(wineId);
+        return wineService.getWineDetail(1L);
     }
 }

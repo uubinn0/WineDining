@@ -37,7 +37,7 @@ public class RecommendService {
         RecommendByPreferenceDto preferenceData = recommendDomainService.recommendByPreferene(userId);
 
         // 2. DTO에 음식 ID 목록 설정
-//        preferenceData.setFoodIds(similarFoodIds);
+        preferenceData.setFoodIds(similarFoodIds);
 
         // 3. FastAPI에 DTO 전송
         return recommendFastApiService.sendData(preferenceData, "preference");
