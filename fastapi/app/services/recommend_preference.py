@@ -5,6 +5,7 @@ from sqlalchemy import text
 
 def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) -> RecommendationResponse:
     print("🚀 recommend_by_preference 호출됨")
+    print("foodIds", data.foodIds)
 
 
     # 0. 사용자 입력값 전처리
