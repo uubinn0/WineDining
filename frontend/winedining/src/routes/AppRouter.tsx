@@ -17,90 +17,88 @@ import ProtectedRoute from "./ProtectedRoute";
 
 function AppRouter() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/MBTITest" element={<MBTITest />} />
-        <Route path="/MBTIresults" element={<MBTIResults />} />
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route path="/MBTITest" element={<MBTITest />} />
+      <Route path="/MBTIresults" element={<MBTIResults />} />
 
-        {/* 보호된 라우트 */}
-        <Route
-          path="/home"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
+      {/* 보호된 라우트 */}
+      <Route
+        path="/home"
+        element={
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        }
+      />
 
-        <Route
-          path="/mypage"
-          element={
-            <ProtectedRoute>
-              <MyPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/winelist"
-          element={
-            <ProtectedRoute>
-              <WineList />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/winesellerlist"
-          element={
-            <ProtectedRoute>
-              <WineSellerList />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/wishlist"
-          element={
-            <ProtectedRoute>
-              <WishList />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dictionaryloading"
-          element={
-            <ProtectedRoute>
-              <DicLoading />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dictionary"
-          element={
-            <ProtectedRoute>
-              <Dictionary />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/recommendflow"
-          element={
-            <ProtectedRoute>
-              <RecommendFlow />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/recommendtest"
-          element={
-            <ProtectedRoute>
-              <RecommendTest />
-            </ProtectedRoute>
-          }
-        />
+      <Route
+        path="/mypage"
+        element={
+          <ProtectedRoute>
+            <MyPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/winelist"
+        element={
+          <ProtectedRoute>
+            <WineList />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/winesellerlist"
+        element={
+          <ProtectedRoute>
+            <WineSellerList />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/wishlist"
+        element={
+          <ProtectedRoute>
+            <WishList />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/dictionaryloading"
+        element={
+          <ProtectedRoute>
+            <DicLoading />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/dictionary"
+        element={
+          <ProtectedRoute>
+            <Dictionary />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/recommendflow"
+        element={
+          <ProtectedRoute>
+            <RecommendFlow />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/recommendtest"
+        element={
+          <ProtectedRoute>
+            <RecommendTest />
+          </ProtectedRoute>
+        }
+      />
 
-        <Route path="*" element={<ErrorPage />} />
-      </Routes>
-    </BrowserRouter>
+      <Route path="*" element={<ErrorPage />} />
+    </Routes>
   );
 }
 
