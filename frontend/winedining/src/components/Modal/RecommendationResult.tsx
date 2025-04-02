@@ -1,24 +1,21 @@
 import React from "react";
 import winemenu from "../../assets/images/modal/winemenu.png";
+import { WineRecommendation } from "../../types/wine";
+import defaultwineimg from "../../assets/images/winesample/defaultwine.png"
 
-interface Wine {
-    name: string;
-    description: string;
-    image: string;
-  }
+// interface Wine {
+//     name: string;
+//     description: string;
+//     image: string;
+//   }
   
   interface ModalProps {
-    wines: Wine[];
+    wines: WineRecommendation[];
     onClose: () => void;
   }
-  
-
-interface ModalProps {
-  wines: Wine[];
-  onClose: () => void;
-}
 
 const RecommendationResult: React.FC<ModalProps> = ({ wines, onClose }) => {
+ console.log("winedata", wines)
   return (
     <div style={styles.overlay}>
       <div style={styles.modal}>
@@ -27,9 +24,9 @@ const RecommendationResult: React.FC<ModalProps> = ({ wines, onClose }) => {
         <ul style={styles.wineList}>
           {wines.map((wine, index) => (
             <li key={index} style={styles.wineItem}>
-              <img src={wine.image} alt={wine.name} style={styles.wineImage} />
+              <img src={wine.image || defaultwineimg} alt={wine.krName} style={styles.wineImage} />
               <div style={styles.wineText}>
-                <h3>{wine.name}</h3>
+                <h3>{wine.krName}</h3>
                 <p>{wine.description}</p>
               </div>
             </li>

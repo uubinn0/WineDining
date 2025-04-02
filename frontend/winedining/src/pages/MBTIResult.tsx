@@ -7,25 +7,6 @@ import { wineMbti } from "../data/MBTIresult";
 import defaultImage from "../assets/images/winesample/MBTIimage/defaultChardonnay.png"
 import PixelButton from "../components/PixelButton";
 
-// interface Wine {
-//     name: string;
-//     description: string;
-//     image: string;
-//   }
-  
-
-// // 와인 인터페이스
-// interface wineMbtiType {
-//   id: number;
-//   ko_name: string;
-//   eng_name: string;
-//   image: string | null;
-//   content: string;
-//   best: number;
-//   worst: number;
-// }
-
-
 // 성격 유형 점수의 타입을 정의
 interface Scores {
   E: number;

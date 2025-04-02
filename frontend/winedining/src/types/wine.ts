@@ -62,3 +62,23 @@ export interface WineDetail {
   alcoholContent: number;
   pairing: string[];
 }
+
+
+// WineRecommendation 타입 정의
+export interface WineRecommendation {
+  wineId: number;
+  krName: string;
+  enName: string;
+  image: string | null;
+  type: string;
+  country: string;
+  grape: string;
+  price: number | null;
+  sweetness: number;
+  acidity: number;
+  tannin: number;
+  body: number;
+  alcoholContent: number;
+  pairing: string[];
+  description: string;
+}
