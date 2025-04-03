@@ -10,6 +10,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
 
     # 0. 사용자 입력값 전처리
     # 당도 조정
+    sweetness_init = [data.sweetness, data.sweetness+1]  # 데이터 불균형 조정용 sql 쿼리 변수
     sweetness_map = {1: 1, 2: 3, 3: 5}
     data.sweetness = sweetness_map.get(data.sweetness, data.sweetness)
 
@@ -48,9 +49,10 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
     if not data.foodIds:
         print("🚀 음식 ID가 없음 → 기본 추천 수행")
         query = text("""
-            SELECT wine_id, feature_vector <-> CAST(:user_vector AS vector) AS cos
+            SELECT wine_id, feature_vector <=> CAST(:user_vector AS vector) AS cos
             FROM preference_wine_vectors
             WHERE wine_id > 10
+                     AND feature_vector <-> CAST(:user_vector AS vector) >= 0.5
             ORDER BY cos DESC
             LIMIT 3
         """)
@@ -58,28 +60,55 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
 
     else:
         print("🚀 음식 ID가 있음 → 음식과 매칭된 추천 수행")
-        query = text("""
-            WITH SIM_TBL AS (
-                SELECT 
-                    wine_id, 
-                    feature_vector <-> CAST(:user_vector AS vector) AS cos
-                FROM preference_wine_vectors
-                WHERE wine_id NOT BETWEEN 1 AND 10
-            )
-            SELECT S.WINE_ID, P.FOOD_ID
-            FROM SIM_TBL S
-            INNER JOIN PAIRING_SETS P ON S.WINE_ID = P.WINE_ID
-            WHERE P.FOOD_ID = ANY(:food_ids)
-            ORDER BY S.cos DESC, P.FOOD_ID DESC
+        query = text("""                   
+            SELECT wine_id, feature_vector <=> CAST(:user_vector AS vector) AS similarity
+            FROM preference_wine_vectors
+            WHERE wine_id IN (SELECT id
+                              FROM wines
+                              WHERE id IN (SELECT DISTINCT wine_id
+                                           FROM pairing_sets 
+                                           WHERE food_id = ANY(:food_ids))
+						      AND sweetness = ANY(:sweetness))
+            AND feature_vector <=> CAST(:user_vector AS vector) >= 0.5
+            AND wine_id > 10
+            ORDER BY similarity DESC
             LIMIT 3;
         """)
         params = {
             "user_vector": user_vector,
-            "food_ids": data.foodIds  # PostgreSQL의 `ANY()` 함수가 리스트를 받도록 그대로 전달
+            "food_ids": data.foodIds,  # PostgreSQL의 `ANY()` 함수가 리스트를 받도록 그대로 전달
+            "sweetness": sweetness_init
         }
 
-    # 3. 쿼리 실행
+    # 쿼리 실행
     result = session.execute(query, params)
+
+    # 3. 결과가 3개 미만인 경우 추가 쿼리 실행
+    rows = list(result)
+    print(len(rows))
+    if len(rows) < 3:
+        print("🚀 추천 결과가 3개 미만 → 추가 쿼리 실행")
+        additional_query = text("""
+            SELECT wine_id, feature_vector <=> CAST(:user_vector AS vector) AS cos
+            FROM preference_wine_vectors 
+            WHERE wine_id > 10
+            AND wine_id NOT IN (SELECT wine_id FROM unnest(:existing_ids) AS wine_id)
+            ORDER BY cos DESC
+            LIMIT :needed_count
+        """)
+        
+        existing_ids = [row[0] for row in rows]
+        additional_params = {
+            "user_vector": user_vector,
+            "existing_ids": existing_ids,
+            "needed_count": 3 - len(rows)
+        }
+        
+        additional_result = session.execute(additional_query, additional_params)
+        rows.extend(additional_result)
+    
+    result = rows
+
 
     recommended_ids = [row[0] for row in result]
     print("🚀 추천 와인 ID 목록:", recommended_ids)
