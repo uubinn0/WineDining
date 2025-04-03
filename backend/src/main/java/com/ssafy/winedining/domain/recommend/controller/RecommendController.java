@@ -43,4 +43,23 @@ public class RecommendController {
         return ResponseEntity.ok(response);
 
     }
+
+    /**
+     * @return
+     */
+    @GetMapping("/master/week")
+    public ResponseEntity<ApiResponse<List<WineResponseDTO>>> getWeeklyRecommendations() {
+        // 비동기 호출 결과를 동기적으로 변환
+        List<WineResponseDTO> response = recommendService.getWeeklyRecommendations().block();
+
+        ApiResponse<List<WineResponseDTO>> apiResponse = ApiResponse.<List<WineResponseDTO>>builder()
+                .status(HttpStatus.OK.value())
+                .success(true)
+                .message("마스터의 이 주의 와인 추천 조회 성공")
+                .data(response)
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
 }
