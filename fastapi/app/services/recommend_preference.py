@@ -88,25 +88,41 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
     print(len(rows))
     if len(rows) < 3:
         print("🚀 추천 결과가 3개 미만 → 추가 쿼리 실행")
-        additional_query = text("""
-            SELECT wine_id, feature_vector <=> CAST(:user_vector AS vector) AS cos
-            FROM preference_wine_vectors 
-            WHERE wine_id > 10
-            AND wine_id NOT IN (SELECT wine_id FROM unnest(:existing_ids) AS wine_id)
-            ORDER BY cos DESC
-            LIMIT :needed_count
-        """)
         
         existing_ids = [row[0] for row in rows]
-        additional_params = {
-            "user_vector": user_vector,
-            "existing_ids": existing_ids,
-            "needed_count": 3 - len(rows)
-        }
+        
+        # existing_ids가 비어있는 경우와 아닌 경우 쿼리 분기
+        if existing_ids:
+            additional_query = text("""
+                SELECT wine_id, feature_vector <=> CAST(:user_vector AS vector) AS cos
+                FROM preference_wine_vectors 
+                WHERE wine_id > 10
+                AND wine_id NOT IN (SELECT wine_id FROM unnest(:existing_ids) AS wine_id)
+                ORDER BY cos DESC
+                LIMIT :needed_count
+            """)
+            additional_params = {
+                "user_vector": user_vector,
+                "existing_ids": existing_ids,
+                "needed_count": 3 - len(rows)
+            }
+        else:
+            # existing_ids가 비어있는 경우 단순 쿼리 실행
+            additional_query = text("""
+                SELECT wine_id, feature_vector <=> CAST(:user_vector AS vector) AS cos
+                FROM preference_wine_vectors 
+                WHERE wine_id > 10
+                ORDER BY cos DESC
+                LIMIT :needed_count
+            """)
+            additional_params = {
+                "user_vector": user_vector,
+                "needed_count": 3 - len(rows)
+            }
         
         additional_result = session.execute(additional_query, additional_params)
         rows.extend(additional_result)
-    
+
     result = rows
 
 
