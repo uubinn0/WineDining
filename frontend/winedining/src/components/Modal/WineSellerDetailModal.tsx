@@ -264,7 +264,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 999,
+    zIndex: 2000,
   },
   modal: {
     backgroundColor: "#2a0035",

@@ -204,7 +204,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     width: "90vw",
     maxWidth: "500px",
     height: "85vh",
-    top: "-20vh",
+    top: "-32vh",
     left: 0,
     padding: "2.5vh",
     marginBottom: "auto",

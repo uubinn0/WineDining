@@ -42,18 +42,28 @@ const CustomAddWineButton = () => {
       <button
         onClick={() => setIsStep1Open(true)}
         style={{
-          width: "100%",
-          backgroundColor: "#5A0000",
-          padding: "5px 10px",
-
-          color: "black",
-
+          // ▼ 원하는 스타일
+          position: "relative",
+          display: "inline-block",
+          backgroundColor: "#fdfdfd",
+          color: "#000000",
+          border: "none",
+          borderRadius: "8px",
+          padding: "6px 20px",
           cursor: "pointer",
+          fontFamily: "Pixel, sans-serif", // 픽셀 폰트
           fontSize: "16px",
-          fontFamily: "Pixel, sans-serif",
-          transition: "all 0.2s ease",
           textAlign: "center",
-          background: "white",
+          boxShadow: "4px 4px 0 #000", // 픽셀 느낌의 그림자
+          transition: "all 0.2s ease",
+        }}
+        onMouseDown={(e) => {
+          // 클릭 시 그림자가 조금 줄어드는 효과
+          (e.target as HTMLButtonElement).style.boxShadow = "2px 2px 0 #000";
+        }}
+        onMouseUp={(e) => {
+          // 클릭 해제 시 원래 그림자로 복귀
+          (e.target as HTMLButtonElement).style.boxShadow = "4px 4px 0 #000";
         }}
       >
         내가 마신 와인, 내 와인 셀러에 추가하기
