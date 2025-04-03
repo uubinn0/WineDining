@@ -8,6 +8,9 @@ import { createWineNote } from "../../api/noteApi";
 import { registerCustomWine } from "../../store/slices/sellarSlice";
 import { CustomWineRegistrationRequest } from "../../types/seller";
 import { fetchCellar, fetchBest } from "../../store/slices/sellarSlice";
+import closebutton from "../../assets/icons/closebutton.png";
+import { vh } from "../../utils/vh";
+import camera from "../../assets/icons/camera.png";
 
 interface AddSeller3ModalProps {
   isOpen: boolean;
@@ -118,9 +121,7 @@ const AddSeller3Modal = ({
   return (
     <div style={styles.overlay} onClick={onClose}>
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button style={styles.closeButton} onClick={onClose}>
-          ✕
-        </button>
+        <img src={closebutton} alt="닫기" style={styles.closeButton} onClick={onClose} />
 
         <h2 style={styles.title}>와인 수집</h2>
         {wineInfo && (
@@ -158,7 +159,7 @@ const AddSeller3Modal = ({
               ) : (
                 <label style={styles.uploadLabel}>
                   <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: "none" }} />
-                  📷
+                  <img src={camera} alt="" />
                 </label>
               )}
             </div>
@@ -167,10 +168,13 @@ const AddSeller3Modal = ({
 
         {/* 페이지 이동 */}
         <div style={styles.pagination}>
-          <span style={styles.pageArrow} onClick={onPrev}>
-            ←
-          </span>
-          <span style={styles.pageText}>3 / 3</span>
+          <div style={styles.pageCenter}>
+            <span style={styles.pageArrow} onClick={onPrev}>
+              ←
+            </span>
+            <span style={styles.pageText}>3 / 3</span>
+          </div>
+
           <button style={styles.completeButton} onClick={handleComplete}>
             완료
           </button>
@@ -181,60 +185,101 @@ const AddSeller3Modal = ({
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
+  /* 오버레이 스타일 */
   overlay: {
     position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
+    top: 25,
+    left: -20,
+    right: -20,
     bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     zIndex: 1000,
+    transition: "opacity 0.3s ease",
   },
+  /* 모달 스타일 */
   modal: {
+    width: "90vw",
+    maxWidth: "500px",
+    height: "85vh",
+    top: "-20vh",
+    left: 0,
+    padding: "2.5vh",
+    marginBottom: "auto",
     backgroundColor: "#2a0e35",
-    padding: "20px",
-    borderRadius: "25px",
-    width: "350px",
-    height: "600px",
-    color: "#fff",
-    position: "relative",
-    border: "3px solid #d4a5ff",
-    overflowY: "auto",
+    border: "0.6vh solid #FDEBD0",
+    borderRadius: "1.3vh",
+    overflowY: "hidden",
     boxSizing: "border-box",
+    scrollbarWidth: "none",
+    flexDirection: "column",
+    display: "flex",
+    transition: "transform 0.3s ease",
+    fontFamily: "Galmuri9",
+    textAlign: "center",
+    position: "relative",
   },
+  /* 닫기 버튼 */
   closeButton: {
     position: "absolute",
-    right: "15px",
-    top: "15px",
-    background: "none",
-    border: "none",
-    fontSize: "24px",
-    color: "#fff",
+    top: "1.2vh",
+    right: "1.2vh",
+    width: "4vh",
+    height: "4vh",
     cursor: "pointer",
   },
-  title: { fontSize: "24px", fontWeight: "bold", textAlign: "center" },
-  subtitle: { fontSize: "14px", textAlign: "center", color: "#d4a5ff" },
-  wineContainer: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    marginBottom: "20px",
+  /* 제목 */
+  title: {
+    textAlign: "left",
+    fontSize: "2vh",
+    fontWeight: "bold",
+    marginLeft: vh(-1),
+    marginTop: "-1vh",
   },
-  wineImage: { width: "120px", height: "180px" },
-  wineName: { fontSize: "16px", fontWeight: "bold", textAlign: "center", color: "#ffcc00" },
-  sectionTitle: { fontSize: "14px", textAlign: "center", marginBottom: "10px" },
+  /* 부제목 */
+  subtitle: {
+    textAlign: "left",
+    fontSize: "1.5vh",
+    color: "#ccc",
+    marginLeft: vh(-1),
+    marginTop: "-1vh",
+  },
+  /* 국기 아이콘 */
+  flagIcon: {
+    width: vh(1.8),
+    height: vh(1.2),
+  },
+  /* 와인 설명 감싸는 박스 */
+  wineContainer: {
+    textAlign: "center",
+    marginBottom: vh(2),
+  },
+  wineImage: {
+    width: vh(27),
+    height: "auto",
+    marginBottom: vh(2),
+    marginTop: vh(2),
+  },
+  wineName: {
+    fontSize: vh(1.6),
+    fontWeight: "bold",
+    color: "#ffcc00",
+    marginTop: vh(0.8),
+  },
+  /* 오늘을 함께 기억할 사진*/
+  sectionTitle: { fontSize: vh(1.8), textAlign: "left", marginBottom: vh(1.3), marginLeft: vh(1.7) },
+  /* 사진 올리는 부분 */
   imageUploadContainer: {
     display: "flex",
     justifyContent: "center",
-    gap: "10px",
+    gap: vh(1.5),
   },
   uploadBox: {
-    width: "80px",
-    height: "80px",
-    borderRadius: "8px",
+    width: vh(10),
+    height: vh(10),
+    borderRadius: vh(1.5),
     backgroundColor: "#fff",
     display: "flex",
     justifyContent: "center",
@@ -242,41 +287,59 @@ const styles: { [key: string]: React.CSSProperties } = {
     position: "relative",
   },
   uploadLabel: {
-    fontSize: "24px",
+    fontSize: vh(2.5),
     cursor: "pointer",
   },
   uploadedImage: {
     width: "100%",
     height: "100%",
-    borderRadius: "8px",
+    borderRadius: vh(0.8),
     objectFit: "cover",
   },
+  /* 사진 제거 버튼 */
   removeButton: {
     position: "absolute",
-    top: "5px",
-    right: "5px",
-    background: "red",
+    top: vh(0.5),
+    right: vh(0.7),
+    background: "black",
     color: "white",
     border: "none",
     borderRadius: "50%",
-    width: "20px",
-    height: "20px",
-    fontSize: "12px",
+    width: vh(2),
+    height: vh(2),
+    fontSize: vh(1.5),
     cursor: "pointer",
   },
+  /* 페이지네이션 */
   pagination: {
+    marginTop: vh(12),
+    position: "relative",
+    height: vh(4),
     display: "flex",
-    justifyContent: "space-between",
     alignItems: "center",
-    marginTop: "20px",
+    justifyContent: "center",
+    fontSize: vh(1.5),
+    color: "white",
+  },
+  pageCenter: {
+    marginRight: vh(4.2),
+    display: "flex",
+    alignItems: "center",
+    gap: vh(0),
+  },
+  pageArrow: {
+    margin: `0 ${vh(1.5)}`,
+    cursor: "pointer",
   },
   completeButton: {
-    backgroundColor: "#ffcc00",
-    color: "#2a0e35",
+    position: "absolute",
+    right: 0,
+    backgroundColor: "white",
+    color: "black",
     border: "none",
-    padding: "10px 15px",
-    fontSize: "14px",
-    borderRadius: "8px",
+    padding: `${vh(1)} ${vh(1.5)}`,
+    fontSize: vh(1.5),
+    borderRadius: vh(0.8),
     cursor: "pointer",
   },
 };

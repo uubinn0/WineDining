@@ -62,9 +62,9 @@ function MyPage() {
         <PixelButton onClick={goToRecommendTest}>WINE TEST</PixelButton>
       </div>
 
-      <div style={styles.floatingAddButton}>
+      {/* <div style={styles.floatingAddButton}>
         <MySellerAddFlow />
-      </div>
+      </div> */}
     </div>
   );
 }

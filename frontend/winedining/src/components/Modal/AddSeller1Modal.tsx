@@ -7,6 +7,10 @@ import { fetchFilteredWines } from "../../api/wineApi";
 import AddCustomWineModal from "./AddCustomWineModal";
 import { Bottle } from "../../types/seller";
 import { CustomWineRegistrationRequest } from "../../types/seller";
+import searchbutton from "../../assets/icons/searchbutton.png";
+import customSampleWine from "../../assets/icons/customsample.png";
+import { title } from "process";
+import { vh } from "../../utils/vh";
 
 interface AddSeller1ModalProps {
   isOpen: boolean;
@@ -129,7 +133,7 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext, onCustomNext }: AddSeller1Mo
         return [...prev, ...uniqueNewWines];
       });
 
-      setHasMore(newWines.length === 20); // 마지막 페이지인지 판단
+      setHasMore(newWines.length === 20);
     } catch (error) {
       console.error("와인 검색 오류:", error);
       setError("검색 중 오류가 발생했습니다");
@@ -188,9 +192,10 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext, onCustomNext }: AddSeller1Mo
       <div style={styles.overlay} onClick={onClose}>
         <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
           <img src={closeButton} alt="닫기" style={styles.closeButton} onClick={onClose} />
-          <h2 style={styles.title}>와인 수집</h2>
-          <p style={styles.bottomText}>내가 마신 와인을 찾아주세요!</p>
-
+          <div style={styles.titlewrapper}>
+            <h2 style={styles.title}>와인 수집</h2>
+            <p style={styles.subtitle}>내가 마신 와인 등록</p>
+          </div>
           <div style={styles.searchContainer}>
             <input
               type="text"
@@ -204,9 +209,13 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext, onCustomNext }: AddSeller1Mo
               style={styles.searchInput}
             />
             <button onClick={handleSearch} style={styles.searchButton} disabled={loading}>
-              🔍
+              <img src={searchbutton} alt="" style={styles.searchButtonImage} />
             </button>
           </div>
+
+          <button onClick={() => setIsCustomModalOpen(true)} style={styles.customButton}>
+            직접 와인 등록하기
+          </button>
 
           {error && <p style={styles.errorText}>{error}</p>}
 
@@ -244,13 +253,14 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext, onCustomNext }: AddSeller1Mo
               })}
             </div>
           ) : (
-            !loading && (
-              <>
+            !loading &&
+            searchResults.length === 0 && (
+              <div style={styles.emptyStateContainer}>
+                <img src={customSampleWine} alt="와인 샘플" style={styles.sampleWineImage} />
+
+                <p style={styles.bottomText}>내가 마신 와인을 찾아주세요!</p>
                 <p style={styles.pagination}>1 / 3</p>
-                <button onClick={() => setIsCustomModalOpen(true)} style={styles.customButton}>
-                  직접 와인 등록하기
-                </button>
-              </>
+              </div>
             )
           )}
 
@@ -268,7 +278,7 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext, onCustomNext }: AddSeller1Mo
               </p>
               <p style={styles.selectedWineGrape}>포도 품종: {selectedWine.grape}</p>
               <button onClick={handleNextStep} style={styles.nextButton}>
-                다음
+                선택
               </button>
             </div>
           )}
@@ -290,159 +300,227 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext, onCustomNext }: AddSeller1Mo
   );
 };
 
+// styles 객체 내부
 const styles: { [key: string]: React.CSSProperties } = {
+  /* 오버레이 스타일 */
   overlay: {
     position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
+    top: 25,
+    left: -20,
+    // width: "100%",
+    // height: "100%",
+    right: -20,
     bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     zIndex: 1000,
+    transition: "opacity 0.3s ease",
   },
+  /* 모달 스타일 */
   modal: {
+    width: "90vw",
+    maxWidth: "500px",
+    height: "85vh",
+    top: "-20vh",
+    left: 0,
+    padding: "2.5vh",
+    marginBottom: "auto",
     backgroundColor: "#2a0e35",
-    padding: "20px",
-    borderRadius: "10px",
-    width: "80%",
-    maxWidth: "400px",
-    border: "5px solid #d4a017",
-    position: "relative",
-    color: "white",
+    border: "0.6vh solid #FDEBD0",
+    borderRadius: "1.3vh",
+    overflowY: "hidden",
+    boxSizing: "border-box",
+    scrollbarWidth: "none",
+    flexDirection: "column",
+    display: "flex",
+    transition: "transform 0.3s ease",
     fontFamily: "Galmuri9",
     textAlign: "center",
+    position: "relative",
   },
+  /* 닫기 버튼 */
   closeButton: {
     position: "absolute",
-    top: "12px",
-    right: "12px",
-    width: "24px",
-    height: "24px",
+    top: "1.2vh",
+    right: "1.2vh",
+    width: "4vh",
+    height: "4vh",
     cursor: "pointer",
   },
+  /* 제목, 부제목 박스 */
+  titlewrapper: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    marginLeft: "-1vh",
+    marginBottom: "1vh",
+  },
+  /* 제목 */
   title: {
-    fontSize: "18px",
+    textAlign: "left",
+    fontSize: "2vh",
     fontWeight: "bold",
-    marginBottom: "4px",
+    marginLeft: 0,
+    marginTop: "-1vh",
   },
+  /* 부제목 */
   subtitle: {
-    fontSize: "13px",
-    marginBottom: "16px",
+    textAlign: "left",
+    fontSize: "1.5vh",
     color: "#ccc",
+    marginLeft: 0,
+    marginTop: "-1vh",
   },
+  /* 검색 박스 */
   searchContainer: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: "8px",
-    gap: "4px",
+    marginBottom: vh(1),
+    borderBottom: `${vh(0.15)} solid white`,
+    gap: 0,
   },
+  /* 검색창 */
   searchInput: {
     flex: 1,
-    padding: "8px",
-    fontSize: "14px",
+    padding: "1vh",
+    fontSize: "1.6vh",
     backgroundColor: "transparent",
     border: "none",
-    borderBottom: "1px solid white",
     color: "white",
     outline: "none",
   },
+  /* 검색 버튼 */
   searchButton: {
-    fontSize: "16px",
+    fontSize: "2vh",
     backgroundColor: "transparent",
     border: "none",
     color: "white",
     cursor: "pointer",
+    padding: "0.8vh 1.2vh",
+    display: "flex",
+    alignItems: "center",
+    height: "100%",
   },
-  errorText: { fontSize: "13px", color: "tomato", marginTop: "6px" },
+  /* 검색 버튼 이미지 */
+  searchButtonImage: {
+    width: "4vh",
+    height: "4vh",
+    marginRight: "-1.9vh",
+    marginBottom: "-1vh",
+  },
+  /* 에러 메시지 */
+  errorText: { fontSize: "1.4vh", color: "tomato", marginTop: "0.5vh" },
+  /* 로딩 텍스트 */
   loadingText: {
-    fontSize: "14px",
-    marginTop: "10px",
+    fontSize: "1.6vh",
+    marginTop: "1vh",
   },
+  /* 결과박스 */
   resultContainer: {
-    marginTop: "10px",
-    maxHeight: "200px",
+    marginTop: "1vh",
+    maxHeight: "60vh",
     overflowY: "auto",
-    borderTop: "1px solid #ccc",
+    borderTop: "0.2vh solid #ccc",
   },
   wineItem: {
-    padding: "10px",
+    padding: "1vh",
     cursor: "pointer",
-    borderBottom: "1px solid #ccc",
+    borderBottom: "0.15vh solid #ccc",
     transition: "background 0.2s",
   },
   wineItemContent: {
     display: "flex",
     alignItems: "center",
-    gap: "10px",
+    gap: "1vh",
   },
   wineItemImage: {
-    width: "50px",
-    height: "75px",
+    width: "5vh",
+    height: "9vh",
     objectFit: "cover",
-    borderRadius: "4px",
+    borderRadius: vh(0.4),
   },
-  wineName: { fontSize: "14px", fontWeight: "bold" },
-  wineDetail: { fontSize: "12px", color: "#aaa" },
+  wineName: { fontSize: "1.4vh", fontWeight: "bold" },
+  wineDetail: { fontSize: "1.2vh", color: "#aaa" },
+
+  /* 내가 마신 와인을 찾아주세요! */
   bottomText: {
-    fontSize: "14px",
-    color: "#ffcc00",
-    fontWeight: "bold",
-    marginTop: "12px",
-  },
-  pagination: {
-    fontSize: "12px",
+    fontSize: "1.6vh",
     color: "white",
-    marginBottom: "8px",
+    fontWeight: "bold",
+    marginTop: vh(10),
   },
+  /* 페이지네이션 */
+  pagination: {
+    fontSize: vh(1.5),
+    color: "white",
+    marginTop: vh(8),
+  },
+  /* 커스텀 와인 등록 버튼 */
   customButton: {
-    backgroundColor: "#FFD447",
-    color: "#2a0e35",
-    padding: "8px 12px",
-    borderRadius: "6px",
+    backgroundColor: "transparent",
+    color: "white",
     border: "none",
     cursor: "pointer",
     fontWeight: "bold",
+    marginLeft: vh(21.7),
+    fontSize: vh(1.5),
   },
+
+  /* 선택된 와인 박스 */
   selectedWineContainer: {
-    marginTop: "15px",
-    padding: "10px",
+    marginTop: vh(1.5),
+    padding: vh(1),
     background: "#3b1845",
-    borderRadius: "5px",
+    borderRadius: vh(0.5),
   },
   selectedTitle: {
-    fontSize: "16px",
+    fontSize: vh(1.6),
     fontWeight: "bold",
   },
   wineImage: {
-    width: "100px",
-    height: "150px",
-    marginTop: "10px",
+    width: vh(10),
+    height: vh(15),
+    marginTop: vh(1),
   },
   selectedWineName: {
     fontWeight: "bold",
-    marginTop: "10px",
+    marginTop: vh(1),
   },
   selectedWineDetail: {
-    fontSize: "12px",
+    fontSize: vh(1.2),
     color: "#ccc",
   },
   selectedWineGrape: {
-    fontSize: "12px",
-    marginTop: "4px",
+    fontSize: vh(1.2),
+    marginTop: vh(0.4),
   },
   nextButton: {
-    marginTop: "10px",
-    padding: "10px",
-    backgroundColor: "#ffcc00",
-    color: "#2a0e35",
+    marginTop: vh(1.2),
+    padding: vh(0.8),
+    backgroundColor: "white",
+    color: "black",
     fontWeight: "bold",
     border: "none",
-    borderRadius: "4px",
+    borderRadius: vh(0.4),
     cursor: "pointer",
+  },
+  emptyStateContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: vh(2),
+  },
+  /* 샘플 와인 이미지 */
+  sampleWineImage: {
+    width: vh(30),
+    height: vh(20),
+    objectFit: "contain",
+    marginBottom: vh(5),
+    marginTop: vh(10),
   },
 };
 

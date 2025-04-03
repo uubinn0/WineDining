@@ -4,6 +4,8 @@ import { AppDispatch } from "../../store/store";
 import { CustomWineRegistrationRequest, Bottle } from "../../types/seller";
 import { registerCustomWine } from "../../store/slices/sellarSlice";
 import { Wine } from "../../types/wine";
+import { vh } from "../../utils/vh";
+import closeButton from "../../assets/icons/closebutton.png";
 
 interface AddCustomWineModalProps {
   isOpen: boolean;
@@ -54,6 +56,7 @@ const AddCustomWineModal = ({ isOpen, onClose, onComplete }: AddCustomWineModalP
     <div style={styles.overlay} onClick={onClose}>
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
         <h2 style={{ textAlign: "center", color: "#FFD447", fontSize: "18px" }}>커스텀 와인 등록</h2>
+        <img src={closeButton} alt="닫기" style={styles.closeButton} onClick={onClose} />
 
         <label style={styles.label}>이름</label>
         <input style={styles.input} value={form.name} onChange={(e) => handleChange("name", e.target.value)} />
@@ -76,12 +79,12 @@ const AddCustomWineModal = ({ isOpen, onClose, onComplete }: AddCustomWineModalP
         <label style={styles.label}>품종</label>
         <input style={styles.input} value={form.grape} onChange={(e) => handleChange("grape", e.target.value)} />
 
-        <button style={styles.button} onClick={handleSubmit}>
+        <button style={styles.completeButton} onClick={handleSubmit}>
           등록하기
         </button>
-        <button style={styles.closeButton} onClick={onClose}>
+        {/* <button style={styles.closeButton} onClick={onClose}>
           닫기
-        </button>
+        </button> */}
       </div>
     </div>
   );
@@ -90,7 +93,7 @@ const AddCustomWineModal = ({ isOpen, onClose, onComplete }: AddCustomWineModalP
 const styles: { [key: string]: React.CSSProperties } = {
   overlay: {
     position: "fixed",
-    top: 0,
+    top: 200,
     left: 0,
     right: 0,
     bottom: 0,
@@ -103,55 +106,57 @@ const styles: { [key: string]: React.CSSProperties } = {
   modal: {
     backgroundColor: "#2a0e35",
     color: "#fff",
-    border: "3px solid #FFD447",
-    borderRadius: "20px",
-    padding: "20px",
-    width: "320px",
+    border: "0.3vh solid #FDEBD0",
+    borderRadius: vh(2),
+    padding: vh(2),
+    width: vh(32),
     fontFamily: "Pixel, sans-serif",
     display: "flex",
     flexDirection: "column",
-    gap: "10px",
+    gap: vh(1.5),
+  },
+  /* 닫기 버튼 */
+  closeButton: {
+    position: "absolute",
+    top: vh(-24),
+    right: vh(1.2),
+    width: vh(4),
+    height: vh(4),
+    cursor: "pointer",
   },
   label: {
-    fontSize: "13px",
-    color: "#FFD447",
-    marginBottom: "4px",
+    fontSize: vh(1.5),
+    color: "white",
+    marginBottom: vh(0.3),
   },
   input: {
-    padding: "8px",
-    borderRadius: "4px",
-    border: "1px solid #ccc",
+    padding: vh(0.8),
+    borderRadius: vh(0.4),
+    border: "0.1vh solid #ccc",
     backgroundColor: "#fff",
-    color: "#000",
-    fontSize: "13px",
+    color: "white",
+    fontSize: vh(1.5),
   },
+  /* 타입 선택 박스 */
   select: {
-    padding: "8px",
-    borderRadius: "4px",
-    border: "1px solid #ccc",
+    padding: vh(0.8),
+    borderRadius: vh(0.4),
+    border: "0.1vh solid #ccc",
     backgroundColor: "#fff",
-    color: "#000",
-    fontSize: "13px",
+    color: "black",
+    fontSize: vh(1.3),
   },
+  /* 등록 버튼 */
   button: {
-    padding: "10px",
-    backgroundColor: "#FFD447",
+    position: "absolute",
+    backgroundColor: "white",
+    color: "black",
+    cursor: "pointer",
     border: "none",
-    borderRadius: "6px",
+    borderRadius: vh(0.8),
     fontWeight: "bold",
-    cursor: "pointer",
-    color: "#2a0e35",
-    fontSize: "14px",
-  },
-  closeButton: {
-    padding: "10px",
-    backgroundColor: "#fff",
-    border: "1px solid #ccc",
-    borderRadius: "6px",
-    fontWeight: "bold",
-    cursor: "pointer",
-    color: "#000",
-    fontSize: "14px",
+    fontSize: vh(1.5),
+    padding: `${vh(1)} ${vh(1.5)}`,
   },
 };
 
