@@ -49,7 +49,8 @@ public class RecommendController {
      */
     @GetMapping("/master/week")
     public ResponseEntity<ApiResponse<List<WineResponseDTO>>> getWeeklyRecommendations() {
-        List<WineResponseDTO> response = recommendService.getWeeklyRecommendations();
+        // 비동기 호출 결과를 동기적으로 변환
+        List<WineResponseDTO> response = recommendService.getWeeklyRecommendations().block();
 
         ApiResponse<List<WineResponseDTO>> apiResponse = ApiResponse.<List<WineResponseDTO>>builder()
                 .status(HttpStatus.OK.value())
