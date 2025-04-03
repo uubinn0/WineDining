@@ -12,10 +12,12 @@ import com.ssafy.winedining.domain.recommend.service.moduleService.RecommendFast
 import com.ssafy.winedining.domain.wine.dto.WineResponseDTO;
 import com.ssafy.winedining.domain.wine.entity.Wine;
 import com.ssafy.winedining.domain.wine.service.WineService;
+import com.ssafy.winedining.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 

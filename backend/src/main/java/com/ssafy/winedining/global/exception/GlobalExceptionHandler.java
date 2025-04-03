@@ -61,4 +61,16 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ApiResponse<String>> handleCustomException(CustomException e) {
+        ApiResponse<String> response = ApiResponse.<String>builder()
+                .status(e.getStatus().value())
+                .success(false)
+                .message(e.getMessage())
+                .data(null)
+                .build();
+
+        return ResponseEntity.status(e.getStatus()).body(response);
+    }
 }
