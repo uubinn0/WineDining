@@ -48,10 +48,10 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
     if not data.foodIds:
         print("🚀 음식 ID가 없음 → 기본 추천 수행")
         query = text("""
-            SELECT wine_id, feature_vector <=> CAST(:user_vector AS vector) AS cos
+            SELECT wine_id, feature_vector <-> CAST(:user_vector AS vector) AS cos
             FROM preference_wine_vectors
             WHERE wine_id > 10
-            ORDER BY cos ASC
+            ORDER BY cos DESC
             LIMIT 3
         """)
         params = {"user_vector": user_vector}
@@ -62,7 +62,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
             WITH SIM_TBL AS (
                 SELECT 
                     wine_id, 
-                    feature_vector <=> CAST(:user_vector AS vector) AS cos
+                    feature_vector <-> CAST(:user_vector AS vector) AS cos
                 FROM preference_wine_vectors
                 WHERE wine_id NOT BETWEEN 1 AND 10
             )
@@ -70,7 +70,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
             FROM SIM_TBL S
             INNER JOIN PAIRING_SETS P ON S.WINE_ID = P.WINE_ID
             WHERE P.FOOD_ID = ANY(:food_ids)
-            ORDER BY S.cos DESC, P.FOOD_ID ASC
+            ORDER BY S.cos DESC, P.FOOD_ID DESC
             LIMIT 3;
         """)
         params = {
