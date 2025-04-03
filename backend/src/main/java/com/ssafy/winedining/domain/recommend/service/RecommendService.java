@@ -14,13 +14,18 @@ import com.ssafy.winedining.domain.wine.entity.Wine;
 import com.ssafy.winedining.domain.wine.service.WineService;
 import com.ssafy.winedining.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.*;
@@ -28,6 +33,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RecommendService {
 
     private final RecommendDomainService recommendDomainService;
@@ -36,67 +42,156 @@ public class RecommendService {
     private final FoodSimilarityService foodSimilarityService;
     private final OpenAIService openAIService; // OpenAI 서비스 추가
     private final InfoRepository infoRepository;
+    private final ObjectMapper objectMapper;
+
+    /**
+     * 취향 테스트와 음식 페어링을 바탕으로 와인을 추천 받고 상세 정보를 가져옵니다.
+     * 모든 단계를 비동기적으로 처리합니다.
+     *
+     * @param userId 추천을 요청한 사용자 ID
+     * @param paring 사용자가 입력한 음식 이름 (쉼표로 구분)
+     * @return 추천된 와인 정보 목록을 담은 Mono
+     */
+    public Mono<List<WineResponseDTO>> getRecommendedWineDetails(Long userId, String paring) {
+        log.info("시작: getRecommendedWineDetails - userId: {}, paring: {}", userId, paring);
+        Instant startTotal = Instant.now();
+
+        // 1단계: 음식 유사성 찾기 (비동기)
+        Mono<List<Long>> similarFoodIdsMono;
+
+        if (paring != null && !paring.trim().isEmpty()) {
+            Instant startFoodSimilarity = Instant.now();
+            List<String> foodNames = Arrays.stream(paring.split(","))
+                    .map(String::trim)
+                    .filter(food -> !food.isEmpty())
+                    .collect(Collectors.toList());
+
+            // 비동기 음식 유사성 서비스 호출
+            similarFoodIdsMono = foodSimilarityService.findSimilarFoodsAsync(foodNames)
+                    .collectList()
+                    .doOnSuccess(ids -> {
+                        Instant endFoodSimilarity = Instant.now();
+                        log.info("음식 유사성 찾기 소요 시간: {} ms, 결과: {}",
+                                Duration.between(startFoodSimilarity, endFoodSimilarity).toMillis(), ids);
+                    });
+        } else {
+            // 음식 페어링 정보가 없는 경우 빈 리스트 반환
+            similarFoodIdsMono = Mono.just(new ArrayList<>());
+        }
+
+        // 2단계: 사용자 취향 정보 가져오기 + 추천 API 호출 (비동기)
+        return similarFoodIdsMono.flatMap(similarFoodIds -> {
+            Instant startRecommend = Instant.now();
+
+            // 추천 API 호출
+            return recommendByPreference(userId, similarFoodIds)
+                    .doOnSuccess(result -> {
+                        Instant endRecommend = Instant.now();
+                        log.info("추천 API 호출 소요 시간: {} ms",
+                                Duration.between(startRecommend, endRecommend).toMillis());
+                    })
+                    // 3단계: 추천 결과 파싱 및 와인 상세 정보 가져오기 (비동기)
+                    .flatMap(resultString -> {
+                        Instant startParsing = Instant.now();
+                        List<Long> recommendedIds = new ArrayList<>();
+                        try {
+                            JsonNode root = objectMapper.readTree(resultString);
+                            JsonNode idsNode = root.path("recommended_wine_ids");
+
+                            if (idsNode.isArray()) {
+                                for (JsonNode idNode : idsNode) {
+                                    recommendedIds.add(idNode.asLong());
+                                }
+                            }
+                            log.info("추천된 와인 ID 목록: {}", recommendedIds);
+                        } catch (Exception e) {
+                            log.error("추천 결과 파싱 중 오류: {}", e.getMessage());
+                            return Mono.error(e);
+                        }
+                        Instant endParsing = Instant.now();
+                        log.info("추천 결과 파싱 소요 시간: {} ms",
+                                Duration.between(startParsing, endParsing).toMillis());
+
+                        if (recommendedIds.isEmpty()) {
+                            return Mono.just(Collections.<WineResponseDTO>emptyList());
+                        }
+
+                        // 4단계: 와인 상세 정보 병렬 조회
+                        Instant startWineDetails = Instant.now();
+                        return Flux.fromIterable(recommendedIds)
+                                .parallel()
+                                .runOn(Schedulers.boundedElastic())
+                                .flatMap(wineId -> {
+                                    try {
+                                        WineResponseDTO detail = wineService.getWineDetail(wineId);
+                                        return Mono.just(detail);
+                                    } catch (Exception e) {
+                                        log.error("와인 ID: {} 상세 정보 조회 중 오류: {}", wineId, e.getMessage());
+                                        return Mono.empty();
+                                    }
+                                })
+                                .sequential()
+                                .collectList()
+                                .doOnSuccess(wines -> {
+                                    Instant endWineDetails = Instant.now();
+                                    log.info("와인 상세 정보 조회 소요 시간: {} ms, 결과 개수: {}",
+                                            Duration.between(startWineDetails, endWineDetails).toMillis(), wines.size());
+                                })
+                                // 5단계: OpenAI 설명 생성 및 와인 정보 보강
+                                .flatMap(wineDetails -> {
+                                    if (wineDetails.isEmpty()) {
+                                        return Mono.just(Collections.<WineResponseDTO>emptyList());
+                                    }
+
+                                    Instant startOpenAI = Instant.now();
+                                    return openAIService.enrichWinesWithDescriptions(wineDetails)
+                                            .doOnSuccess(enrichedWines -> {
+                                                Instant endOpenAI = Instant.now();
+                                                log.info("OpenAI 설명 생성 소요 시간: {} ms",
+                                                        Duration.between(startOpenAI, endOpenAI).toMillis());
+
+                                                Instant endTotal = Instant.now();
+                                                log.info("전체 getRecommendedWineDetails 소요 시간: {} ms",
+                                                        Duration.between(startTotal, endTotal).toMillis());
+                                            });
+                                });
+                    });
+        });
+    }
 
     /**
      * 취향 테스트를 바탕으로 와인을 추천 받습니다.
      * FastAPI에 전달하여 처리 결과를 받아옵니다.
      *
      * @param userId 추천을 요청한 사용자 ID
-     * @return FastAPI 서버로부터 받은 응답 (동기식 처리 예: .block() 사용)
+     * @param similarFoodIds 유사한 음식 ID 목록
+     * @return FastAPI 서버로부터 받은 응답 (Mono<String>)
      */
     public Mono<String> recommendByPreference(Long userId, List<Long> similarFoodIds) {
-        // 1. Repository에서 추천 데이터를 조회 (DTO 변환)
-        RecommendByPreferenceDto preferenceData = recommendDomainService.recommendByPreferene(userId);
+        Instant start = Instant.now();
 
-        // 2. DTO에 음식 ID 목록 설정
-        preferenceData.setFoodIds(similarFoodIds);
-        System.out.println(preferenceData);
-        // 3. FastAPI에 DTO 전송
-        return recommendFastApiService.sendData(preferenceData, "preference");
-    }
-
-    public Mono<List<WineResponseDTO>> getRecommendedWineDetails(Long userId, String paring) {
-        // 음식 ID 목록 초기화
-        List<Long> similarFoodIds = new ArrayList<>();
-
-        // 음식 페어링 정보가 제공된 경우, 유사한 음식 ID 목록 찾기
-        if (paring != null && !paring.trim().isEmpty()) {
-            List<String> foodNames = Arrays.stream(paring.split(","))
-                    .map(String::trim)
-                    .filter(food -> !food.isEmpty())
-                    .collect(Collectors.toList());
-
-            similarFoodIds = foodSimilarityService.findSimilarFoods(foodNames);
-            System.out.println("similarFoodIds: " + similarFoodIds);
-        }
-
-        return recommendByPreference(userId, similarFoodIds)
-                .flatMap(resultString -> {
-                    ObjectMapper mapper = new ObjectMapper();
-                    try {
-                        // 예시: {"recommended_wine_ids":[2,7,8,6,1]}
-                        JsonNode root = mapper.readTree(resultString);
-                        JsonNode idsNode = root.path("recommended_wine_ids");
-                        List<Long> recommendedIds = new ArrayList<>();
-                        if (idsNode.isArray()) {
-                            for (JsonNode idNode : idsNode) {
-                                recommendedIds.add(idNode.asLong());
-                            }
-                        }
-
-                        // 각 추천 와인 ID마다 WineService의 getWineDetail() 호출
-                        List<WineResponseDTO> wineDetails = new ArrayList<>();
-                        for (Long wineId : recommendedIds) {
-                            WineResponseDTO detail = wineService.getWineDetail(wineId);
-                            wineDetails.add(detail);
-                        }
-
-                        // OpenAI 서비스를 이용해 설명 생성 및 와인 정보에 추가
-                        return openAIService.enrichWinesWithDescriptions(wineDetails);
-                    } catch (Exception e) {
-                        return Mono.error(e);
-                    }
-                });
+        // 사용자 취향 데이터 조회 (동기 작업)
+        return Mono.fromCallable(() -> {
+                    RecommendByPreferenceDto preferenceData = recommendDomainService.recommendByPreferene(userId);
+                    preferenceData.setFoodIds(similarFoodIds);
+                    log.info("취향 데이터: {}", preferenceData);
+                    return preferenceData;
+                })
+                .subscribeOn(Schedulers.boundedElastic())
+                .doOnSuccess(data -> {
+                    Instant afterPreferenceData = Instant.now();
+                    log.info("취향 데이터 조회 소요 시간: {} ms",
+                            Duration.between(start, afterPreferenceData).toMillis());
+                })
+                // FastAPI에 데이터 전송 (비동기)
+                .flatMap(preferenceData ->
+                        recommendFastApiService.sendData(preferenceData, "preference")
+                                .doOnSuccess(result -> {
+                                    Instant end = Instant.now();
+                                    log.info("FastAPI 통신 소요 시간: {} ms",
+                                            Duration.between(start, end).toMillis());
+                                })
+                );
     }
 
     /**
