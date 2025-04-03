@@ -4,6 +4,7 @@ import AddSeller2Modal from "../components/Modal/AddSeller2Modal";
 import AddSeller3Modal from "../components/Modal/AddSeller3Modal";
 import { Wine } from "../types/wine";
 import { CustomWineRegistrationRequest } from "../types/seller";
+import { vh } from "../utils/vh";
 
 interface MySellerAddFlowProps {
   buttonText?: string;

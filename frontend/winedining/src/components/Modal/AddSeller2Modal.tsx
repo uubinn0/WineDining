@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Wine } from "../../types/wine";
 import closebutton from "../../assets/icons/closebutton.png";
+import { vh } from "../../utils/vh";
 
 interface AddSeller2ModalProps {
   isOpen: boolean;
@@ -168,148 +169,183 @@ const AddSeller2Modal = ({ isOpen, onClose, onPrev, onNext, wineInfo }: AddSelle
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
+  /* 오버레이 스타일 */
   overlay: {
     position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
+    // left: 0,
+    // right: 0,
+    left: -20,
+    right: -20,
+    top: 25,
     bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    // width: "100%",
+    // height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     zIndex: 1000,
+    transition: "opacity 0.3s ease",
   },
+  /* 모달 스타일 */
   modal: {
+    width: "90vw",
+    maxWidth: "500px",
+    height: "85vh",
+    top: "-20vh",
+    left: 0,
+    padding: "2.5vh",
+    marginBottom: "auto",
     backgroundColor: "#2a0e35",
-    padding: "24px",
-    borderRadius: "16px",
-    width: "90%",
-    maxWidth: "400px",
-    border: "5px solid #d4a017",
-    position: "relative",
-    color: "white",
+    border: "0.6vh solid #FDEBD0",
+    borderRadius: "1.3vh",
+    overflowY: "hidden",
+    boxSizing: "border-box",
+    scrollbarWidth: "none",
+    flexDirection: "column",
+    display: "flex",
+    transition: "transform 0.3s ease",
     fontFamily: "Galmuri9",
-    textAlign: "left",
+    textAlign: "center",
+    position: "relative",
   },
+  /* 닫기 버튼 */
   closeButton: {
     position: "absolute",
-    top: "16px",
-    right: "16px",
-    width: "24px",
-    height: "24px",
+    top: "1.2vh",
+    right: "1.2vh",
+    width: "4vh",
+    height: "4vh",
     cursor: "pointer",
   },
+  /* 제목 */
   title: {
-    fontSize: "18px",
+    textAlign: "left",
+    fontSize: "2vh",
     fontWeight: "bold",
-    marginBottom: "4px",
+    marginLeft: vh(-1),
+    marginTop: "-1vh",
   },
+  /* 부제목 */
   subtitle: {
-    fontSize: "13px",
-    marginBottom: "16px",
-    display: "flex",
-    alignItems: "center",
-    gap: "6px",
+    textAlign: "left",
+    fontSize: "1.5vh",
+    color: "#ccc",
+    marginLeft: vh(-1),
+    marginTop: "-1vh",
   },
+  /* 국기 아이콘 */
   flagIcon: {
-    width: "18px",
-    height: "12px",
+    width: vh(1.8),
+    height: vh(1.2),
   },
+  /* 와인 설명 감싸는 박스 */
   wineContainer: {
     textAlign: "center",
-    marginBottom: "16px",
+    marginBottom: vh(2),
   },
   wineImage: {
-    width: "80px",
+    width: vh(15),
     height: "auto",
+    marginBottom: vh(2),
+    marginTop: vh(2),
   },
   wineName: {
-    fontSize: "16px",
+    fontSize: vh(1.6),
     fontWeight: "bold",
     color: "#ffcc00",
-    marginTop: "8px",
+    marginTop: vh(0.8),
   },
   section: {
     display: "flex",
     justifyContent: "space-between",
-    margin: "8px 0",
+    margin: `${vh(0.8)} 0`,
+    textAlign: "left",
   },
+  /* 마신 날짜, 누구랑, 안주는, 내용, 맛, 평점 */
   label: {
     fontWeight: "bold",
-    width: "80px",
+    width: vh(10),
+    fontSize: vh(1.8),
   },
   value: {
     color: "#bbb",
     textAlign: "right",
     flex: 1,
+    fontSize: vh(1.8),
   },
   note: {
-    fontSize: "12px",
+    fontSize: vh(1.8),
     color: "#888",
     textAlign: "right",
     flex: 1,
   },
+  /* 페이지네이션 */
   pagination: {
-    marginTop: "20px",
+    marginTop: vh(5),
     textAlign: "center",
-    fontSize: "14px",
+    fontSize: vh(1.5),
     color: "white",
   },
   pageArrow: {
-    margin: "0 12px",
+    margin: `0 ${vh(1.5)}`,
     cursor: "pointer",
   },
   pageText: {
-    fontSize: "14px",
+    fontSize: vh(1.5),
   },
+  /* 값 넣는 입력 부분 */
   dateInput: {
     backgroundColor: "transparent",
-    border: "1px solid #d4a017",
-    borderRadius: "4px",
+    border: `${vh(0.1)} solid white`,
+    borderRadius: vh(0.4),
     color: "white",
-    padding: "4px 8px",
+    padding: `${vh(0.4)} ${vh(0.8)}`,
     outline: "none",
+    colorScheme: "light",
   },
   textInput: {
     backgroundColor: "transparent",
-    border: "1px solid #d4a017",
-    borderRadius: "4px",
+    border: `${vh(0.1)} solid white`,
+    borderRadius: vh(0.4),
     color: "white",
-    padding: "4px 8px",
-    width: "200px",
+    padding: `${vh(0.4)} ${vh(0.8)}`,
+    width: vh(25),
     outline: "none",
   },
   textArea: {
     backgroundColor: "transparent",
-    border: "1px solid #d4a017",
-    borderRadius: "4px",
+    border: `${vh(0.1)} solid white`,
+    borderRadius: vh(0.4),
     color: "white",
-    padding: "8px",
-    width: "200px",
-    height: "80px",
+    padding: vh(0.8),
+    width: vh(25),
+    height: vh(10),
     resize: "none",
     outline: "none",
   },
+
+  /* 누구랑? 선택 박스 */
   companionContainer: {
     display: "flex",
-    gap: "8px",
+    gap: vh(0.8),
   },
   companionButton: {
-    padding: "4px 8px",
-    border: "1px solid #d4a017",
-    borderRadius: "4px",
+    padding: `${vh(0.4)} ${vh(0.8)}`,
+    border: `${vh(0.1)} solid white`,
+    borderRadius: vh(0.4),
     color: "white",
     cursor: "pointer",
-    fontSize: "12px",
+    fontSize: vh(1.5),
   },
+  /* 평점 선택 박스 */
   ratingContainer: {
     display: "flex",
-    gap: "8px",
+    gap: vh(1),
   },
   ratingStar: {
     cursor: "pointer",
-    fontSize: "20px",
+    fontSize: vh(2),
   },
 };
 
