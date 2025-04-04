@@ -12,6 +12,7 @@ import BackButton from "../components/BackButton";
 import { vh } from "../utils/vh";
 import sampleimg from "../assets/images/winesample/defaultwine.png";
 import BestWineFlipCard from "../components/BestWineFlipCard"; // 새로 작성한 플립 카드 컴포넌트
+import PixelTitle from "../components/PixcelTitle";
 
 const WineSellerList = () => {
   const navigate = useNavigate();
@@ -76,7 +77,13 @@ const WineSellerList = () => {
         <BackButton onClick={() => navigate("/mypage")} />
       </div>
 
-      <h1 style={styles.title}>⚡ MY WINE SELLER ⚡</h1>
+      <PixelTitle
+        text="MY WINE SELLER"
+        imageSrc="/sample_image/yellow_lightning.png"
+        fontSize="20px"
+        color="#fefefe"
+        imageSize="24px"
+      />
 
       {/* 베스트 와인 영역: 항상 3개의 카드로 표시 */}
       <div style={styles.bestWinesSection}>
@@ -154,12 +161,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     top: vh(2),
     left: vh(2),
   },
-  title: {
-    fontSize: vh(2.5),
-    textAlign: "center",
-    marginTop: vh(5),
-    marginBottom: vh(3),
-  },
 
   bestWinesSection: {
     marginBottom: vh(3),
@@ -174,7 +175,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   bestWineCard: {
     position: "relative",
-    width: vh(12),
+    width: vh(15),
     height: vh(20),
     backgroundColor: "#2a0e35",
     borderRadius: vh(1),
@@ -223,7 +224,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   addButtonWrapper: {
     width: "95%",
-    maxWidth: "500px",
+    maxWidth: "350px",
     position: "relative",
     zIndex: 1500,
     transform: "translateY(0px)",

@@ -4,6 +4,7 @@ import AddSeller2Modal from "./Modal/AddSeller2Modal";
 import AddSeller3Modal from "./Modal/AddSeller3Modal";
 import { Wine } from "../types/wine";
 import { CustomWineRegistrationRequest } from "../types/seller";
+import { vh } from "../utils/vh"; // vh 유틸 쓰는 경우
 
 const CustomAddWineButton = () => {
   const [isStep1Open, setIsStep1Open] = useState(false);
@@ -42,31 +43,31 @@ const CustomAddWineButton = () => {
       <button
         onClick={() => setIsStep1Open(true)}
         style={{
-          // ▼ 원하는 스타일
+          width: "100%",
+          maxWidth: vh(44), // 약 350px 기준
           position: "relative",
           display: "inline-block",
-          backgroundColor: "#fdfdfd",
+          backgroundColor: "#ddd",
           color: "#000000",
           border: "none",
-          borderRadius: "8px",
-          padding: "6px 20px",
+          borderRadius: vh(1),
+          padding: `${vh(1)} ${vh(3)}`,
           cursor: "pointer",
-          fontFamily: "Pixel, sans-serif", // 픽셀 폰트
-          fontSize: "16px",
+          fontFamily: "Galmuri7",
+          fontSize: vh(1.5),
           textAlign: "center",
-          boxShadow: "4px 4px 0 #000", // 픽셀 느낌의 그림자
+          boxShadow: `${vh(0.6)} ${vh(0.6)} 0 #000`,
           transition: "all 0.2s ease",
+          whiteSpace: "nowrap",
         }}
         onMouseDown={(e) => {
-          // 클릭 시 그림자가 조금 줄어드는 효과
-          (e.target as HTMLButtonElement).style.boxShadow = "2px 2px 0 #000";
+          (e.target as HTMLButtonElement).style.boxShadow = `${vh(0.2)} ${vh(0.2)} 0 #000`;
         }}
         onMouseUp={(e) => {
-          // 클릭 해제 시 원래 그림자로 복귀
-          (e.target as HTMLButtonElement).style.boxShadow = "4px 4px 0 #000";
+          (e.target as HTMLButtonElement).style.boxShadow = `${vh(0.4)} ${vh(0.4)} 0 #000`;
         }}
       >
-        내가 마신 와인, 내 와인 셀러에 추가하기
+        + 내가 마신 와인 WINE SELLER 추가하기
       </button>
 
       <AddSeller1Modal
