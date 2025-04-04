@@ -13,4 +13,5 @@ public interface WishItemRepository extends JpaRepository<WishItem, Long> {
     Optional<WishItem> findByUserIdAndWineId(Long userId, Long wineId);
     void deleteByUserIdAndWineId(Long userId, Long wineId);
     boolean existsByUserIdAndWineId(Long userId, Long wineId);
+    void deleteByUserId(Long userId);
 }
