@@ -119,7 +119,7 @@ const homeContainer: React.CSSProperties = {
   backgroundPosition: "center",
   backgroundRepeat: "no-repeat",
   width: "100%",
-  height: "calc(100 * var(--custom-vh))",
+  height: "100dvh",
   position: "relative",
 };
 
@@ -136,20 +136,22 @@ const wineListStyle: React.CSSProperties = {
 
 const wineListPositionStyle: React.CSSProperties = {
   position: "absolute",
-  top: vh(44.3),
-  left: vh(4.2),
+  top: "45dvh",
+  left: "15dvw",   // 화면 너비 기준 25%
 };
 
 const dictionaryPositionStyle: React.CSSProperties = {
-  position: "absolute",
-  top: vh(73.1),
-  left: vh(1.5),
+  position: "fixed",
+  zIndex : 999,
+  bottom : vh(10),
+  right: vh(12),
 };
 
 const myPagePositionStyle: React.CSSProperties = {
-  position: "absolute",
-  top: vh(73.1),
-  left: vh(8.5),
+  position: "fixed",
+  zIndex : 999,
+  bottom : vh(10),
+  right: vh(5),
 };
 
 const navIconStyle: React.CSSProperties = {
@@ -159,16 +161,16 @@ const navIconStyle: React.CSSProperties = {
 
 const bartenderStyle: React.CSSProperties = {
   position: "absolute",
-  top: vh(48.2),
-  left: vh(17.3),
+  top: "55vh",
+  left: "35vw",
   width: vh(24.3),
   height: vh(30.1),
 };
 
 const questStyle: React.CSSProperties = {
   position: "absolute",
-  top: vh(40),
-  left: vh(33.9),
+  top: "45vh",
+  left: "70vw",
   width: vh(12),
   height: vh(12),
 };
