@@ -39,7 +39,7 @@ function RecommendTest() {
       question: "와인을 마실 때 느끼고 싶은 무게감은 \n어느 정도인가요?",
       options: ["물처럼 가볍게", "중간 정도", "우유처럼 묵직하게"],
     },
-    { question: "어떤 종류의 와인을 즐겨 드시나요?", options: ["레드", "로제", "화이트", "스파클링"] },
+    { question: "어떤 종류의 와인을 즐겨 드시나요?", options: ["레드", "로제", "화이트", "스파클링", "상관없음"] },
     { question: "취향을 기억할까요?", options: ["내 취향을 기억해줘!", "마음이 바꼈어. 잊어줘"] },
   ];
 
@@ -78,8 +78,7 @@ function RecommendTest() {
       tannin: mapToNumber(dialogues[3].options, answers[2]),
       acidity: mapToNumber(dialogues[4].options, answers[3]),
       body: mapToNumber(dialogues[5].options, answers[4]),
-      preferredTypes: dialogues[6].options[0],
-      // remember_preference: answers[7] === "내 취향을 기억해줘!",
+      preferredTypes: answers[5],
     };
 
       // 콘솔에 각 값 출력
@@ -96,8 +95,6 @@ function RecommendTest() {
     if (response.success) {
       dispatch(setTestCompleted(true)); // **테스트 완료 표시**
       dispatch(setCurrentStep(6)); // **6번째 질문부터 시작**
-      // navigate("/recommendflow");
-      // cameFromRecommendFlow 값에 따라 경로 설정
       if (cameFromRecommendFlow === "home") {
         navigate("/home");  // 홈에서 왔으면 홈으로
       } else if (cameFromRecommendFlow === "mypage") {
@@ -109,7 +106,6 @@ function RecommendTest() {
     } else {
       alert("취향테스트 실패")
       dispatch(setTestCompleted(true)); // **테스트 완료 표시**
-      // dispatch(setCurrentStep(6)); // **6번째 질문부터 시작**
       navigate("/home"); // api 연결후 삭제 예정
       console.error("API 호출 실패:", response.message);
     }

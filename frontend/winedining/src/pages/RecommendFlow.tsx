@@ -79,13 +79,10 @@ const RecommendFlow: React.FC = () => {
   const handleSelectOption = (selectedOption: string) => {
     if (currentStep === 1 && selectedOption === "아니오") {
       dispatch(setCurrentStep(2));
-      
-      // setCurrentStepState(2);
       return;
     }
 
     if (currentStep === 1 && selectedOption === "예") {
-      // setCurrentStepState(3);
       dispatch(setCurrentStep(3));
       return;
     }
