@@ -9,6 +9,7 @@ import AddSeller2Modal from "../Modal/AddSeller2Modal";
 import AddSeller3Modal from "../Modal/AddSeller3Modal";
 import closeButton from "../../assets/icons/closebutton.png";
 import AddSellerModal from "./AddSellerModal";
+import Add1SellerModal from "./add1SellerModal";
 import { vh } from "../../utils/vh";
 
 interface WineSellerDetailModalProps {
@@ -241,7 +242,7 @@ const WineSellerDetailModal = ({ isOpen, onClose, bottle }: WineSellerDetailModa
           wineInfo={wine}
         />
         {newNoteData && (
-          <AddSeller3Modal
+          <Add1SellerModal
             isOpen={isAddStep3Open}
             onClose={handleAddStep3Close}
             onPrev={() => {
