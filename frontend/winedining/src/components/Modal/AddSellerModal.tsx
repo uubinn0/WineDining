@@ -3,7 +3,7 @@ import { Wine } from "../../types/wine";
 import closebutton from "../../assets/icons/closebutton.png";
 import { vh } from "../../utils/vh";
 
-interface AddSeller2ModalProps {
+interface AddSellerModalProps {
   isOpen: boolean;
   onClose: () => void;
   onPrev: () => void;
@@ -11,7 +11,7 @@ interface AddSeller2ModalProps {
   wineInfo: Wine;
 }
 
-const AddSeller2Modal = ({ isOpen, onClose, onPrev, onNext, wineInfo }: AddSeller2ModalProps) => {
+const AddSellerModal = ({ isOpen, onClose, onPrev, onNext, wineInfo }: AddSellerModalProps) => {
   // 상태 관리
   const getTodayDate = () => {
     const today = new Date();
@@ -188,7 +188,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     width: "90vw",
     maxWidth: "500px",
     height: "85vh",
-    top: "-32vh",
+    // top: "-32vh",
     left: 0,
     padding: "2.5vh",
     marginBottom: "auto",
@@ -353,4 +353,4 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-export default AddSeller2Modal;
+export default AddSellerModal;

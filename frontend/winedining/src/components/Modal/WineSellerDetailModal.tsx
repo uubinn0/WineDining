@@ -8,6 +8,7 @@ import { fetchCellar } from "../../store/slices/sellarSlice";
 import AddSeller2Modal from "../Modal/AddSeller2Modal";
 import AddSeller3Modal from "../Modal/AddSeller3Modal";
 import closeButton from "../../assets/icons/closebutton.png";
+import AddSellerModal from "./AddSellerModal";
 import { vh } from "../../utils/vh";
 
 interface WineSellerDetailModalProps {
@@ -232,7 +233,7 @@ const WineSellerDetailModal = ({ isOpen, onClose, bottle }: WineSellerDetailModa
           </div>
         )}
 
-        <AddSeller2Modal
+        <AddSellerModal
           isOpen={isAddStep2Open}
           onClose={() => setIsAddStep2Open(false)}
           onPrev={() => setIsAddStep2Open(false)}
@@ -390,7 +391,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   pagination: {
     marginTop: vh(5),
     textAlign: "center",
-    fontSize: vh(1.5),
+    fontSize: vh(1.3),
     color: "white",
     marginLeft: vh(2.5),
   },
