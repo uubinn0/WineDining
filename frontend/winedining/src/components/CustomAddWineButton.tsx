@@ -43,7 +43,8 @@ const CustomAddWineButton = () => {
       <button
         onClick={() => setIsStep1Open(true)}
         style={{
-          width: "100%",
+          width: "90%",
+          margin: "0 auto", // 가운데 정렬을 위한 설정
           maxWidth: vh(44), // 약 350px 기준
           position: "relative",
           display: "inline-block",

@@ -80,7 +80,7 @@ const WineSellerList = () => {
       <PixelTitle
         text="MY WINE SELLER"
         imageSrc="/sample_image/yellow_lightning.png"
-        fontSize="20px"
+        fontSize="16px"
         color="#fefefe"
         imageSize="24px"
       />
@@ -223,10 +223,13 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   addButtonWrapper: {
     width: "95%",
+    display: "flex",
+    justifyContent: "center",
     maxWidth: "350px",
     position: "relative",
     zIndex: 1500,
     transform: "translateY(0px)",
+    marginBottom: vh(2),
   },
   totalCountWrapper: {
     margin: vh(1),
@@ -235,13 +238,13 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: "end",
   },
   totalCountText: {
-    fontSize: vh(1.8),
+    fontSize: vh(2),
     color: "#ccc",
   },
   list: {
     display: "flex",
     flexDirection: "column",
-    gap: vh(1.2),
+    gap: vh(2),
     overflowY: "auto",
     paddingBottom: vh(8),
   },

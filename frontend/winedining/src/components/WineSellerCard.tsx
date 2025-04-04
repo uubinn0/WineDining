@@ -19,34 +19,43 @@ const WineSellerCard = memo(({ wine, onBestClick, onDetailClick, isBest }: WineS
   const imageSrc = isValidImage ? wine.wine.image : "/sample_image/wine_sample.jpg";
 
   return (
-    <div style={styles.card}>
-      <img src={imageSrc} alt={wine.wine.name} style={styles.image} />
+    <div style={styles.cardWrapper}>
+      <div style={styles.card}>
+        <img src={imageSrc} alt={wine.wine.name} style={styles.image} />
 
-      <div style={styles.info}>
-        <div style={styles.name}>{wine.wine.name.toUpperCase()}</div>
-        <div style={styles.grape}>{wine.wine.grape}</div>
-      </div>
+        <div style={styles.info}>
+          <div style={styles.name}>{wine.wine.name.toUpperCase()}</div>
+          <div style={styles.grape}>
+            {wine.wine.country} / {wine.wine.grape}
+          </div>
+        </div>
 
-      <div style={styles.buttons}>
-        <button
-          style={{
-            ...styles.button,
-            backgroundColor: isBest ? "#5A0000" : "#FFFFFF",
-            color: isBest ? "#FFFFFF" : "#000000",
-          }}
-          onClick={() => onBestClick(wine.bottleId)}
-        >
-          BEST
-        </button>
-        <button style={styles.button} onClick={onDetailClick}>
-          자세히
-        </button>
+        <div style={styles.buttons}>
+          <button
+            style={{
+              ...styles.button,
+              backgroundColor: isBest ? "#5A0000" : "#FFFFFF",
+              color: isBest ? "#FFFFFF" : "#000000",
+            }}
+            onClick={() => onBestClick(wine.bottleId)}
+          >
+            {isBest ? "담김" : "담기"}
+          </button>
+          <button style={styles.button} onClick={onDetailClick}>
+            자세히
+          </button>
+        </div>
       </div>
     </div>
   );
 });
 
 const styles: { [key: string]: React.CSSProperties } = {
+  cardWrapper: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+  },
   card: {
     backgroundColor: "#27052E",
     border: `${vh(0.3)} solid #D6BA91`,
@@ -54,18 +63,21 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: `${vh(0)} ${vh(1)}`,
-    height: vh(10),
+    padding: `${vh(1)} ${vh(2)}`,
+    height: vh(11),
     position: "relative",
     fontFamily: "Galmuri7",
+    width: "100%",
+    maxWidth: vh(44),
+    margin: "0 auto",
   },
   image: {
-    width: vh(5),
-    height: "auto",
-    padding: vh(1),
+    width: vh(6),
+    height: vh(6),
+    padding: vh(0.5),
     borderRadius: vh(0.5),
     objectFit: "contain",
-    margin: vh(1),
+    marginRight: vh(2),
     backgroundColor: "#381837",
   },
   info: {
@@ -73,29 +85,36 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    padding: `0 ${vh(0.5)}`,
-    gap: vh(0.8),
+    gap: vh(0.6),
+    minWidth: 0,
   },
   name: {
     color: "#FFD447",
-    fontWeight: "bold",
-    fontSize: vh(1.6),
+    fontSize: vh(2),
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    maxWidth: "100%",
   },
   grape: {
     color: "#FFFFFF",
-    fontSize: vh(1.4),
+    fontSize: vh(1.6),
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    maxWidth: "100%",
   },
   buttons: {
     display: "flex",
     flexDirection: "column",
     gap: vh(0.5),
-    marginRight: vh(1),
+    marginLeft: vh(1),
     alignItems: "flex-end",
   },
   button: {
     fontFamily: "Galmuri7",
     backgroundColor: "#FFFFFF",
-    minWidth: vh(6),
+    minWidth: vh(7),
     color: "#000000",
     fontSize: vh(1.2),
     border: "none",

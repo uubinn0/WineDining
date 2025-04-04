@@ -52,7 +52,7 @@ const styles: { [key: string]: React.CSSProperties } = {
    */
   cardContainer: {
     display: "inline-block",
-    width: vh(15),
+    width: vh(14),
     height: vh(20),
     perspective: "1000px", // 3D 효과를 위해 부모에 설정
     cursor: "pointer",
