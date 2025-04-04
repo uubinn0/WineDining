@@ -8,6 +8,7 @@ import WineWishCard from "../components/WineWishCard";
 import WineDetailModal from "../components/Modal/WineDetailModal";
 import { WineDetail } from "../types/wine";
 import BackButton from "../components/BackButton";
+import PixelTitle from "../components/PixcelTitle";
 
 const WishList = () => {
   const navigate = useNavigate();
@@ -31,11 +32,18 @@ const WishList = () => {
       <div style={styles.backButtonWrapper}>
         <BackButton onClick={() => navigate("/mypage")} />
       </div>
-      <h1 style={styles.headertext}>
+      {/* <h1 style={styles.headertext}>
         <img src={"/sample_image/yellow_lightning.png"} alt="번개" style={styles.image} />
         MY WISH LIST
         <img src={"/sample_image/yellow_lightning.png"} alt="번개" style={styles.image} />
-      </h1>
+      </h1> */}
+      <PixelTitle
+        text="MY WINE SELLER"
+        imageSrc="/sample_image/yellow_lightning.png"
+        fontSize="25px"
+        color="#fefefe"
+        imageSize="24px"
+      />
 
       {status === "loading" && <p>위시리스트를 불러오는 중...</p>}
       {status === "failed" && <p>위시리스트를 불러오는 데 실패했습니다.</p>}
@@ -66,17 +74,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: "center",
     backgroundColor: "#27052E",
     height: "100vh",
-  },
-  headertext: {
-    fontSize: "24px",
-    color: "#FFFFFF",
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: "16px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "8px",
   },
   grid: {
     display: "grid",
