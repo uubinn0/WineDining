@@ -167,7 +167,7 @@ const bartenderStyle: React.CSSProperties = {
 
 const questStyle: React.CSSProperties = {
   position: "absolute",
-  top: vh(39.5),
+  top: vh(40),
   left: vh(33.9),
   width: vh(12),
   height: vh(12),
