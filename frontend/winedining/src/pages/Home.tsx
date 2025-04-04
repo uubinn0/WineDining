@@ -143,20 +143,20 @@ const wineListPositionStyle: React.CSSProperties = {
 const dictionaryPositionStyle: React.CSSProperties = {
   position: "fixed",
   zIndex : 999,
-  bottom : vh(10),
+  bottom : vh(5),
   right: vh(12),
 };
 
 const myPagePositionStyle: React.CSSProperties = {
   position: "fixed",
   zIndex : 999,
-  bottom : vh(10),
+  bottom : vh(5),
   right: vh(5),
 };
 
 const navIconStyle: React.CSSProperties = {
-  width: vh(5.6),
-  height: vh(5.6),
+  width: vh(6),
+  height: vh(6),
 };
 
 const bartenderStyle: React.CSSProperties = {
@@ -169,7 +169,7 @@ const bartenderStyle: React.CSSProperties = {
 
 const questStyle: React.CSSProperties = {
   position: "absolute",
-  bottom: "45vh",
+  bottom: "42vh",
   left: "70vw",
   width: vh(12),
   height: vh(12),
@@ -179,14 +179,14 @@ const logoutbutton: React.CSSProperties = {
   margin: "1vh",
   padding: "1vh 2vh",
   fontSize: vh(1.6),
-  backgroundColor: "#ffcc00",
+  backgroundColor: "#D6BA91",
   color: "#2a0e35",
   border: "none",
   borderRadius: vh(0.8),
   cursor: "pointer",
   position: "absolute",
   top: "1vh",
-  right: "32vh",
+  right: "1vh",
 };
 
 const modalOverlay: React.CSSProperties = {
