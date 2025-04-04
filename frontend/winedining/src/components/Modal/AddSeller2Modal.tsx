@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Wine } from "../../types/wine";
 import closebutton from "../../assets/icons/closebutton.png";
 import { vh } from "../../utils/vh";
+import { createPortal } from "react-dom";
+// import Reactdom from "react-dom";
 
 interface AddSeller2ModalProps {
   isOpen: boolean;
@@ -60,7 +62,7 @@ const AddSeller2Modal = ({ isOpen, onClose, onPrev, onNext, wineInfo }: AddSelle
     onNext(drinkData);
   };
 
-  return (
+  return createPortal(
     <div style={styles.overlay} onClick={onClose}>
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
         <img src={closebutton} alt="닫기" style={styles.closeButton} onClick={onClose} />
@@ -164,7 +166,8 @@ const AddSeller2Modal = ({ isOpen, onClose, onPrev, onNext, wineInfo }: AddSelle
           </span>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
@@ -172,14 +175,10 @@ const styles: { [key: string]: React.CSSProperties } = {
   /* 오버레이 스타일 */
   overlay: {
     position: "fixed",
-    // left: 0,
-    // right: 0,
     left: -20,
     right: -20,
     top: 25,
     bottom: 0,
-    // width: "100%",
-    // height: "100%",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     display: "flex",
     justifyContent: "center",
@@ -189,6 +188,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   /* 모달 스타일 */
   modal: {
+    position: "fixed",
+    transform: "translateX(-50%)",
     width: "90vw",
     maxWidth: "500px",
     height: "85vh",
@@ -207,7 +208,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     transition: "transform 0.3s ease",
     fontFamily: "Galmuri9",
     textAlign: "center",
-    position: "relative",
   },
   /* 닫기 버튼 */
   closeButton: {
@@ -303,6 +303,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     padding: `${vh(0.4)} ${vh(0.8)}`,
     outline: "none",
     colorScheme: "light",
+    fontFamily: "Galmuri9",
   },
   textInput: {
     backgroundColor: "transparent",
@@ -310,8 +311,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: vh(0.4),
     color: "white",
     padding: `${vh(0.4)} ${vh(0.8)}`,
-    width: vh(25),
+    width: "100%",
+    boxSizing: "border-box",
+    overflow: "hidden",
     outline: "none",
+    fontFamily: "Galmuri9",
   },
   textArea: {
     backgroundColor: "transparent",
@@ -323,6 +327,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     height: vh(10),
     resize: "none",
     outline: "none",
+    overflowWrap: "break-word",
+    whiteSpace: "pre-wrap",
+    fontFamily: "Galmuri9",
   },
 
   /* 누구랑? 선택 박스 */
@@ -337,6 +344,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: "white",
     cursor: "pointer",
     fontSize: vh(1.5),
+    fontFamily: "Galmuri9",
   },
   /* 평점 선택 박스 */
   ratingContainer: {

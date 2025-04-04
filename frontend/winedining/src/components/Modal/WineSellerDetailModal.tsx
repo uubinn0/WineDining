@@ -7,6 +7,8 @@ import { WineNoteRequest } from "../../types/note";
 import { fetchCellar } from "../../store/slices/sellarSlice";
 import AddSeller2Modal from "../Modal/AddSeller2Modal";
 import AddSeller3Modal from "../Modal/AddSeller3Modal";
+import closeButton from "../../assets/icons/closebutton.png";
+import { vh } from "../../utils/vh";
 
 interface WineSellerDetailModalProps {
   isOpen: boolean;
@@ -113,13 +115,13 @@ const WineSellerDetailModal = ({ isOpen, onClose, bottle }: WineSellerDetailModa
   return (
     <div style={styles.overlay} onClick={onClose}>
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button style={styles.closeButton} onClick={onClose}>
-          ✕
-        </button>
+        <img src={closeButton} alt="닫기" style={styles.closeButton} onClick={onClose} />
+
         <h2 style={styles.title}>와인 수집</h2>
         <p style={styles.subtitle}>
-          {wine.grape} | <img src={`/flags/${wine.country}.png`} alt={wine.country} style={styles.flag} />
+          {wine.grape} <img src={`/flags/${wine.country}.png`} alt={wine.country} style={styles.flagIcon} />
         </p>
+        {/* 와인 이미지 */}
         <img
           src={wine.image !== "no_image" ? wine.image : "/sample_image/wine_sample.jpg"}
           alt={wine.name}
@@ -131,7 +133,7 @@ const WineSellerDetailModal = ({ isOpen, onClose, bottle }: WineSellerDetailModa
           <div style={styles.noteContainer}>
             {isEditing ? (
               <>
-                <p>
+                <p style={styles.label}>
                   마신 날짜: <input value={editData.when} onChange={(e) => handleChange("when", e.target.value)} />
                 </p>
                 <p>
@@ -144,7 +146,7 @@ const WineSellerDetailModal = ({ isOpen, onClose, bottle }: WineSellerDetailModa
                     onChange={(e) => handleChange("pairing", e.target.value.split(","))}
                   />
                 </p>
-                <p>
+                <p style={{ wordBreak: "break-word", whiteSpace: "pre-wrap", overflowWrap: "break-word" }}>
                   내용:
                   <br />
                   <textarea value={editData.content} onChange={(e) => handleChange("content", e.target.value)} />
@@ -188,39 +190,42 @@ const WineSellerDetailModal = ({ isOpen, onClose, bottle }: WineSellerDetailModa
             )}
 
             <div style={styles.controlArea}>
-              <button style={styles.controlBtn} onClick={startAddNote}>
+              {/* 기록 추가 */}
+              <span style={styles.addButton} onClick={startAddNote}>
                 기록 추가
-              </button>
-              <div>
-                <button onClick={handlePrev} style={styles.arrow}>
+              </span>
+              {/* 페이지네이션 */}
+              <div style={styles.pagination}>
+                <span onClick={handlePrev} style={styles.pageArrow}>
                   ←
-                </button>
+                </span>
                 <span>
                   {page + 1} / {totalPages}
                 </span>
-                <button onClick={handleNext} style={styles.arrow}>
+                <span onClick={handleNext} style={styles.pageArrow}>
                   →
-                </button>
+                </span>
               </div>
+              {/* 수정 / 삭제 */}
               <div>
                 {isEditing ? (
-                  <>
-                    <button style={styles.controlBtn} onClick={saveEdit}>
+                  <div style={{ display: "flex", marginTop: vh(4) }}>
+                    <span style={styles.editButton} onClick={saveEdit}>
                       저장
-                    </button>
-                    <button style={styles.controlBtn} onClick={cancelEdit}>
+                    </span>
+                    <span style={styles.deleteButton} onClick={cancelEdit}>
                       취소
-                    </button>
-                  </>
+                    </span>
+                  </div>
                 ) : (
-                  <>
-                    <button style={styles.controlBtn} onClick={startEdit}>
+                  <div style={{ display: "flex", marginTop: vh(4) }}>
+                    <span style={styles.editButton} onClick={startEdit}>
                       수정
-                    </button>
-                    <button style={styles.controlBtn} onClick={() => handleDelete(currentNote.noteId)}>
+                    </span>
+                    <span style={styles.deleteButton} onClick={() => handleDelete(currentNote.noteId)}>
                       삭제
-                    </button>
-                  </>
+                    </span>
+                  </div>
                 )}
               </div>
             </div>
@@ -268,98 +273,129 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   modal: {
     backgroundColor: "#2a0035",
-    border: "3px solid #FFD447",
-    borderRadius: "20px",
-    padding: "20px",
-    width: "320px",
+    border: "3px solid #FDEBD0",
+    borderRadius: vh(2),
+    padding: vh(2),
+    width: "80%",
     color: "#fff",
-    fontFamily: "Pixel, sans-serif",
+    fontFamily: "Galmuri9",
     overflowY: "auto",
-    maxHeight: "90vh",
+    scrollbarWidth: "none",
+    msOverflowStyle: "none",
+    maxHeight: "80vh",
     position: "relative",
   },
+  /* 닫기 버튼 */
   closeButton: {
     position: "absolute",
-    top: "10px",
-    right: "15px",
-    fontSize: "20px",
-    color: "#fff",
-    background: "none",
-    border: "none",
+    top: "1.2vh",
+    right: "1.2vh",
+    width: "4vh",
+    height: "4vh",
     cursor: "pointer",
   },
+  /* 제목 */
   title: {
-    fontSize: "18px",
+    textAlign: "left",
+    fontSize: "2vh",
     fontWeight: "bold",
+    marginLeft: vh(-1),
+    marginTop: "-1vh",
   },
-  best: {
-    color: "#FFD447",
-    fontSize: "12px",
-    marginLeft: "5px",
-  },
+  /* 부제목 */
   subtitle: {
-    fontSize: "12px",
-    marginBottom: "10px",
-    display: "flex",
-    alignItems: "center",
-    gap: "5px",
+    textAlign: "left",
+    fontSize: "1.5vh",
+    color: "#ccc",
+    marginLeft: vh(-1),
+    marginTop: "-1vh",
   },
-  flag: {
-    width: "18px",
-    height: "12px",
+  /* 국기 아이콘 */
+  flagIcon: {
+    width: vh(1.8),
+    height: vh(1.2),
   },
+  /* 와인 이미지 */
   wineImage: {
     width: "80px",
     height: "120px",
     display: "block",
     margin: "10px auto",
   },
+  /* 와인 이름 */
   name: {
     textAlign: "center",
     color: "#FFD447",
     fontSize: "16px",
     marginBottom: "15px",
   },
+
+  /* 리뷰 감싸는 박스 */
   noteContainer: {
-    backgroundColor: "#3a1145",
-    padding: "10px",
-    borderRadius: "10px",
-    fontSize: "12px",
-    lineHeight: "1.5",
+    padding: vh(1),
+    borderRadius: vh(1),
+    fontSize: vh(1.4),
+    lineHeight: vh(2),
   },
+  /* 리뷰 사진 리스트 */
   imageList: {
     display: "flex",
-    gap: "10px",
+    gap: vh(1.5),
     marginTop: "8px",
   },
+  /* 리뷰 사진 */
   noteImage: {
     width: "60px",
     height: "60px",
     borderRadius: "6px",
     objectFit: "cover",
   },
-  controlArea: {
-    marginTop: "15px",
-    display: "flex",
-    flexDirection: "column",
-    gap: "10px",
+  label: {
+    fontWeight: "bold",
+    width: vh(10),
+    fontSize: vh(1.8),
   },
-  controlBtn: {
+  /* 기록 추가, 페이지네이션, 수정, 삭제 부분 */
+  controlArea: {
+    display: "flex",
+    gap: vh(1.5),
+  },
+  /* 기록 추가 버튼 */
+  addButton: {
+    padding: `${vh(0.5)} ${vh(0.5)}`,
+    border: "none",
+    marginTop: vh(4.4),
+  },
+  /* 수정 버튼 */
+  editButton: {
     backgroundColor: "#fff",
     color: "#000",
     border: "none",
-    borderRadius: "4px",
-    padding: "6px 10px",
-    fontSize: "12px",
-    marginRight: "5px",
-    cursor: "pointer",
+    borderRadius: vh(0.4),
+    padding: `${vh(0.6)} ${vh(1)}`,
+    fontSize: vh(1.4),
+    marginRight: vh(0.5),
+    marginTop: vh(0.4),
   },
-  arrow: {
-    margin: "0 5px",
-    fontSize: "14px",
-    background: "none",
-    border: "none",
-    color: "#fff",
+  /* 삭제 버튼 */
+  deleteButton: {
+    backgroundColor: "#fff",
+    color: "#000",
+    marginTop: vh(0.4),
+    borderRadius: vh(0.4),
+    padding: `${vh(0.6)} ${vh(1)}`,
+    fontSize: vh(1.4),
+  },
+  /* 페이지네이션 */
+  pagination: {
+    marginTop: vh(5),
+    textAlign: "center",
+    fontSize: vh(1.5),
+    color: "white",
+    marginLeft: vh(2.5),
+  },
+  pageArrow: {
+    margin: `0 ${vh(1.5)}`,
     cursor: "pointer",
   },
 };
