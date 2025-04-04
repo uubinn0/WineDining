@@ -151,9 +151,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     position: "relative",
     padding: vh(2),
     backgroundColor: "#27052E",
-    minHeight: "100vh",
+    height: "100vh",
+    overflow: "hidden",
     color: "white",
-    overflow: "auto",
+    fontFamily: "galmuri7",
   },
   backButtonWrapper: {
     position: "absolute",
@@ -244,6 +245,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     gap: vh(1.2),
     overflowY: "auto",
     paddingBottom: vh(8),
+    height: `calc(100vh - ${vh(45)})`,
   },
   emptyText: {
     color: "#aaa",

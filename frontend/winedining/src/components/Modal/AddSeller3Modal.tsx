@@ -331,6 +331,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     margin: `0 ${vh(1.5)}`,
     cursor: "pointer",
   },
+  /* 완료 버튼 */
   completeButton: {
     position: "absolute",
     right: 0,
