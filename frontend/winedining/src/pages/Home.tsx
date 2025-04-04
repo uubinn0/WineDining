@@ -161,7 +161,7 @@ const navIconStyle: React.CSSProperties = {
 
 const bartenderStyle: React.CSSProperties = {
   position: "absolute",
-  top: "55vh",
+  bottom: "15vh",
   left: "35vw",
   width: vh(24.3),
   height: vh(30.1),
@@ -169,7 +169,7 @@ const bartenderStyle: React.CSSProperties = {
 
 const questStyle: React.CSSProperties = {
   position: "absolute",
-  top: "45vh",
+  bottom: "45vh",
   left: "70vw",
   width: vh(12),
   height: vh(12),
