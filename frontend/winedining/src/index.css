@@ -21,7 +21,7 @@ body,
 #root {
   margin: 0;
   padding: 0;
-  width: 100dvh;
+  width: 100dvw;
   height: 100dvh;
   /* min-height: 100vh; 화면 크기를 최소 100vh로 설정 */
   font-family: "Galmuri9", sans-serif;
