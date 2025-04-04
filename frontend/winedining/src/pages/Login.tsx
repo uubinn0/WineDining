@@ -60,7 +60,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     backgroundColor: "#2a0e35",
     width: "100%",
-    height: "100vh",
+    height: "100%",
     fontFamily: "PressStart2P",
     display: "flex",
     flexDirection: "column",
