@@ -16,8 +16,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -134,6 +136,13 @@ public class WineService {
         // 실제 DB 조회
         Page<Wine> winePage = wineRepository.findAll(spec, pageable);
 
+        // userId가 null이 아닌 경우에만 위시 아이템 조회
+        final Set<Long> wishWineIds = new HashSet<>();
+        if (userId != null) {
+            // 해당 사용자의 모든 위시 와인 ID를 한 번에 조회
+            wishWineIds.addAll(wishItemRepository.findWineIdsByUserId(userId));
+        }
+
         // DTO 변환
         List<WineListItemDTO> wineList = winePage.getContent().stream()
                 .map(wine -> {
@@ -146,11 +155,12 @@ public class WineService {
                     dto.setGrape(wine.getGrape());
 
                     // 사용자가 로그인한 경우에만 위시리스트 체크
-                    boolean isWish = false;
-                    if (userId != null) {
-                        isWish = wishItemRepository.existsByUserIdAndWineId(userId, wine.getId());
-                    }
-                    dto.setWish(isWish);
+//                    boolean isWish = false;
+//                    if (userId != null) {
+//                        isWish = wishItemRepository.existsByUserIdAndWineId(userId, wine.getId());
+//                    }
+//                    dto.setWish(isWish);
+                    dto.setWish(wishWineIds.contains(wine.getId()));
                     return dto;
                 })
                 .collect(Collectors.toList());

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface WishItemRepository extends JpaRepository<WishItem, Long> {
@@ -14,4 +15,5 @@ public interface WishItemRepository extends JpaRepository<WishItem, Long> {
     void deleteByUserIdAndWineId(Long userId, Long wineId);
     boolean existsByUserIdAndWineId(Long userId, Long wineId);
     void deleteByUserId(Long userId);
+    Set<Long> findWineIdsByUserId(Long userId);
 }
