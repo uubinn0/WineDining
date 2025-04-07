@@ -20,6 +20,9 @@ function RecommendTest() {
 
   const [finalMessage, setFinalMessage] = useState<string | null>(null);
 
+  const testCompleted = useSelector((state: RootState) => state.test.testCompleted);  
+
+
   // const username = "오리통통"
 
   const dialogues = [
@@ -66,6 +69,7 @@ function RecommendTest() {
         submitPreferences(updatedResponses);
       } else {
         setFinalMessage("알겠습니다! 다음에 다시 알려주세요!");
+        if(testCompleted) //여기서 다시 시작. step 처리 하기!!@!
         dispatch(setCurrentStep(6)); // **6번째 질문부터 시작**
       }
     }
@@ -105,7 +109,7 @@ function RecommendTest() {
       console.log("어디로 가니", cameFromRecommendFlow)
     } else {
       alert("취향테스트 실패")
-      dispatch(setTestCompleted(true)); // **테스트 완료 표시**
+      // dispatch(setTestCompleted(true)); // **테스트 완료 표시**
       navigate("/home"); // api 연결후 삭제 예정
       console.error("API 호출 실패:", response.message);
     }
@@ -129,9 +133,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     backgroundImage: `url(${Homebackground})`,
     backgroundSize: "contain",
-    width: "100%",
-    height: "calc(100 * var(--custom-vh))",
-    position: "relative",
+    width: "100dvw",
+    height: "100dvh",
   },
   bartenderStyle: {
     position: "absolute",

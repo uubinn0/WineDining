@@ -5,6 +5,7 @@ import { AppDispatch, RootState } from "../store/store";
 import { fetchUserProfile, logoutUser } from "../store/slices/authSlice";
 import { setCameFromRecommendFlow } from "../store/slices/testSlice";
 
+
 import Homebackground from "../assets/images/background/Home.png";
 import mypageIcon from "../assets/icons/mypageicon.png";
 import winelistIcon from "../assets/icons/winelisticon.png";
@@ -25,6 +26,8 @@ function Home() {
   // 최초 클릭 여부를 기록할 상태
   const [firstButtonClicked, setFirstButtonClicked] = useState(false);
 
+  const testCompleted = useSelector((state: RootState) => state.test.testCompleted);  
+
   useEffect(() => {
     if (status === "idle") {
       dispatch(fetchUserProfile());
@@ -32,7 +35,7 @@ function Home() {
   }, [status, dispatch]);
 
   useEffect(() => {
-    if (user && user.preference === false) {
+    if (user && user.preference === false && testCompleted === false) {
       dispatch(setCameFromRecommendFlow("home")); // 홈에서 넘어갔음을 설정
       setIsPreferenceModalVisible(true);
       const timer = setTimeout(() => {
@@ -40,7 +43,7 @@ function Home() {
       }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [user, navigate, dispatch]);
+  }, [user, navigate, dispatch, testCompleted]);
 
   const handleLogout = () => {
     dispatch(logoutUser()).then(() => {
@@ -136,22 +139,22 @@ const wineListStyle: React.CSSProperties = {
 
 const wineListPositionStyle: React.CSSProperties = {
   position: "absolute",
-  top: "45dvh",
-  left: "15dvw",   // 화면 너비 기준 25%
+  top: "45%",
+  left: "15%",   // 화면 너비 기준 25%
 };
 
 const dictionaryPositionStyle: React.CSSProperties = {
-  position: "fixed",
+  position: "absolute",
   zIndex : 999,
-  bottom : vh(5),
-  right: vh(12),
+  bottom : "5%",
+  right: "20%",
 };
 
 const myPagePositionStyle: React.CSSProperties = {
-  position: "fixed",
+  position: "absolute",
   zIndex : 999,
-  bottom : vh(5),
-  right: vh(5),
+  bottom : "5%",
+  right: "5%",
 };
 
 const navIconStyle: React.CSSProperties = {
@@ -161,16 +164,16 @@ const navIconStyle: React.CSSProperties = {
 
 const bartenderStyle: React.CSSProperties = {
   position: "absolute",
-  bottom: "15vh",
-  left: "35vw",
+  bottom: "15%",
+  left: "35%",
   width: vh(24.3),
   height: vh(30.1),
 };
 
 const questStyle: React.CSSProperties = {
   position: "absolute",
-  bottom: "42vh",
-  left: "70vw",
+  bottom: "42%",
+  left: "70%",
   width: vh(12),
   height: vh(12),
 };
@@ -185,8 +188,8 @@ const logoutbutton: React.CSSProperties = {
   borderRadius: vh(0.8),
   cursor: "pointer",
   position: "absolute",
-  top: "1vh",
-  right: "1vh",
+  top: "1%",
+  right: "1%",
 };
 
 const modalOverlay: React.CSSProperties = {

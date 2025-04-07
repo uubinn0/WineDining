@@ -14,31 +14,31 @@
 html,
 body {
   background-color: rgba(39, 5, 46, 0.7);
-}
-
-html,
-body,
-#root {
+  font-family: "Galmuri9", sans-serif;
   margin: 0;
   padding: 0;
-  width: 100dvw;
-  height: 100dvh;
-  /* min-height: 100vh; 화면 크기를 최소 100vh로 설정 */
-  font-family: "Galmuri9", sans-serif;
+}
+
+#root {
+  width: 100%;
+  height: auto;
+  min-height: 100dvh;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: auto;
+  overflow: hidden;
+  /* max-width: clamp(344px, 100vw, 412px); */
 }
 
 /* 비율 유지하는 반응형 래퍼 */
 .app-wrapper {
-  width: min(calc(var(--design-width) / var(--design-height) * 100vh), 100vw);
-  height: calc(100 * var(--custom-vh));
+  width: 100%; /* 전체 너비 100%로 설정 */
+  height: 100%; /* 전체 화면을 채우도록 설정 */
+  min-width: min(calc(var(--design-width) / var(--design-height) * 100vh), 100vw);
+  /* height: calc(100 * var(--custom-vh)); */
   max-width: 430px;
-  
-  /* max-height: 100vh; */
-  overflow: auto; /* 내부 리스트가 스크롤하도록 함 */
+  max-height: 100dvh;
+  /* overflow: auto;  */
   position: relative;
 }
 
