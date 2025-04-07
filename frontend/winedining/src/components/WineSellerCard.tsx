@@ -66,6 +66,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: "space-between",
     padding: "1.25vh 1.875vh", // 10px 15px (10/8, 15/8)
     position: "relative",
+    marginBottom: "1.875vh",
   },
   imageBox: {
     width: "7.5vh", // 60px (60/8)
