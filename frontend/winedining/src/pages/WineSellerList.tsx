@@ -1,5 +1,4 @@
-// WineSellerList.tsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +10,7 @@ import CustomAddWineButton from "../components/CustomAddWineButton";
 import BackButton from "../components/BackButton";
 import { vh } from "../utils/vh";
 import sampleimg from "../assets/images/winesample/defaultwine.png";
-import BestWineFlipCard from "../components/BestWineFlipCard"; // 새로 작성한 플립 카드 컴포넌트
+import BestWineFlipCard from "../components/BestWineFlipCard";
 import PixelTitle from "../components/PixcelTitle";
 
 const WineSellerList = () => {
@@ -21,11 +20,34 @@ const WineSellerList = () => {
 
   const [selectedBottle, setSelectedBottle] = useState<Bottle | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [page, setPage] = useState(1);
+
+  // hasMore: 더 불러올 와인이 있는지 확인 (현재 불러온 bottles 수가 총 와인 수보다 적으면 true)
+  const hasMore = bottles.length < totalCount;
 
   useEffect(() => {
-    dispatch(fetchCellar());
+    // 초기 페이지 1 데이터 불러오기
+    dispatch(fetchCellar({ page: 1 }));
     dispatch(fetchBest());
   }, [dispatch]);
+
+  // 무한 스크롤을 위한 IntersectionObserver
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastBottleRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (status === "loading") return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          const nextPage = page + 1;
+          setPage(nextPage);
+          dispatch(fetchCellar({ page: nextPage }));
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [status, hasMore, page, dispatch]
+  );
 
   const closeDetailModal = () => {
     setSelectedBottle(null);
@@ -39,23 +61,12 @@ const WineSellerList = () => {
       const currentIsBest = isBest(bottleId);
       if (currentIsBest) {
         await dispatch(deleteBest(bottleId)).unwrap();
-        dispatch({
-          type: "cellar/setBestBottles",
-          payload: bestBottles.filter((b) => b.bottleId !== bottleId),
-        });
       } else {
         if (bestBottles.length >= 3) {
           alert("베스트 와인은 최대 3개까지만 등록할 수 있습니다!");
           return;
         }
         await dispatch(registerBest(bottleId)).unwrap();
-        const bottleToAdd = bottles.find((b) => b.bottleId === bottleId);
-        if (bottleToAdd) {
-          dispatch({
-            type: "cellar/setBestBottles",
-            payload: [...bestBottles, bottleToAdd],
-          });
-        }
       }
       dispatch(fetchBest());
     } catch (error) {
@@ -65,10 +76,8 @@ const WineSellerList = () => {
   };
 
   const handleDetailClick = (bottle: Bottle) => {
-    requestAnimationFrame(() => {
-      setSelectedBottle(bottle);
-      setIsDetailOpen(true);
-    });
+    setSelectedBottle(bottle);
+    setIsDetailOpen(true);
   };
 
   return (
@@ -85,16 +94,14 @@ const WineSellerList = () => {
         imageSize="24px"
       />
 
-      {/* 베스트 와인 영역: 항상 3개의 카드로 표시 */}
+      {/* 베스트 와인 영역 */}
       <div style={styles.bestWinesSection}>
         <div style={styles.bestWinesContainer}>
           {Array.from({ length: 3 }).map((_, index) => {
             const bottle = bestBottles[index];
             if (bottle) {
-              // 등록된 카드: BestWineFlipCard 사용
               return <BestWineFlipCard key={bottle.bottleId} bottle={bottle} />;
             } else {
-              // 등록되지 않은 카드(Placeholder)
               return (
                 <div key={`placeholder-${index}`} style={styles.bestWineCard}>
                   <div style={styles.bestBadge}>BEST</div>
@@ -117,23 +124,33 @@ const WineSellerList = () => {
         </div>
       </div>
 
-      {/* 전체 와인 리스트 */}
+      {/* 전체 와인 리스트 (무한 스크롤 적용) */}
       <div style={styles.list}>
-        {status === "loading" ? (
-          <div style={styles.emptyText} />
-        ) : status === "failed" ? (
-          <div style={styles.emptyText} />
-        ) : (
-          bottles.map((bottle: Bottle) => (
-            <WineSellerCard
-              key={bottle.bottleId}
-              wine={bottle}
-              isBest={isBest(bottle.bottleId)}
-              onBestClick={handleBestClick}
-              onDetailClick={() => handleDetailClick(bottle)}
-            />
-          ))
-        )}
+        {bottles.map((bottle: Bottle, index: number) => {
+          if (index === bottles.length - 1) {
+            return (
+              <div key={bottle.bottleId} ref={lastBottleRef}>
+                <WineSellerCard
+                  wine={bottle}
+                  isBest={isBest(bottle.bottleId)}
+                  onBestClick={handleBestClick}
+                  onDetailClick={() => handleDetailClick(bottle)}
+                />
+              </div>
+            );
+          } else {
+            return (
+              <div key={bottle.bottleId}>
+                <WineSellerCard
+                  wine={bottle}
+                  isBest={isBest(bottle.bottleId)}
+                  onBestClick={handleBestClick}
+                  onDetailClick={() => handleDetailClick(bottle)}
+                />
+              </div>
+            );
+          }
+        })}
       </div>
 
       {/* 상세 모달 */}
@@ -149,11 +166,11 @@ export default WineSellerList;
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
     position: "relative",
-    padding: vh(2),
+    padding: vh(2), // 필요에 따라 2.2vh로 조정 가능
     backgroundColor: "#27052E",
-    minHeight: "100vh", // 최소 높이만 주고
-    overflowX: "hidden", // 가로만 숨김, 세로는 기본으로
-    overflowY: "auto", // 스크롤 가능하게
+    minHeight: "100vh",
+    overflowX: "hidden",
+    overflowY: "auto",
     color: "white",
     fontFamily: "galmuri7",
   },
@@ -162,17 +179,16 @@ const styles: { [key: string]: React.CSSProperties } = {
     top: vh(2),
     left: vh(2),
   },
-
   bestWinesSection: {
     marginBottom: vh(3),
     display: "flex",
-    justifyContent: "center", // 섹션 전체를 중앙에 배치
+    justifyContent: "center",
   },
   bestWinesContainer: {
     display: "flex",
-    justifyContent: "space-between", // 카드들을 좌우 끝까지 균등하게 배치
+    justifyContent: "space-between",
     alignItems: "center",
-    width: "95%", // 컨테이너 전체 너비 사용
+    width: "95%",
   },
   bestWineCard: {
     position: "relative",
@@ -212,13 +228,12 @@ const styles: { [key: string]: React.CSSProperties } = {
     wordBreak: "keep-all",
     color: "#888",
   },
-  // 헤더 컨테이너는 스크롤 시 맨 위에 고정
   headerContainer: {
     position: "sticky",
     top: 0,
     zIndex: 1000,
     backgroundColor: "#27052E",
-    padding: `0`,
+    padding: 0,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -234,7 +249,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginBottom: vh(2),
   },
   totalCountWrapper: {
-    margin: vh(1),
+    marginTop: vh(1),
     width: "95%",
     maxWidth: "500px",
     textAlign: "end",
@@ -246,10 +261,10 @@ const styles: { [key: string]: React.CSSProperties } = {
   list: {
     display: "flex",
     flexDirection: "column",
-    gap: vh(2),
+    gap: vh(1.875), // 카드 사이 간격을 1.875로 지정 (약 15px)
     overflowY: "auto",
-    paddingBottom: vh(8),
-    height: `calc(100vh - ${vh(45)})`,
+    paddingBottom: vh(1.875), // 화면 맨 아래쪽 여백을 1.875로 지정 (약 15px)
+    maxHeight: "45vh",
   },
   emptyText: {
     color: "#aaa",

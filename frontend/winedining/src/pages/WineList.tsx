@@ -10,6 +10,7 @@ import WineDetailModal from "../components/Modal/WineDetailModal";
 import { Wine, WineDetail, WineFilter } from "../types/wine";
 import { fetchWineDetailThunk } from "../store/slices/wineSlice";
 import BackButton from "../components/BackButton";
+import PixelTitle from "../components/PixcelTitle";
 
 const WineList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -104,27 +105,41 @@ const WineList = () => {
   };
 
   return (
-    <div style={{ backgroundColor: "#2a0e35", color: "white", minHeight: "100vh", padding: "20px" }}>
+    <div
+      style={{
+        backgroundColor: "#2a0e35",
+        color: "white",
+        minHeight: "100vh", // 이미 vh 단위임
+        padding: "2.2vh", // 약 20px (900px 높이 기준)
+      }}
+    >
       <div style={styles.backButtonWrapper}>
         <BackButton onClick={() => navigate("/home")} />
       </div>
-      <h2 style={{ textAlign: "center", fontSize: "22px" }}>⚡ WINE LIST ⚡</h2>
+      <PixelTitle
+        text="WINE"
+        imageSrc="/sample_image/yellow_lightning.png"
+        fontSize="16px"
+        color="#fefefe"
+        imageSize="24px"
+      />
 
       {/* 검색 */}
-      <div style={{ display: "flex", justifyContent: "center", margin: "10px 0" }}>
+      <div style={{ display: "flex", justifyContent: "center", margin: "1.1vh 0" }}>
         <input
           type="text"
           value={searchTerm}
           onChange={handleSearchChange}
-          placeholder="와인을 검색하세요"
+          placeholder=" 와인을 검색하세요"
           style={{
             backgroundColor: "#381837",
-            border: "2px solid #D6BA91",
+            border: "0.22vh solid #D6BA91", // 약 2px
             color: "white",
             width: "100%",
-            maxWidth: "320px",
-            padding: "10px",
-            borderRadius: "16px",
+            maxWidth: "320px", // width는 고정값으로 두어도 좋습니다.
+            padding: "1.1vh", // 약 10px
+            fontSize: "2vh",
+            borderRadius: "1.8vh", // 약 16px
           }}
         />
       </div>
@@ -133,7 +148,7 @@ const WineList = () => {
       <WineFilterBar filter={filter} onChange={handleFilterChange} />
 
       {totalCount > 0 && (
-        <div style={{ textAlign: "right", fontSize: "14px", color: "#ccc", marginRight: "10px" }}>
+        <div style={{ textAlign: "right", fontSize: "1.8vh", color: "#ccc", marginRight: "2vh" }}>
           총 {totalCount.toLocaleString()}개의 와인 검색
         </div>
       )}
@@ -160,13 +175,13 @@ export default WineList;
 const styles: { [key: string]: React.CSSProperties } = {
   backButtonWrapper: {
     position: "absolute",
-    top: "16px",
-    left: "16px",
+    top: "1.8vh", // 약 16px
+    left: "1.8vh", // 약 16px
   },
   wineListContainer: {
-    maxHeight: "60vh",
+    maxHeight: "60vh", // vh 단위
     overflowY: "auto",
-    paddingRight: "8px",
-    marginTop: "20px", // 필터바와의 간격을 위해 추가
+    paddingRight: "0.9vh", // 약 8px
+    marginTop: "2.2vh", // 약 20px
   },
 };

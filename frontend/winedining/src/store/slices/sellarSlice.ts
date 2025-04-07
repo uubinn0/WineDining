@@ -38,11 +38,14 @@ const initialState: CellarState = {
 };
 
 // 셀러 전체 조회
-export const fetchCellar = createAsyncThunk<Bottle[], void, { rejectValue: string }>(
+export const fetchCellar = createAsyncThunk<Bottle[], { page?: number } | void, { rejectValue: string }>(
   "cellar/fetchCellar",
-  async (_, { rejectWithValue }) => {
+  async (args, { rejectWithValue }) => {
+    // args가 없으면 기본 페이지 1로 설정
+    const page = typeof args === "object" && args?.page ? args.page : 1;
     try {
-      const data = await fetchWineCellar();
+      // API 함수가 페이지 정보를 받도록 수정했다면 전달합니다.
+      const data = await fetchWineCellar(page);
       return data.bottles;
     } catch (error) {
       return rejectWithValue("셀러 불러오기 실패");
