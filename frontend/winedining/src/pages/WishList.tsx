@@ -9,6 +9,7 @@ import WineDetailModal from "../components/Modal/WineDetailModal";
 import { WineDetail } from "../types/wine";
 import BackButton from "../components/BackButton";
 import PixelTitle from "../components/PixcelTitle";
+import Wish from "../assets/images/background/Wish.png";
 
 const WishList = () => {
   const navigate = useNavigate();
@@ -32,22 +33,16 @@ const WishList = () => {
       <div style={styles.backButtonWrapper}>
         <BackButton onClick={() => navigate("/mypage")} />
       </div>
-      {/* <h1 style={styles.headertext}>
-        <img src={"/sample_image/yellow_lightning.png"} alt="번개" style={styles.image} />
-        MY WISH LIST
-        <img src={"/sample_image/yellow_lightning.png"} alt="번개" style={styles.image} />
-      </h1> */}
+
       <PixelTitle
-        text="MY WINE SELLER"
+        text="WISH LIST"
         imageSrc="/sample_image/yellow_lightning.png"
-        fontSize="25px"
+        fontSize="16px"
         color="#fefefe"
         imageSize="24px"
       />
-
       {status === "loading" && <p>위시리스트를 불러오는 중...</p>}
       {status === "failed" && <p>위시리스트를 불러오는 데 실패했습니다.</p>}
-
       {items.length === 0 ? (
         <p>위시리스트가 비어 있습니다.</p>
       ) : (
@@ -59,7 +54,6 @@ const WishList = () => {
           ))}
         </div>
       )}
-
       {isModalOpen && wineDetail && (
         <WineDetailModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} wine={wineDetail} />
       )}
@@ -69,18 +63,21 @@ const WishList = () => {
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
-    position: "relative",
-    padding: "20px",
+    backgroundImage: `url(${Wish})`,
+    backgroundRepeat: "repeat-y", //  세로로 배경 반복
+    backgroundSize: "cover",
+    backgroundPosition: "center",
     textAlign: "center",
-    backgroundColor: "#27052E",
-    height: "100vh",
+    minHeight: "100vh", //  최소 높이 보장
+    overflowX: "hidden",
+    width: "100%",
   },
   grid: {
     display: "grid",
     gridTemplateColumns: "repeat(2, 1fr)",
     gap: "12px",
     justifyContent: "center",
-    padding: "10px",
+    padding: "20px",
   },
   image: {
     width: "18px",

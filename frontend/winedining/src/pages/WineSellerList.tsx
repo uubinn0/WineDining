@@ -151,8 +151,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     position: "relative",
     padding: vh(2),
     backgroundColor: "#27052E",
-    height: "100vh",
-    overflow: "hidden",
+    minHeight: "100vh", // 최소 높이만 주고
+    overflowX: "hidden", // 가로만 숨김, 세로는 기본으로
+    overflowY: "auto", // 스크롤 가능하게
     color: "white",
     fontFamily: "galmuri7",
   },

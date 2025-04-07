@@ -39,7 +39,7 @@ const WineSellerCard = memo(({ wine, onBestClick, onDetailClick, isBest }: WineS
             }}
             onClick={() => onBestClick(wine.bottleId)}
           >
-            {isBest ? "담김" : "담기"}
+            {isBest ? "BEST" : "BEST"}
           </button>
           <button style={styles.button} onClick={onDetailClick}>
             자세히
@@ -64,16 +64,17 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: "center",
     justifyContent: "space-between",
     padding: `${vh(1)} ${vh(2)}`,
-    height: vh(11),
+    height: vh(12),
+    flexWrap: "nowrap",
     position: "relative",
     fontFamily: "Galmuri7",
     width: "100%",
-    maxWidth: vh(44),
+    minWidth: vh(36),
     margin: "0 auto",
   },
   image: {
-    width: vh(6),
-    height: vh(6),
+    width: vh(8),
+    height: vh(8),
     padding: vh(0.5),
     borderRadius: vh(0.5),
     objectFit: "contain",
@@ -107,7 +108,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   buttons: {
     display: "flex",
     flexDirection: "column",
-    gap: vh(0.5),
+    gap: vh(0.8),
     marginLeft: vh(1),
     alignItems: "flex-end",
   },
