@@ -61,7 +61,9 @@ public class CellarService {
         int totalBottles = bottleRepository.findByUserId(userId).size();
 
         // 현재 병 개수에 맞는 등급 찾기
-        Rank newRank = rankRepository.findRankByBottleCount(totalBottles);
+//        Rank newRank = rankRepository.findRankByBottleCount(totalBottles);
+
+        Rank newRank = rankRepository.findTopByConditionLessThanEqualOrderByConditionDesc(totalBottles);
 
         // 사용자 등급 업데이트
         if (newRank != null && (user.getRank() == null || !user.getRank().getId().equals(newRank.getId()))) {
