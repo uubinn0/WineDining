@@ -1,4 +1,4 @@
-import React, { useEffect, memo } from "react";
+import React from "react";
 import { Bottle } from "../types/seller";
 import { vh } from "../utils/vh";
 
@@ -9,118 +9,114 @@ interface WineSellerCardProps {
   isBest: boolean;
 }
 
-const WineSellerCard = memo(({ wine, onBestClick, onDetailClick, isBest }: WineSellerCardProps) => {
-  const isValidImage =
-    wine.wine.image &&
-    wine.wine.image !== "no_image" &&
-    wine.wine.image.trim() !== "" &&
-    wine.wine.image.startsWith("http");
-
-  const imageSrc = isValidImage ? wine.wine.image : "/sample_image/wine_sample.jpg";
+const WineSellerCard = ({ wine, onBestClick, onDetailClick, isBest }: WineSellerCardProps) => {
+  // 이미지 처리 (빈 문자열 또는 "no_image"면 샘플 이미지 사용)
+  const wineImage =
+    wine.wine.image && wine.wine.image !== "no_image" ? wine.wine.image : "/sample_image/wine_sample.jpg";
 
   return (
-    <div style={styles.cardWrapper}>
-      <div style={styles.card}>
-        <img src={imageSrc} alt={wine.wine.name} style={styles.image} />
+    <div style={styles.card}>
+      {/* 와인 이미지 */}
+      <div style={styles.imageBox}>
+        <img
+          src={wineImage}
+          alt={wine.wine.name}
+          style={styles.image}
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = "/sample_image/wine_sample.jpg";
+          }}
+        />
+      </div>
 
-        <div style={styles.info}>
-          <div style={styles.name}>{wine.wine.name.toUpperCase()}</div>
-          <div style={styles.grape}>
-            {wine.wine.country} / {wine.wine.grape}
-          </div>
+      {/* 와인 정보 */}
+      <div style={styles.info}>
+        <div style={styles.name}>{wine.wine.name.toUpperCase()}</div>
+        <div style={styles.grape}>
+          {wine.wine.country} / {wine.wine.grape}
         </div>
+      </div>
 
-        <div style={styles.buttons}>
-          <button
-            style={{
-              ...styles.button,
-              backgroundColor: isBest ? "#5A0000" : "#FFFFFF",
-              color: isBest ? "#FFFFFF" : "#000000",
-            }}
-            onClick={() => onBestClick(wine.bottleId)}
-          >
-            {isBest ? "BEST" : "BEST"}
-          </button>
-          <button style={styles.button} onClick={onDetailClick}>
-            자세히
-          </button>
-        </div>
+      {/* 버튼 영역 */}
+      <div style={styles.buttons}>
+        <button
+          style={{
+            ...styles.button,
+            backgroundColor: isBest ? "#5A0000" : "#FFFFFF",
+            color: isBest ? "#FFFFFF" : "#000000",
+          }}
+          onClick={() => onBestClick(wine.bottleId)}
+        >
+          {isBest ? "BEST" : "BEST"}
+        </button>
+        <button style={styles.button} onClick={onDetailClick}>
+          자세히
+        </button>
       </div>
     </div>
   );
-});
+};
 
 const styles: { [key: string]: React.CSSProperties } = {
-  cardWrapper: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-  },
   card: {
     backgroundColor: "#27052E",
-    border: `${vh(0.3)} solid #D6BA91`,
-    borderRadius: vh(1),
+    border: "0.25vh solid #D6BA91", // 2px (2/8)
+    borderRadius: "1.5vh", // 12px (12/8)
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: `${vh(1)} ${vh(2)}`,
-    height: vh(12),
-    flexWrap: "nowrap",
+    padding: "1.25vh 1.875vh", // 10px 15px (10/8, 15/8)
     position: "relative",
-    fontFamily: "Galmuri7",
-    width: "100%",
-    minWidth: vh(36),
-    margin: "0 auto",
+  },
+  imageBox: {
+    width: "7.5vh", // 60px (60/8)
+    height: "7.5vh", // 60px (60/8)
+    marginRight: "1.875vh", // 15px (15/8)
+    borderRadius: "0.5vh", // 4px (4/8)
+    backgroundColor: "#381837",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   image: {
-    width: vh(8),
-    height: vh(8),
-    padding: vh(0.5),
-    borderRadius: vh(0.5),
+    width: "80%",
+    height: "auto",
     objectFit: "contain",
-    marginRight: vh(2),
-    backgroundColor: "#381837",
   },
   info: {
     flex: 1,
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    gap: vh(0.6),
-    minWidth: 0,
   },
   name: {
     color: "#FFD447",
-    fontSize: vh(2),
+    fontWeight: "bold",
+    fontSize: "1.75vh", // 14px (14/8)
+    marginBottom: "0.375vh", // 3px (3/8)
+    textTransform: "uppercase",
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
-    maxWidth: "100%",
+    maxWidth: "18.75vh", // 150px (150/8)
   },
   grape: {
     color: "#FFFFFF",
-    fontSize: vh(1.6),
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    maxWidth: "100%",
+    fontSize: "1.5vh", // 12px (12/8)
   },
   buttons: {
     display: "flex",
     flexDirection: "column",
-    gap: vh(0.8),
-    marginLeft: vh(1),
+    gap: "0.625vh", // 5px (5/8)
     alignItems: "flex-end",
   },
   button: {
-    fontFamily: "Galmuri7",
     backgroundColor: "#FFFFFF",
-    minWidth: vh(7),
+    minWidth: "6.25vh", // 50px (50/8)
     color: "#000000",
-    fontSize: vh(1.2),
+    fontSize: "1.25vh", // 10px (10/8)
     border: "none",
-    padding: `${vh(0.6)} ${vh(1.2)}`,
-    borderRadius: vh(0.6),
+    padding: "0.5vh 1vh", // 4px 8px (4/8, 8/8)
+    borderRadius: "0.75vh", // 6px (6/8)
     cursor: "pointer",
   },
 };

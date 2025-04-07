@@ -487,9 +487,9 @@ const WineFilterBar = ({ filter, onChange }: WineFilterBarProps) => {
               if (!(value === 0 && maxValue === 1500000)) {
                 return [
                   <span key="price-range" style={styles.filterTag}>
-                    <span style={styles.priceValue}>{value.toLocaleString()}원</span>
-                    <span style={styles.priceDivider}>~</span>
-                    <span style={styles.priceValue}>{maxValue.toLocaleString()}원</span>
+                    <span style={styles.priceRangeLabel}>{value.toLocaleString()}원</span>
+                    <span style={styles.priceRangeLabel}>~</span>
+                    <span style={styles.priceRangeLabel}>{maxValue.toLocaleString()}원</span>
                     <button
                       style={styles.closeButton}
                       onClick={() => {
@@ -524,9 +524,9 @@ export default WineFilterBar;
 const styles: { [key: string]: React.CSSProperties } = {
   bar: {
     backgroundColor: "#2A0E35",
-    borderRadius: "10px",
-    padding: "10px",
-    marginBottom: "16px",
+    borderRadius: "1.1vh", // 10px ≒ 1.1vh
+    padding: "1.1vh", // 10px ≒ 1.1vh
+    marginBottom: "1.8vh", // 16px ≒ 1.8vh
   },
   tabRow: {
     display: "flex",
@@ -536,16 +536,16 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundColor: "transparent",
     color: "white",
     border: "none",
-    fontSize: "14px",
+    fontSize: "1.6vh", // 14px ≒ 1.6vh
     cursor: "pointer",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    width: "50px",
-    padding: "8px 4px",
-    gap: "2px",
-    borderRadius: "5px",
+    width: "5.6vh", // 50px ≒ 5.6vh
+    padding: "0.9vh 0.4vh", // 8px 4px ≒ 0.9vh 0.4vh
+    gap: "0.22vh", // 2px ≒ 0.22vh
+    borderRadius: "0.6vh", // 5px ≒ 0.6vh
     transition: "all 0.2s ease-in-out",
   },
   activeTab: {
@@ -556,96 +556,96 @@ const styles: { [key: string]: React.CSSProperties } = {
   icon: {
     width: "40%",
     height: "45%",
-    marginBottom: "4px",
+    marginBottom: "0.4vh", // 4px ≒ 0.4vh
   },
   dropdown: {
     display: "flex",
     flexWrap: "wrap",
-    gap: "8px",
-    padding: "20px 0px",
+    gap: "0.9vh", // 8px ≒ 0.9vh
+    padding: "2.2vh 0", // 20px 0 ≒ 2.2vh 0
     backgroundColor: "#3b0b40",
     justifyContent: "center",
-    borderRadius: "10px",
+    borderRadius: "1.1vh", // 10px ≒ 1.1vh
   },
   scrollBox: {
-    maxHeight: "150px",
+    maxHeight: "16.7vh", // 150px ≒ 16.7vh
     overflowY: "auto",
     display: "flex",
     flexWrap: "wrap",
-    gap: "8px",
+    gap: "0.9vh", // 8px ≒ 0.9vh
     justifyContent: "center",
-    padding: "10px 0",
+    padding: "1.1vh 0", // 10px 0 ≒ 1.1vh 0
     backgroundColor: "#3b0b40",
-    borderRadius: "8px",
+    borderRadius: "0.9vh", // 8px ≒ 0.9vh
   },
   option: {
-    padding: "6px 10px",
+    padding: "0.7vh 1.1vh", // 6px 10px ≒ 0.7vh 1.1vh
     backgroundColor: "transparent",
     color: "white",
-    border: "1px solid #fefefe",
-    borderRadius: "15px",
+    border: "0.11vh solid #fefefe", // 1px ≒ 0.11vh
+    borderRadius: "1.7vh", // 15px ≒ 1.7vh
     cursor: "pointer",
   },
   activeOption: {
-    padding: "6px 10px",
+    padding: "0.7vh 1.1vh", // 6px 10px ≒ 0.7vh 1.1vh
     backgroundColor: "#5a1a5e",
     color: "#fefefe",
-    border: "1px solid white",
-    borderRadius: "15px",
+    border: "0.11vh solid white", // 1px ≒ 0.11vh
+    borderRadius: "1.7vh", // 15px ≒ 1.7vh
     cursor: "pointer",
   },
   rangeBox: {
     display: "flex",
     flexDirection: "column",
-    gap: "8px",
+    gap: "0.9vh", // 8px ≒ 0.9vh
     alignItems: "center",
-    marginBottom: "10px",
+    marginBottom: "1.1vh", // 10px ≒ 1.1vh
   },
   tasteBox: {
     display: "flex",
     flexDirection: "column",
-    gap: "12px",
+    gap: "1.3vh", // 12px ≒ 1.3vh
     alignItems: "flex-start",
   },
   tasteRow: {
     display: "flex",
     alignItems: "center",
-    gap: "10px",
+    gap: "1.1vh", // 10px ≒ 1.1vh
   },
   tasteLabel: {
-    minWidth: "40px",
+    minWidth: "4.4vh", // 40px ≒ 4.4vh
     color: "white",
-    paddingLeft: "20px",
+    paddingLeft: "2.2vh", // 20px ≒ 2.2vh
   },
   slider: {
     width: "100%",
   },
   rangeLabel: {
     color: "white",
-    fontSize: "12px",
-    minWidth: "40px",
-    margin: "0px 10px",
+    fontSize: "1.3vh", // 12px ≒ 1.3vh
+    minWidth: "4.4vh", // 40px ≒ 4.4vh
+    margin: "0px 1.1vh", // 0px 10px ≒ 0 1.1vh
   },
   priceRangeLabel: {
     color: "white",
-    fontSize: "12px",
-    minWidth: "120px",
-    margin: "0px 10px",
+    fontSize: "1.3vh", // 12px ≒ 1.3vh
+    minWidth: "13.3vh", // 120px ≒ 13.3vh
+    margin: "0px 1.1vh", // 0px 10px ≒ 0 1.1vh
   },
   numberInput: {
-    width: "60px",
-    padding: "4px",
-    margin: "0 4px",
-    borderRadius: "4px",
-    border: "1px solid #ccc",
+    width: "6.7vh", // 60px ≒ 6.7vh
+    padding: "0.4vh", // 4px ≒ 0.4vh
+    margin: "0 0.4vh", // 0 4px ≒ 0 0.4vh
+    borderRadius: "0.4vh", // 4px ≒ 0.4vh
+    border: "0.11vh solid #ccc", // 1px ≒ 0.11vh
     textAlign: "center",
   },
   searchInput: {
     width: "80%",
-    padding: "6px 10px",
-    marginBottom: "8px",
-    borderRadius: "8px",
-    border: "1px solid #ccc",
+    padding: "0.7vh 1.1vh", // 6px 10px ≒ 0.7vh 1.1vh
+    marginBottom: "0.9vh", // 8px ≒ 0.9vh
+    borderRadius: "0.9vh", // 8px ≒ 0.9vh
+    border: "0.11vh solid #ccc", // 1px ≒ 0.11vh
     textAlign: "center",
     backgroundColor: "#2a0e35",
     color: "white",
@@ -653,34 +653,33 @@ const styles: { [key: string]: React.CSSProperties } = {
   selectedFiltersWrapper: {
     display: "flex",
     flexWrap: "wrap",
-    gap: "6px",
-    marginTop: "10px",
+    gap: "0.67vh", // 6px ≒ 0.67vh
+    marginTop: "1.1vh", // 10px ≒ 1.1vh
   },
   filterTag: {
     backgroundColor: "#5a1a5e",
     color: "white",
-    padding: "4px 8px",
-    borderRadius: "12px",
+    padding: "0.44vh 0.89vh", // 4px 8px ≒ 0.44vh 0.89vh
+    borderRadius: "1.3vh", // 12px ≒ 1.3vh
     display: "flex",
     alignItems: "center",
-    fontSize: "12px",
+    fontSize: "1.3vh", // 12px ≒ 1.3vh
   },
   priceTag: {
     backgroundColor: "#8d2a8e",
     color: "white",
-    padding: "4px 10px",
-    borderRadius: "14px",
-    fontSize: "12px",
+    padding: "0.44vh 1.1vh", // 4px 10px ≒ 0.44vh 1.1vh
+    borderRadius: "1.6vh", // 14px ≒ 1.6vh
+    fontSize: "1.3vh", // 12px ≒ 1.3vh
     display: "flex",
-    gap: "6px",
+    gap: "0.67vh", // 6px ≒ 0.67vh
     alignItems: "center",
   },
-
   closeButton: {
     background: "transparent",
     border: "none",
     color: "white",
-    marginLeft: "6px",
+    marginLeft: "0.67vh", // 6px ≒ 0.67vh
     fontWeight: "bold",
     cursor: "pointer",
   },

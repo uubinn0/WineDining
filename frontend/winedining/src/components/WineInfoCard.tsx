@@ -83,20 +83,20 @@ const WineInfoCard = ({ wine, onClick }: WineInfoCardProps) => {
 const styles: { [key: string]: React.CSSProperties } = {
   card: {
     backgroundColor: "#27052E",
-    border: "2px solid #D6BA91",
-    borderRadius: "12px",
+    border: "0.25vh solid #D6BA91", // 2px (2/8)
+    borderRadius: "1.5vh", // 12px (12/8)
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: "10px 15px",
+    padding: "1.25vh 1.875vh", // 10px 15px (10/8, 15/8)
     position: "relative",
-    marginBottom: "15px",
+    marginBottom: "1.875vh", // 15px (15/8)
   },
   imageBox: {
-    width: "60px",
-    height: "60px",
-    marginRight: "15px",
-    borderRadius: "4px",
+    width: "7.5vh", // 60px (60/8)
+    height: "7.5vh", // 60px
+    marginRight: "1.875vh", // 15px (15/8)
+    borderRadius: "0.5vh", // 4px (4/8)
     backgroundColor: "#381837",
     display: "flex",
     alignItems: "center",
@@ -109,11 +109,11 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   heartButton: {
     position: "absolute",
-    top: "8px",
-    right: "8px",
+    top: "1vh", // 8px (8/8)
+    right: "1vh", // 8px
     background: "none",
     border: "none",
-    fontSize: "14px",
+    fontSize: "1.75vh", // 14px (14/8)
     cursor: "pointer",
   },
   info: {
@@ -125,34 +125,32 @@ const styles: { [key: string]: React.CSSProperties } = {
   name: {
     color: "#FFD447",
     fontWeight: "bold",
-    fontSize: "14px",
-    marginBottom: "3px",
+    fontSize: "1.75vh", // 14px (14/8)
+    marginBottom: "0.375vh", // 3px (3/8)
     textTransform: "uppercase",
-
-    // 한 줄 넘어가면 '...' 처리
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
-    maxWidth: "150px", // 최대 너비
+    maxWidth: "18.75vh", // 150px (150/8)
   },
   grape: {
     color: "#FFFFFF",
-    fontSize: "12px",
+    fontSize: "1.5vh", // 12px (12/8)
   },
   buttons: {
     display: "flex",
     flexDirection: "column",
-    gap: "5px",
+    gap: "0.625vh", // 5px (5/8)
     alignItems: "flex-end",
   },
   button: {
     backgroundColor: "#FFFFFF",
-    minWidth: "50px",
+    minWidth: "6.25vh", // 50px (50/8)
     color: "#000000",
-    fontSize: "10px",
+    fontSize: "1.25vh", // 10px (10/8)
     border: "none",
-    padding: "4px 8px",
-    borderRadius: "6px",
+    padding: "0.5vh 1vh", // 4px 8px (4/8, 8/8)
+    borderRadius: "0.75vh", // 6px (6/8)
     cursor: "pointer",
   },
 };

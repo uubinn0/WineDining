@@ -15,8 +15,8 @@ const api = axios.create({
 });
 
 // 와인 셀러 조회
-export const fetchWineCellar = async () => {
-  const response = await api.get("/api/v1/collection/cellar");
+export const fetchWineCellar = async (page: number) => {
+  const response = await api.get(`/api/v1/collection/cellar?page=${page}`);
   return response.data.data;
 };
 
