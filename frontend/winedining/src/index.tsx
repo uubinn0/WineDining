@@ -16,6 +16,3 @@ root.render(
     </Provider>
   </React.StrictMode>
 );
-
-// api 주소 확인용
-console.log("API 주소 확인:", process.env.REACT_APP_API_BASE_URL);
