@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import { Wine } from "../../types/wine";
 import closebutton from "../../assets/icons/closebutton.png";
 import { vh } from "../../utils/vh";
+import redWineImage from "../../assets/types/red_wine.png";
+import whiteWineImage from "../../assets/types/white_wine.png";
+import roseWineImage from "../../assets/types/rose_wine.png";
+import sparklingWineImage from "../../assets/types/sparkling_wine.png";
 
 interface AddSeller2ModalProps {
   isOpen: boolean;
@@ -9,6 +13,18 @@ interface AddSeller2ModalProps {
   onPrev: () => void;
   onNext: (data: any) => void;
   wineInfo: Wine;
+}
+
+/* 국기 이미지 */
+const flags = importAll(require.context("../../assets/flags", false, /\.png$/));
+
+function importAll(r: __WebpackModuleApi.RequireContext) {
+  let images: { [key: string]: string } = {};
+  r.keys().forEach((item) => {
+    const key = item.replace("./", "").replace(".png", ""); // '대한민국.png' → '대한민국'
+    images[key] = r(item);
+  });
+  return images;
 }
 
 const AddSeller2Modal = ({ isOpen, onClose, onPrev, onNext, wineInfo }: AddSeller2ModalProps) => {
@@ -60,6 +76,29 @@ const AddSeller2Modal = ({ isOpen, onClose, onPrev, onNext, wineInfo }: AddSelle
     onNext(drinkData);
   };
 
+  const getDefaultImageByType = (type: string | undefined) => {
+    switch (type?.toLowerCase()) {
+      case "레드":
+        return redWineImage;
+      case "화이트":
+        return whiteWineImage;
+      case "로제":
+        return roseWineImage;
+      case "스파클링":
+        return sparklingWineImage;
+      default:
+        return redWineImage;
+    }
+  };
+
+  const getWineImage = () => {
+    const img = wineInfo.image;
+    if (!img || img === "no_image" || img === "") {
+      return getDefaultImageByType((wineInfo as any).type || (wineInfo as any).typeName);
+    }
+    return img;
+  };
+
   return (
     <div style={styles.overlay} onClick={onClose}>
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -67,12 +106,16 @@ const AddSeller2Modal = ({ isOpen, onClose, onPrev, onNext, wineInfo }: AddSelle
 
         <h2 style={styles.title}>와인 수집</h2>
         <p style={styles.subtitle}>
-          {wineInfo.grape}
-          <img src={`/flags/${wineInfo.country}.png`} alt={wineInfo.country} style={styles.flagIcon} />
+          {wineInfo.grape}{" "}
+          {flags[wineInfo.country] ? (
+            <img src={flags[wineInfo.country]} alt={wineInfo.country} style={styles.flagIcon} />
+          ) : (
+            <span style={{ fontSize: "1.4vh", color: "#FFD447", marginLeft: "0.5vh" }}>{wineInfo.country}</span>
+          )}
         </p>
 
         <div style={styles.wineContainer}>
-          <img src={wineInfo.image || "/sample_image/whitewine_pixel.png"} alt="와인" style={styles.wineImage} />
+          <img src={getWineImage()} alt="와인" style={styles.wineImage} />
           <p style={styles.wineName}>{wineInfo.name.toUpperCase()}</p>
         </div>
 

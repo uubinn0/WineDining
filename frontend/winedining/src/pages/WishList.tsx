@@ -34,13 +34,15 @@ const WishList = () => {
         <BackButton onClick={() => navigate("/mypage")} />
       </div>
 
-      <PixelTitle
-        text="WISH LIST"
-        imageSrc="/sample_image/yellow_lightning.png"
-        fontSize="16px"
-        color="#fefefe"
-        imageSize="24px"
-      />
+      <div style={styles.title}>
+        <PixelTitle
+          text="WISH LIST"
+          imageSrc="/sample_image/yellow_lightning.png"
+          fontSize="16px"
+          color="#fefefe"
+          imageSize="24px"
+        />
+      </div>
       {status === "loading" && <p>위시리스트를 불러오는 중...</p>}
       {status === "failed" && <p>위시리스트를 불러오는 데 실패했습니다.</p>}
       {items.length === 0 ? (
@@ -49,7 +51,7 @@ const WishList = () => {
         <div style={styles.grid}>
           {items.map((wish) => (
             <div key={wish.id} onClick={() => handleWishClick(wish.wine.wineId)}>
-              <WineWishCard wish={wish} />
+              <WineWishCard wish={wish} wine={wish.wine} />
             </div>
           ))}
         </div>
@@ -64,29 +66,32 @@ const WishList = () => {
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
     backgroundImage: `url(${Wish})`,
-    backgroundRepeat: "repeat-y", //  세로로 배경 반복
+    backgroundRepeat: "repeat-y", // 세로로 배경 반복
     backgroundSize: "cover",
     backgroundPosition: "center",
     textAlign: "center",
-    minHeight: "100vh", //  최소 높이 보장
+    minHeight: "100vh", // 최소 높이 보장 (이미 vh 단위)
     overflowX: "hidden",
     width: "100%",
   },
   grid: {
     display: "grid",
     gridTemplateColumns: "repeat(2, 1fr)",
-    gap: "12px",
+    gap: "1.5vh", // 12px / 8 = 1.5vh
     justifyContent: "center",
-    padding: "20px",
+    padding: "2.5vh", // 20px / 8 = 2.5vh
   },
   image: {
-    width: "18px",
-    height: "20px",
+    width: "2.25vh", // 18px / 8 = 2.25vh
+    height: "2.5vh", // 20px / 8 = 2.5vh
   },
   backButtonWrapper: {
     position: "absolute",
-    top: "16px",
-    left: "16px",
+    top: "2vh", // 16px / 8 = 2vh
+    left: "2vh", // 16px / 8 = 2vh
+  },
+  title: {
+    marginTop: "2.375vh", // 19px / 8 ≈ 2.375vh
   },
 };
 

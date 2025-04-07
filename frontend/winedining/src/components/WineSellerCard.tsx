@@ -1,18 +1,45 @@
 import React from "react";
 import { Bottle } from "../types/seller";
 import { vh } from "../utils/vh";
+import redWineImage from "../assets/types/red_wine.png";
+import whiteWineImage from "../assets/types/white_wine.png";
+import roseWineImage from "../assets/types/rose_wine.png";
+import sparklingWineImage from "../assets/types/sparkling_wine.png";
 
 interface WineSellerCardProps {
   wine: Bottle;
   onBestClick: (bottleId: number) => void;
   onDetailClick: () => void;
   isBest: boolean;
+  totalNote: number;
 }
 
-const WineSellerCard = ({ wine, onBestClick, onDetailClick, isBest }: WineSellerCardProps) => {
-  // 이미지 처리 (빈 문자열 또는 "no_image"면 샘플 이미지 사용)
-  const wineImage =
-    wine.wine.image && wine.wine.image !== "no_image" ? wine.wine.image : "/sample_image/wine_sample.jpg";
+const WineSellerCard = ({ wine, onBestClick, onDetailClick, isBest, totalNote }: WineSellerCardProps) => {
+  const getDefaultImageByType = (type: string | undefined) => {
+    if (!type) return redWineImage;
+    switch (type.toLowerCase()) {
+      case "레드":
+        return redWineImage;
+      case "화이트":
+        return whiteWineImage;
+      case "로제":
+        return roseWineImage;
+      case "스파클링":
+        return sparklingWineImage;
+      default:
+        return redWineImage;
+    }
+  };
+
+  const getWineImage = () => {
+    const img = wine.wine.image;
+    if (!img || img === "no_image" || img === "") {
+      return getDefaultImageByType(wine.wine.type);
+    }
+    return img;
+  };
+
+  const wineImage = getWineImage();
 
   return (
     <div style={styles.card}>
@@ -26,6 +53,7 @@ const WineSellerCard = ({ wine, onBestClick, onDetailClick, isBest }: WineSeller
             (e.target as HTMLImageElement).src = "/sample_image/wine_sample.jpg";
           }}
         />
+        {totalNote > 0 && <div style={styles.noteCountText}>{totalNote}</div>}
       </div>
 
       {/* 와인 정보 */}
@@ -68,7 +96,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     position: "relative",
     marginBottom: "1.875vh",
   },
+  /* 와인 이미지 박스 */
   imageBox: {
+    position: "relative",
     width: "7.5vh", // 60px (60/8)
     height: "7.5vh", // 60px (60/8)
     marginRight: "1.875vh", // 15px (15/8)
@@ -77,11 +107,27 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    overflow: "hidden",
   },
+  /* 와인 이미지 */
   image: {
     width: "80%",
     height: "auto",
     objectFit: "contain",
+  },
+  /* 리뷰 개수 */
+  noteCountText: {
+    position: "absolute",
+    bottom: "0.4vh",
+    right: vh(-0.7),
+    color: "white",
+    fontSize: "1.1vh",
+    padding: "0.3vh 0.6vh",
+    borderRadius: "0.5vh",
+    fontWeight: "bold",
+    zIndex: 2,
+    minWidth: "2.2vh",
+    textAlign: "center",
   },
   info: {
     flex: 1,

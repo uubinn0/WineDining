@@ -6,6 +6,10 @@ import { Wine } from "../types/wine";
 import { WishItem } from "../types/wish";
 import { trackEvent } from "../utils/analytics";
 import { vh } from "../utils/vh";
+import redWineImage from "../assets/types/red_wine.png";
+import whiteWineImage from "../assets/types/white_wine.png";
+import roseWineImage from "../assets/types/rose_wine.png";
+import sparklingWineImage from "../assets/types/sparkling_wine.png";
 
 interface WineInfoCardProps {
   wine: Wine;
@@ -33,6 +37,7 @@ const WineInfoCard = ({ wine, onClick }: WineInfoCardProps) => {
   const handleWishToggle = () => {
     if (!wine.wineId) return;
     if (isInWishList) {
+      dispatch(removeWish(wine.wineId)); // 담기 취소 추가
       trackEvent("toggle_wish", {
         item_id: wine.wineId,
         item_name: wine.name,
@@ -48,8 +53,32 @@ const WineInfoCard = ({ wine, onClick }: WineInfoCardProps) => {
     }
   };
 
+  // 타입별 기본 이미지 반환 함수
+  const getDefaultImageByType = (typeName: string | undefined) => {
+    switch (typeName?.toLowerCase()) {
+      case "레드":
+        return redWineImage;
+      case "화이트":
+        return whiteWineImage;
+      case "로제":
+        return roseWineImage;
+      case "스파클링":
+        return sparklingWineImage;
+      default:
+        return redWineImage;
+    }
+  };
+
+  const getWineImage = () => {
+    const img = wine.image;
+    if (!img || img === "no_image" || img === "") {
+      return getDefaultImageByType(wine.type);
+    }
+    return img;
+  };
+
   // 이미지 처리
-  const wineImage = wine.image && wine.image !== "no_image" ? wine.image : "/sample_image/wine_sample.jpg";
+  const wineImage = getWineImage();
 
   return (
     <div style={styles.card}>

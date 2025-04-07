@@ -12,6 +12,8 @@ import { vh } from "../utils/vh";
 import sampleimg from "../assets/images/winesample/defaultwine.png";
 import BestWineFlipCard from "../components/BestWineFlipCard";
 import PixelTitle from "../components/PixcelTitle";
+import { fetchWineNotes } from "../api/noteApi";
+import { useMemo } from "react";
 
 const WineSellerList = () => {
   const navigate = useNavigate();
@@ -21,6 +23,7 @@ const WineSellerList = () => {
   const [selectedBottle, setSelectedBottle] = useState<Bottle | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [page, setPage] = useState(1);
+  const [noteCounts, setNoteCounts] = useState<{ [bottleId: number]: number }>({});
 
   // hasMore: 더 불러올 와인이 있는지 확인 (현재 불러온 bottles 수가 총 와인 수보다 적으면 true)
   const hasMore = bottles.length < totalCount;
@@ -48,6 +51,25 @@ const WineSellerList = () => {
     },
     [status, hasMore, page, dispatch]
   );
+
+  useEffect(() => {
+    const fetchNotesForBottles = async () => {
+      const counts: { [bottleId: number]: number } = {};
+      for (const bottle of bottles) {
+        try {
+          const res = await fetchWineNotes(bottle.bottleId);
+          counts[bottle.bottleId] = res.notes.length;
+        } catch (err) {
+          console.warn(`노트 가져오기 실패: bottleId ${bottle.bottleId}`);
+        }
+      }
+      setNoteCounts(counts);
+    };
+
+    if (bottles.length > 0) {
+      fetchNotesForBottles();
+    }
+  }, [bottles]);
 
   const closeDetailModal = () => {
     setSelectedBottle(null);
@@ -100,7 +122,9 @@ const WineSellerList = () => {
           {Array.from({ length: 3 }).map((_, index) => {
             const bottle = bestBottles[index];
             if (bottle) {
-              return <BestWineFlipCard key={bottle.bottleId} bottle={bottle} />;
+              return (
+                <BestWineFlipCard key={bottle.bottleId} bottle={bottle} isBest={true} onBestClick={handleBestClick} />
+              );
             } else {
               return (
                 <div key={`placeholder-${index}`} style={styles.bestWineCard}>
@@ -114,7 +138,7 @@ const WineSellerList = () => {
         </div>
       </div>
 
-      {/* 헤더 영역: "와인 추가하기" 버튼과 총 와인 수집 텍스트 */}
+      {/* 총 와인의 개수 */}
       <div style={styles.headerContainer}>
         <div style={styles.addButtonWrapper}>
           <CustomAddWineButton />
@@ -135,6 +159,7 @@ const WineSellerList = () => {
                   isBest={isBest(bottle.bottleId)}
                   onBestClick={handleBestClick}
                   onDetailClick={() => handleDetailClick(bottle)}
+                  totalNote={noteCounts[bottle.bottleId] || 0}
                 />
               </div>
             );
@@ -146,6 +171,7 @@ const WineSellerList = () => {
                   isBest={isBest(bottle.bottleId)}
                   onBestClick={handleBestClick}
                   onDetailClick={() => handleDetailClick(bottle)}
+                  totalNote={noteCounts[bottle.bottleId] || 0}
                 />
               </div>
             );
@@ -166,13 +192,13 @@ export default WineSellerList;
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
     position: "relative",
-    padding: vh(2), // 필요에 따라 2.2vh로 조정 가능
+    padding: vh(2.2), // 필요에 따라 2.2vh로 조정 가능
     backgroundColor: "#27052E",
     minHeight: "100vh",
     overflowX: "hidden",
     overflowY: "auto",
     color: "white",
-    fontFamily: "galmuri7",
+    fontFamily: "galmuri9",
   },
   backButtonWrapper: {
     position: "absolute",
@@ -192,7 +218,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   bestWineCard: {
     position: "relative",
-    width: vh(15),
+    maxWidth: vh(15),
+    minWidth: vh(13),
     height: vh(20),
     backgroundColor: "#2a0e35",
     borderRadius: vh(1),
@@ -249,13 +276,13 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginBottom: vh(2),
   },
   totalCountWrapper: {
-    marginTop: vh(1),
+    marginTop: vh(-1),
     width: "95%",
     maxWidth: "500px",
     textAlign: "end",
   },
   totalCountText: {
-    fontSize: vh(2),
+    fontSize: vh(1.8),
     color: "#ccc",
   },
   list: {

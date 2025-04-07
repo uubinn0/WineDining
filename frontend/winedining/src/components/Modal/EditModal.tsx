@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store"; // store 경로에 맞게 수정
 import { updateNickname } from "../../store/slices/authSlice";
+import { deleteUser } from "../../store/slices/authSlice";
+import { useNavigate } from "react-router-dom";
 
 interface EditModalProps {
   isOpen: boolean;
@@ -14,6 +16,7 @@ const EditModal = ({ nickname: initialNickname, isOpen, onClose, onNicknameUpdat
   const dispatch = useDispatch<AppDispatch>();
   const [nickname, setNickname] = useState(initialNickname);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     setNickname(initialNickname);
@@ -43,6 +46,19 @@ const EditModal = ({ nickname: initialNickname, isOpen, onClose, onNicknameUpdat
     }
   };
 
+  const handleDeleteUser = async () => {
+    if (window.confirm("정말 탈퇴하시겠습니까? 모든 정보가 삭제됩니다.")) {
+      try {
+        await dispatch(deleteUser()).unwrap();
+        alert("탈퇴가 완료되었습니다. 이용해주셔서 감사합니다!");
+        navigate("/");
+      } catch (err) {
+        console.error("회원탈퇴 실패:", err);
+        alert("탈퇴 중 문제가 발생했습니다. 다시 시도해주세요.");
+      }
+    }
+  };
+
   return (
     <div style={styles.overlay} onClick={onClose}>
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -59,7 +75,7 @@ const EditModal = ({ nickname: initialNickname, isOpen, onClose, onNicknameUpdat
         {error && <p style={styles.error}>{error}</p>}
 
         <div style={styles.buttonRow}>
-          <button style={styles.cancelButton} onClick={onClose}>
+          <button style={styles.cancelButton} onClick={handleDeleteUser}>
             회원탈퇴
           </button>
           <button style={styles.confirmButton} onClick={handleNicknameChange}>
