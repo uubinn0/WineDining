@@ -51,7 +51,7 @@ const WishList = () => {
         <div style={styles.grid}>
           {items.map((wish) => (
             <div key={wish.id} onClick={() => handleWishClick(wish.wine.wineId)}>
-              <WineWishCard wish={wish} />
+              <WineWishCard wish={wish} wine={wish.wine} />
             </div>
           ))}
         </div>

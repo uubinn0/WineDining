@@ -7,12 +7,18 @@ import WineDetailModal from "../components/Modal/WineDetailModal";
 import { WineDetail } from "../types/wine";
 import { fetchWineDetailThunk } from "../store/slices/wineSlice";
 import { vh } from "../utils/vh";
+import redWineImage from "../assets/types/red_wine.png";
+import whiteWineImage from "../assets/types/white_wine.png";
+import roseWineImage from "../assets/types/rose_wine.png";
+import sparklingWineImage from "../assets/types/sparkling_wine.png";
+import { Wine } from "../types/wine";
 
 interface WineWishCardProps {
   wish: WishItem;
+  wine: Wine;
 }
 
-const WineWishCard = ({ wish }: WineWishCardProps) => {
+const WineWishCard = ({ wish, wine }: WineWishCardProps) => {
   const [selectedDetail, setSelectedDetail] = useState<WineDetail | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const [isOpen, setIsOpen] = useState(false);
@@ -28,14 +34,36 @@ const WineWishCard = ({ wish }: WineWishCardProps) => {
     setIsOpen(true);
   };
 
+  const getDefaultImageByType = (type: string | undefined) => {
+    if (!type) return redWineImage;
+    switch (type.toLowerCase()) {
+      case "레드":
+        return redWineImage;
+      case "화이트":
+        return whiteWineImage;
+      case "로제":
+        return roseWineImage;
+      case "스파클링":
+        return sparklingWineImage;
+      default:
+        return redWineImage;
+    }
+  };
+
+  const getWineImage = () => {
+    const img = wine.image;
+    if (!img || img === "no_image" || img === "") {
+      return getDefaultImageByType(wine.type);
+    }
+    return img;
+  };
+
+  const wineImage = getWineImage();
+
   return (
     <>
       <div style={styles.card}>
-        <img
-          src={wish.wine.image !== "" ? wish.wine.image : "/sample_image/wine_sample.jpg"}
-          alt={wish.wine.name}
-          style={styles.image}
-        />
+        <img src={wineImage} alt={wish.wine.name} style={styles.image} />
 
         <button style={styles.button} onClick={() => setIsOpen(true)}>
           <h3 style={styles.text}>

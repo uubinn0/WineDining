@@ -1,6 +1,10 @@
 import React from "react";
 import { Bottle } from "../types/seller";
 import { vh } from "../utils/vh";
+import redWineImage from "../assets/types/red_wine.png";
+import whiteWineImage from "../assets/types/white_wine.png";
+import roseWineImage from "../assets/types/rose_wine.png";
+import sparklingWineImage from "../assets/types/sparkling_wine.png";
 
 interface WineSellerCardProps {
   wine: Bottle;
@@ -11,9 +15,31 @@ interface WineSellerCardProps {
 }
 
 const WineSellerCard = ({ wine, onBestClick, onDetailClick, isBest, totalNote }: WineSellerCardProps) => {
-  // 이미지 처리 (빈 문자열 또는 "no_image"면 샘플 이미지 사용)
-  const wineImage =
-    wine.wine.image && wine.wine.image !== "no_image" ? wine.wine.image : "/sample_image/wine_sample.jpg";
+  const getDefaultImageByType = (type: string | undefined) => {
+    if (!type) return redWineImage;
+    switch (type.toLowerCase()) {
+      case "레드":
+        return redWineImage;
+      case "화이트":
+        return whiteWineImage;
+      case "로제":
+        return roseWineImage;
+      case "스파클링":
+        return sparklingWineImage;
+      default:
+        return redWineImage;
+    }
+  };
+
+  const getWineImage = () => {
+    const img = wine.wine.image;
+    if (!img || img === "no_image" || img === "") {
+      return getDefaultImageByType(wine.wine.type);
+    }
+    return img;
+  };
+
+  const wineImage = getWineImage();
 
   return (
     <div style={styles.card}>

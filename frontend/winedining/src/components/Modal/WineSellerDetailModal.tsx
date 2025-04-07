@@ -11,6 +11,10 @@ import closeButton from "../../assets/icons/closebutton.png";
 import AddSellerModal from "./AddSellerModal";
 import Add1SellerModal from "./add1SellerModal";
 import { vh } from "../../utils/vh";
+import redWineImage from "../../assets/types/red_wine.png";
+import whiteWineImage from "../../assets/types/white_wine.png";
+import roseWineImage from "../../assets/types/rose_wine.png";
+import sparklingWineImage from "../../assets/types/sparkling_wine.png";
 
 interface WineSellerDetailModalProps {
   isOpen: boolean;
@@ -148,6 +152,28 @@ const WineSellerDetailModal = ({ isOpen, onClose, bottle }: WineSellerDetailModa
     setNewNoteData(null);
   };
 
+  const getDefaultImageByType = (type: string | undefined) => {
+    switch (type?.toLowerCase()) {
+      case "레드":
+        return redWineImage;
+      case "화이트":
+        return whiteWineImage;
+      case "로제":
+        return roseWineImage;
+      case "스파클링":
+        return sparklingWineImage;
+      default:
+        return redWineImage;
+    }
+  };
+
+  const getWineImage = (image: string | null | undefined, type: string | undefined) => {
+    if (!image || image === "no_image" || image === "") {
+      return getDefaultImageByType(type);
+    }
+    return image;
+  };
+
   return (
     <div style={styles.overlay} onClick={onClose}>
       <div
@@ -164,7 +190,8 @@ const WineSellerDetailModal = ({ isOpen, onClose, bottle }: WineSellerDetailModa
         <h2 style={styles.title}>와인 수집</h2>
         {/* 국기 이미지 */}
         <p style={styles.subtitle}>
-          {wine.grape}{" "}
+          {wine.type} 와인 / {wine.grape}
+          {" / "}
           {flags[wine.country] ? (
             <img src={flags[wine.country]} alt={wine.country} style={styles.flagIcon} />
           ) : (
@@ -172,11 +199,7 @@ const WineSellerDetailModal = ({ isOpen, onClose, bottle }: WineSellerDetailModa
           )}
         </p>
         {/* 와인 이미지 */}
-        <img
-          src={wine.image !== "no_image" ? wine.image : "/sample_image/wine_sample.jpg"}
-          alt={wine.name}
-          style={styles.wineImage}
-        />
+        <img src={getWineImage(wine.image, wine.type)} alt={wine.name} style={styles.wineImage} />
         <h3 style={styles.name}>{wine.name}</h3>
 
         {readyToRender && (
@@ -367,10 +390,10 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   /* 와인 이미지 */
   wineImage: {
-    width: "80px",
-    height: "120px",
+    width: vh(8),
+    height: vh(12),
     display: "block",
-    margin: "10px auto",
+    margin: `${vh(1)} auto`,
   },
   /* 와인 이름 */
   name: {

@@ -21,8 +21,6 @@ const WineDetailModal = ({ isOpen, onClose, wine }: WineDetailModalProps) => {
   const wishList = useSelector((state: RootState) => state.wish.items);
   const isInWishList = wishList.some((wish: WishItem) => wish.wine.wineId === wine.wineId);
 
-  console.log("와인 데이터:", wine);
-
   const handleWishToggle = () => {
     if (!wine.wineId) return;
     if (isInWishList) {
@@ -37,13 +35,13 @@ const WineDetailModal = ({ isOpen, onClose, wine }: WineDetailModalProps) => {
   // 이미지가 없을 경우, 와인 타입에 따라 기본 이미지 반환
   const getDefaultImageByType = (type: string) => {
     switch (type.toLowerCase()) {
-      case "red":
+      case "레드":
         return redWineImage;
-      case "white":
+      case "화이트":
         return whiteWineImage;
-      case "rose":
+      case "로제":
         return roseWineImage;
-      case "sparkling":
+      case "스파클링":
         return sparklingWineImage;
       default:
         return redWineImage; // 타입이 불명확할 때 기본값
