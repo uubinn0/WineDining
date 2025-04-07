@@ -150,7 +150,7 @@ public class WineService {
                     dto.setWineId(wine.getId());
                     dto.setName(wine.getKrName());
                     dto.setImage(wine.getImage());
-                    dto.setTypeName(wine.getWineType().getTypeName());
+                    dto.setType(wine.getWineType().getTypeName());
                     dto.setCountry(wine.getCountry());
                     dto.setGrape(wine.getGrape());
 
