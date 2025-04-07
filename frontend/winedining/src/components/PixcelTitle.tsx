@@ -5,8 +5,9 @@ interface PixelTitleProps {
   imageSrc?: string;
   fontSize?: string;
   color?: string;
-  margin?: string;
+  padding?: string; // margin → padding 으로 변경
   imageSize?: string;
+  margin?: string;
 }
 
 const PixelTitle: React.FC<PixelTitleProps> = ({
@@ -14,8 +15,9 @@ const PixelTitle: React.FC<PixelTitleProps> = ({
   imageSrc = "/sample_image/yellow_lightning.png",
   fontSize = "15px",
   color = "#ffffff",
-  margin = "50px 0 20px 0",
+  padding = "50px 0 20px", // 기본값 설정
   imageSize = "20px",
+  margin = "0px",
 }) => {
   return (
     <h1
@@ -26,6 +28,7 @@ const PixelTitle: React.FC<PixelTitleProps> = ({
         fontFamily: "'PressStart2P'",
         fontSize,
         color,
+        padding, // 패딩 prop 반영
         margin,
         gap: "10px",
         whiteSpace: "nowrap",

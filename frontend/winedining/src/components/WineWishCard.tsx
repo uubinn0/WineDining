@@ -6,6 +6,7 @@ import { WishItem } from "../types/wish";
 import WineDetailModal from "../components/Modal/WineDetailModal";
 import { WineDetail } from "../types/wine";
 import { fetchWineDetailThunk } from "../store/slices/wineSlice";
+import { vh } from "../utils/vh";
 
 interface WineWishCardProps {
   wish: WishItem;
@@ -62,7 +63,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: "12px",
     padding: "10px",
     boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
-    backgroundColor: "#250030",
+    backgroundColor: "#21101B",
     position: "relative",
     textAlign: "center",
     display: "flex",
@@ -70,7 +71,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: "center",
     justifyContent: "flex-start",
     color: "#FFFFFF",
-    fontFamily: "Pixel, sans-serif",
   },
   heartButton: {
     position: "absolute",
@@ -78,12 +78,13 @@ const styles: { [key: string]: React.CSSProperties } = {
     right: "7px",
     border: "none",
     background: "none",
-    fontSize: "20px",
+    fontFamily: "galmuri7",
+    fontSize: "14px",
     cursor: "pointer",
-    color: "red",
+    color: "#FF1E56",
   },
   image: {
-    marginTop: "4px",
+    marginTop: "12px",
     width: "80px",
     height: "auto",
     maxHeight: "120px",
@@ -91,8 +92,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: "8px",
   },
   text: {
+    fontFamily: "Galmuri9",
     fontSize: "14px",
-    fontWeight: "bold",
     margin: "2px",
     maxWidth: "100%",
     display: "-webkit-box",
@@ -103,9 +104,12 @@ const styles: { [key: string]: React.CSSProperties } = {
     whiteSpace: "normal",
   },
   button: {
-    width: "150px",
-    marginTop: "15px",
+    width: "100%",
+    // display: "flex",
+    backgroundColor: "#ffff",
+    marginTop: "auto",
     borderRadius: "10px",
+    boxShadow: `${vh(0.6)} ${vh(0.6)} 0 #000`,
   },
 };
 

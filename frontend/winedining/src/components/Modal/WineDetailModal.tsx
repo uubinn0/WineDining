@@ -71,7 +71,7 @@ const WineDetailModal = ({ isOpen, onClose, wine }: WineDetailModalProps) => {
           {/* 와인 이미지 */}
           <div style={styles.imageContainer}>
             <img
-              src={wine.image !== "no_image" ? wine.image : "/sample_image/wine_sample.jpg"}
+              src={wine.image !== "no_image" ? wine.image : "../../assets/images/winesample/defaultwine.png"}
               alt={wine.krName}
               style={styles.image}
             />

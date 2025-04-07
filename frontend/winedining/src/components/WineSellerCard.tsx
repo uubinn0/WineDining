@@ -73,8 +73,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     margin: "0 auto",
   },
   image: {
-    width: vh(6),
-    height: vh(6),
+    width: vh(8),
+    height: vh(8),
     padding: vh(0.5),
     borderRadius: vh(0.5),
     objectFit: "contain",
@@ -108,7 +108,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   buttons: {
     display: "flex",
     flexDirection: "column",
-    gap: vh(0.4),
+    gap: vh(0.8),
     marginLeft: vh(1),
     alignItems: "flex-end",
   },
