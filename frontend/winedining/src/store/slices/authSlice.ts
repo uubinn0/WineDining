@@ -34,7 +34,7 @@ export const fetchUserProfile = createAsyncThunk<UserProfile, void, { rejectValu
       const response = await axios.get("/api/v1/user/profile", {
         withCredentials: true,
       });
-      console.log("[fetchUserProfile] 성공 응답:", response.data);
+      // console.log("[fetchUserProfile] 성공 응답:", response.data);
       return response.data.data;
     } catch (error) {
       return rejectWithValue("유저 정보 불러오기 실패");
@@ -50,7 +50,7 @@ export const updateNickname = createAsyncThunk<
 >("auth/updateNickname", async (nickname, { rejectWithValue }) => {
   try {
     const response = await axios.patch("/api/v1/user/profile", { nickname }, { withCredentials: true });
-    console.log("[updateNickname] 닉네임 수정 성공:", response.data);
+    // console.log("[updateNickname] 닉네임 수정 성공:", response.data);
     return response.data.data.nickname;
   } catch (error) {
     return rejectWithValue("닉네임 변경 실패");
@@ -60,7 +60,7 @@ export const updateNickname = createAsyncThunk<
 // 로그아웃
 export const logoutUser = createAsyncThunk("auth/logout", async () => {
   await axios.post("/api/v1/auth/logout", {}, { withCredentials: true });
-  console.log("[logoutUser] 로그아웃 완료");
+  // console.log("[logoutUser] 로그아웃 완료");
   localStorage.removeItem("user");
 });
 
@@ -78,7 +78,7 @@ export const deleteUser = createAsyncThunk<void, void, { rejectValue: string }>(
       );
       localStorage.removeItem("user");
     } catch (error) {
-      console.error("[deleteUser] 실패:", error);
+      // console.error("[deleteUser] 실패:", error);
       return rejectWithValue("회원 탈퇴에 실패했습니다.");
     }
   }
