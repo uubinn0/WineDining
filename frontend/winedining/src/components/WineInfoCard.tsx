@@ -33,6 +33,7 @@ const WineInfoCard = ({ wine, onClick }: WineInfoCardProps) => {
   const handleWishToggle = () => {
     if (!wine.wineId) return;
     if (isInWishList) {
+      dispatch(removeWish(wine.wineId)); // 담기 취소 추가
       trackEvent("toggle_wish", {
         item_id: wine.wineId,
         item_name: wine.name,

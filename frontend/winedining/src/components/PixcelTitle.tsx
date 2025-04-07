@@ -13,11 +13,11 @@ interface PixelTitleProps {
 const PixelTitle: React.FC<PixelTitleProps> = ({
   text,
   imageSrc = "/sample_image/yellow_lightning.png",
-  fontSize = "15px",
+  fontSize = "1.875vh",
   color = "#ffffff",
-  padding = "50px 0 20px", // 기본값 설정
-  imageSize = "20px",
-  margin = "0px",
+  padding = "2.1vh 0 5vh",
+  imageSize = "2.5vh",
+  margin = "0vh",
 }) => {
   return (
     <h1
@@ -30,7 +30,7 @@ const PixelTitle: React.FC<PixelTitleProps> = ({
         color,
         padding, // 패딩 prop 반영
         margin,
-        gap: "10px",
+        gap: "1.25vh", // 10px → 10/8 = 1.25vh
         whiteSpace: "nowrap",
       }}
     >
