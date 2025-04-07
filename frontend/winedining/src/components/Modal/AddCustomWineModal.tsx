@@ -110,16 +110,16 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: vh(2),
     padding: vh(2),
     width: vh(32),
-    fontFamily: "Pixel, sans-serif",
     display: "flex",
     flexDirection: "column",
     gap: vh(1.5),
+    marginBottom: vh(15),
   },
   /* 닫기 버튼 */
   closeButton: {
     position: "absolute",
-    top: vh(-24),
-    right: vh(1.2),
+    top: vh(-32),
+    right: vh(2.4),
     width: vh(4),
     height: vh(4),
     cursor: "pointer",
@@ -134,7 +134,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: vh(0.4),
     border: "0.1vh solid #ccc",
     backgroundColor: "#fff",
-    color: "white",
+    color: "black",
     fontSize: vh(1.5),
   },
   /* 타입 선택 박스 */
@@ -147,16 +147,24 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: vh(1.3),
   },
   /* 등록 버튼 */
-  button: {
-    position: "absolute",
-    backgroundColor: "white",
-    color: "black",
-    cursor: "pointer",
+  completeButton: {
+    width: "40%",
+    margin: "0 auto", // 가운데 정렬을 위한 설정
+    maxWidth: vh(44), // 약 350px 기준
+    position: "relative",
+    display: "inline-block",
+    backgroundColor: "#ddd",
+    color: "#000000",
     border: "none",
-    borderRadius: vh(0.8),
-    fontWeight: "bold",
+    borderRadius: vh(1),
+    padding: `${vh(1)} ${vh(3)}`,
+    cursor: "pointer",
+    fontFamily: "Galmuri7",
     fontSize: vh(1.5),
-    padding: `${vh(1)} ${vh(1.5)}`,
+    textAlign: "center",
+    boxShadow: `${vh(0.6)} ${vh(0.6)} 0 #000`,
+    transition: "all 0.2s ease",
+    whiteSpace: "nowrap",
   },
 };
 

@@ -5,10 +5,23 @@ import { RootState, AppDispatch } from "../store/store";
 import { Wine } from "../types/wine";
 import { WishItem } from "../types/wish";
 import { trackEvent } from "../utils/analytics";
+import { vh } from "../utils/vh";
 
 interface WineInfoCardProps {
   wine: Wine;
   onClick: (wine: Wine) => void;
+}
+
+/* 국기 이미지 */
+const flags = importAll(require.context("../assets/flags", false, /\.png$/));
+
+function importAll(r: __WebpackModuleApi.RequireContext) {
+  let images: { [key: string]: string } = {};
+  r.keys().forEach((item) => {
+    const key = item.replace("./", "").replace(".png", ""); // '대한민국.png' → '대한민국'
+    images[key] = r(item);
+  });
+  return images;
 }
 
 const WineInfoCard = ({ wine, onClick }: WineInfoCardProps) => {
@@ -57,7 +70,12 @@ const WineInfoCard = ({ wine, onClick }: WineInfoCardProps) => {
       <div style={styles.info}>
         <div style={styles.name}>{wine.name.toUpperCase()}</div>
         <div style={styles.grape}>
-          {wine.country} / {wine.grape}
+          {flags[wine.country] ? (
+            <img src={flags[wine.country]} alt={wine.country} style={styles.flagIcon} />
+          ) : (
+            <span style={{ fontSize: "1.4vh", color: "#FFD447", marginLeft: "0.5vh" }}>{wine.country}</span>
+          )}{" "}
+          / {wine.grape}
         </div>
       </div>
 
@@ -153,6 +171,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     padding: "0.5vh 1vh", // 4px 8px (4/8, 8/8)
     borderRadius: "0.75vh", // 6px (6/8)
     cursor: "pointer",
+  },
+  /* 국기 아이콘 */
+  flagIcon: {
+    width: vh(1.8),
+    height: vh(1.2),
   },
 };
 

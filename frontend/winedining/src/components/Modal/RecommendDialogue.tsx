@@ -1,5 +1,6 @@
 import React from "react";
 import speechbubble from "../../assets/icons/speechbubble.png";
+import { vh } from "../../utils/vh";
 
 interface DialogueProps {
   question: string;
@@ -21,7 +22,7 @@ const RecommendDialogue: React.FC<DialogueProps> = ({
   return (
     <div style={styles.speechBubbleContainer}>
       <div style={styles.speechBubble}>
-        <p style={styles.question}>{question}</p>
+        <div style={styles.question}>{question}</div>
 
         {input !== undefined && onInputChange && (
           <div style={styles.foodInputContainer}>
@@ -36,7 +37,7 @@ const RecommendDialogue: React.FC<DialogueProps> = ({
           </div>
         )}
 
-        <ul style={styles.optionList}>
+        <div style={styles.optionList}>
           {options.map((option, idx) => (
             <li key={idx} style={styles.optionItem}>
               <button style={styles.optionButton} onClick={() => onSelect(option)}>
@@ -44,7 +45,7 @@ const RecommendDialogue: React.FC<DialogueProps> = ({
               </button>
             </li>
           ))}
-        </ul>
+        </div>
       </div>
     </div>
   );
@@ -52,22 +53,25 @@ const RecommendDialogue: React.FC<DialogueProps> = ({
 
 const styles: { [key: string]: React.CSSProperties } = {
   speechBubbleContainer: {
+    // backgroundImage: `url(${speechbubble})`,
+    // backgroundPosition: "center",
+    // backgroundRepeat: "no-repeat",
+    // display: "flex",
+    // alignItems: "center",
+    // height :"40dvh",
+  },
+  speechBubble: {
     backgroundImage: `url(${speechbubble})`,
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height :"250px",
-    width: "378px", 
-  },
-  speechBubble: {
     boxSizing: "border-box",
     display: "flex",
     // alignItems : "center",
-    justifyContent: "space-evenly",
+    gap : vh(2),
+    justifyContent: "center",
     flexDirection: "column",
-    width: "80%",
+    width: "100dvw", 
+    height : "30dvh"
   },
   optionList: {
     // textAlign: "left",
@@ -75,7 +79,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     display:"flex",
     // flexDirection: "column",
     flexWrap:"wrap",
-    padding : 0
+    padding : 0,
+    marginLeft : "5dvh",
+    marginRight : "5dvh",
    
   },
   optionItem: {
@@ -88,13 +94,12 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: "16px",
     fontFamily: "inherit",
 
+
+
   },
   question: {
     whiteSpace: "pre-line", // 줄바꿈을 처리하도록 설정
-    // textAlign:"start",
-    // marginLeft : "50px",
-    // fontSize: "16px",
-    margin : "0px",
+    marginLeft : "5dvh",
     lineHeight: "1.8", // 줄 간격을 넓게 설정
   },
   input: {
@@ -121,6 +126,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: "14px",
     fontFamily: "inherit",
     marginTop: "10px",
+    
     // color : "white"
   }
 };

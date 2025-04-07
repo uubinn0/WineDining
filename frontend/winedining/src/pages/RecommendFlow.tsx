@@ -166,10 +166,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     // position: "relative",
     backgroundImage: `url(${Homebackground})`,
     backgroundSize: "contain",
-    width: "100vw",
+    width: "100dvw",
+    height: "100dvh",
     maxWidth: "430px", // 디자인 한계 지정 (선택)
     maxHeight: "100vh",
-    height: "calc(100 * var(--custom-vh))",
+    // height: "calc(100 * var(--custom-vh))",
     margin: "0 auto",
     position: "relative",
   
