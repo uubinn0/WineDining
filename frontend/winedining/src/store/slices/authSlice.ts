@@ -1,7 +1,7 @@
-// store/slices/authSlice.ts
-
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { withdrawUser } from "../../api/axios";
+
 const hasAuthCookie = document.cookie.includes("Authorization=");
 
 export interface UserProfile {
@@ -26,7 +26,7 @@ const initialState: AuthState = {
   error: null,
 };
 
-//  사용자 정보 가져오기
+// 사용자 정보 가져오기
 export const fetchUserProfile = createAsyncThunk<UserProfile, void, { rejectValue: string }>(
   "auth/fetchUserProfile",
   async (_, { rejectWithValue }) => {
@@ -42,7 +42,7 @@ export const fetchUserProfile = createAsyncThunk<UserProfile, void, { rejectValu
   }
 );
 
-//  닉네임 수정하기
+// 닉네임 수정하기
 export const updateNickname = createAsyncThunk<
   string, // 새 닉네임 반환
   string, // 새 닉네임 전달
@@ -57,12 +57,32 @@ export const updateNickname = createAsyncThunk<
   }
 });
 
-//  로그아웃
+// 로그아웃
 export const logoutUser = createAsyncThunk("auth/logout", async () => {
   await axios.post("/api/v1/auth/logout", {}, { withCredentials: true });
   console.log("[logoutUser] 로그아웃 완료");
   localStorage.removeItem("user");
 });
+
+// 회원탈퇴
+export const deleteUser = createAsyncThunk<void, void, { rejectValue: string }>(
+  "auth/deleteUser",
+  async (_, { rejectWithValue }) => {
+    try {
+      await axios.post(
+        "/api/v1/user/withdrawal",
+        {
+          confirmMessage: "회원 탈퇴에 동의합니다",
+        },
+        { withCredentials: true }
+      );
+      localStorage.removeItem("user");
+    } catch (error) {
+      console.error("[deleteUser] 실패:", error);
+      return rejectWithValue("회원 탈퇴에 실패했습니다.");
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: "auth",
@@ -100,6 +120,17 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.status = "idle";
         localStorage.removeItem("user");
+      })
+      /* 회원탈퇴 */
+      .addCase(deleteUser.fulfilled, (state) => {
+        state.user = null;
+        state.isAuthenticated = false;
+        state.status = "idle";
+        localStorage.removeItem("user");
+      })
+      .addCase(deleteUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload ?? "회원 탈퇴 실패";
       });
   },
 });

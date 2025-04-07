@@ -37,4 +37,9 @@ api.interceptors.response.use(
   }
 );
 
+export const withdrawUser = async () => {
+  const res = await api.post("/api/v1/user/withdrawal");
+  return res.data;
+};
+
 export default api;
