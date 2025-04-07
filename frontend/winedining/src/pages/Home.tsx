@@ -68,7 +68,7 @@ function Home() {
         로그아웃
       </h3>
 
-      {isPreferenceModalVisible && user && (
+      {isPreferenceModalVisible && user && !user.preference && (
         <div style={modalOverlay}>
           <div style={modalContent}>
             <p style={{ marginBottom: "8px" }}>

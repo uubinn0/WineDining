@@ -12,6 +12,8 @@ import { RootState } from "../store/store";
 function RecommendTest() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const nickname = useSelector((state: RootState) => state.auth.user?.nickname);
+
   const cameFromRecommendFlow = useSelector((state: RootState) => state.test.cameFromRecommendFlow); // 상태 가져오기
   // console.log("어디서옴?", cameFromRecommendFlow)
   const [currentStep, setCurrentStepLocal] = useState(0);
@@ -23,11 +25,8 @@ function RecommendTest() {
   const testCompleted = useSelector((state: RootState) => state.test.testCompleted);  
 
 
-  // const username = "오리통통"
-
   const dialogues = [
-    // { question: `취향테스트를 시작할게요. \n${username} 님의 취향을 알려주세요!`, options: [] },
-    { question: `취향테스트를 시작할게요. \n취향을 알려주세요!`, options: [] },
+    { question: `취향테스트를 시작할게요. \n${nickname} 님의 취향을 알려주세요!`, options: [] },
     { question: "어떤 도수의 와인을 선호하시나요?", options: ["가볍게", "적당하게", "강하게"] },
     { question: "달콤함은 어느정도가 좋으신가요?", options: ["단 술은 싫어요", "적당히 달달하게", "단 술 최고!"] },
     {
@@ -52,11 +51,11 @@ function RecommendTest() {
     }
   }, [currentStep]);
 
-  useEffect(() => {
-    if (finalMessage) {
-      setTimeout(() => navigate("/recommendflow"), 1500);
-    }
-  }, [finalMessage, navigate]);
+  // useEffect(() => {
+  //   if (finalMessage) {
+  //     setTimeout(() => navigate("/recommendflow"), 1500);
+  //   }
+  // }, [finalMessage, navigate]);
 
   const handleSelectOption = (selectedOption: string) => {
     const updatedResponses = [...responses, selectedOption];
@@ -69,8 +68,16 @@ function RecommendTest() {
         submitPreferences(updatedResponses);
       } else {
         setFinalMessage("알겠습니다! 다음에 다시 알려주세요!");
-        if(testCompleted) //여기서 다시 시작. step 처리 하기!!@!
-        dispatch(setCurrentStep(6)); // **6번째 질문부터 시작**
+          
+          if (cameFromRecommendFlow === "home") {
+            navigate("/home");  // 홈에서 왔으면 홈으로
+          } else if (cameFromRecommendFlow === "mypage") {
+            navigate("/mypage");  // 마이페이지에서 왔으면 마이페이지로
+          } else if (cameFromRecommendFlow === "recommend") {
+            dispatch(setCurrentStep(6)); // **6번째 질문부터 시작**
+            navigate("/recommendflow");  // recommendflow에서 왔으면 recommendflow로
+          }
+          console.log("어디로 가니", cameFromRecommendFlow)
       }
     }
   };
@@ -85,25 +92,26 @@ function RecommendTest() {
       preferredTypes: answers[5],
     };
 
-      // 콘솔에 각 값 출력
-  console.log("Selected Options:");
-  console.log("Alcohol Content:", requestData.alcoholContent);
-  console.log("Sweetness:", requestData.sweetness);
-  console.log("Tannin:", requestData.tannin);
-  console.log("Acidity:", requestData.acidity);
-  console.log("Body:", requestData.body);
-  console.log("Preferred Types:", requestData.preferredTypes);
+                // 콘솔에 각 값 출력
+            console.log("Selected Options:");
+            console.log("Alcohol Content:", requestData.alcoholContent);
+            console.log("Sweetness:", requestData.sweetness);
+            console.log("Tannin:", requestData.tannin);
+            console.log("Acidity:", requestData.acidity);
+            console.log("Body:", requestData.body);
+            console.log("Preferred Types:", requestData.preferredTypes);
 
 
     const response = await sendPreferenceTest(requestData);
     if (response.success) {
       dispatch(setTestCompleted(true)); // **테스트 완료 표시**
-      dispatch(setCurrentStep(6)); // **6번째 질문부터 시작**
+      
       if (cameFromRecommendFlow === "home") {
         navigate("/home");  // 홈에서 왔으면 홈으로
       } else if (cameFromRecommendFlow === "mypage") {
         navigate("/mypage");  // 마이페이지에서 왔으면 마이페이지로
       } else if (cameFromRecommendFlow === "recommend") {
+        dispatch(setCurrentStep(6)); // **6번째 질문부터 시작**
         navigate("/recommendflow");  // recommendflow에서 왔으면 recommendflow로
       }
       console.log("어디로 가니", cameFromRecommendFlow)
@@ -133,20 +141,19 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     backgroundImage: `url(${Homebackground})`,
     backgroundSize: "contain",
-    width: "100dvw",
+    width: "100%",
     height: "100dvh",
   },
   bartenderStyle: {
     position: "absolute",
-    top: vh(53.9), // top 비율
-    left: vh(20), // left 비율
-    // width: vw(54.2), // width 비율
+    top: "54%", // top 비율
+    left: "40%", // left 비율
     height: vh(30.6), // height 비율
     transform: "rotate(0.69deg)", // 회전 적용
   },
   speechBubbleContainer: {
     position: "absolute",
-    top: vh(23.9),
+    top: "23.9%",
   },
 };
 export default RecommendTest;
