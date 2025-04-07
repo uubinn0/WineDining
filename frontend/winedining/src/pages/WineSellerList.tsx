@@ -166,13 +166,13 @@ export default WineSellerList;
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
     position: "relative",
-    padding: vh(2), // 필요에 따라 2.2vh로 조정 가능
+    padding: vh(2.2), // 필요에 따라 2.2vh로 조정 가능
     backgroundColor: "#27052E",
     minHeight: "100vh",
     overflowX: "hidden",
     overflowY: "auto",
     color: "white",
-    fontFamily: "galmuri7",
+    fontFamily: "galmuri9",
   },
   backButtonWrapper: {
     position: "absolute",
@@ -255,7 +255,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: "end",
   },
   totalCountText: {
-    fontSize: vh(2),
+    fontSize: vh(1.8),
     color: "#ccc",
   },
   list: {
