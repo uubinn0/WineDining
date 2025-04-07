@@ -192,7 +192,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   bestWineCard: {
     position: "relative",
-    width: vh(15),
+    maxWidth: vh(15),
+    minWidth: vh(13),
     height: vh(20),
     backgroundColor: "#2a0e35",
     borderRadius: vh(1),
