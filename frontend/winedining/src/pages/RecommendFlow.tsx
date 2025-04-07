@@ -173,16 +173,13 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   bartenderStyle: {
     position: "absolute",
-    top: vh(53.9), // top 비율
-    left: vh(20), // left 비율
-    // width: vw(54.2), // width 비율
+    top: "54%", // top 비율
+    left: "40%", // left 비율
     height: vh(30.6), // height 비율
     transform: "rotate(0.69deg)", // 회전 적용
   },
   speechBubbleContainer: {
-    position: "absolute",
-    top: vh(23.9),
-    // width : vh(30)
+    paddingTop : "25dvh",
   },
   nextButton: {
     // width: "25%", // 버튼의 너비 설정
