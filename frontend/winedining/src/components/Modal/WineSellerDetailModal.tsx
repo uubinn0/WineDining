@@ -18,6 +18,18 @@ interface WineSellerDetailModalProps {
   bottle: Bottle;
 }
 
+/* 국기 이미지 */
+const flags = importAll(require.context("../../assets/flags", false, /\.png$/));
+
+function importAll(r: __WebpackModuleApi.RequireContext) {
+  let images: { [key: string]: string } = {};
+  r.keys().forEach((item) => {
+    const key = item.replace("./", "").replace(".png", ""); // '대한민국.png' → '대한민국'
+    images[key] = r(item);
+  });
+  return images;
+}
+
 const WineSellerDetailModal = ({ isOpen, onClose, bottle }: WineSellerDetailModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const { wine, bottleId } = bottle;
@@ -25,6 +37,9 @@ const WineSellerDetailModal = ({ isOpen, onClose, bottle }: WineSellerDetailModa
   const wineNotes = notes.filter((note) => note.bottleId === bottleId);
   const [page, setPage] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [isNoteReady, setIsNoteReady] = useState(false);
+  const [readyToRender, setReadyToRender] = useState(false);
   const [editData, setEditData] = useState<WineNoteRequest>({
     who: "",
     when: "",
@@ -42,9 +57,28 @@ const WineSellerDetailModal = ({ isOpen, onClose, bottle }: WineSellerDetailModa
 
   useEffect(() => {
     if (bottle.bottleId) {
-      dispatch(fetchNotes(bottle.bottleId));
+      setIsNoteReady(false); // 처음엔 false
+      dispatch(fetchNotes(bottle.bottleId)).then(() => {
+        setIsNoteReady(true); // 받아오고 나면 true
+      });
     }
   }, [dispatch, bottle.bottleId]);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isOpen) {
+      timer = setTimeout(() => setShowModal(true), 100);
+    } else {
+      setShowModal(false);
+    }
+    return () => clearTimeout(timer);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (wineNotes.length > 0 && wineNotes[0].bottleId === bottleId) {
+      setReadyToRender(true);
+    }
+  }, [wineNotes, bottleId]);
 
   if (!isOpen) return null;
 
@@ -116,12 +150,26 @@ const WineSellerDetailModal = ({ isOpen, onClose, bottle }: WineSellerDetailModa
 
   return (
     <div style={styles.overlay} onClick={onClose}>
-      <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
+      <div
+        style={{
+          ...styles.modal,
+          opacity: showModal ? 1 : 0,
+          transform: showModal ? "scale(1)" : "scale(0.95)",
+          transition: "opacity 0.3s ease, transform 0.3s ease",
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
         <img src={closeButton} alt="닫기" style={styles.closeButton} onClick={onClose} />
 
         <h2 style={styles.title}>와인 수집</h2>
+        {/* 국기 이미지 */}
         <p style={styles.subtitle}>
-          {wine.grape} <img src={`/flags/${wine.country}.png`} alt={wine.country} style={styles.flagIcon} />
+          {wine.grape}{" "}
+          {flags[wine.country] ? (
+            <img src={flags[wine.country]} alt={wine.country} style={styles.flagIcon} />
+          ) : (
+            <span style={{ fontSize: "1.4vh", color: "#FFD447", marginLeft: "0.5vh" }}>{wine.country}</span>
+          )}
         </p>
         {/* 와인 이미지 */}
         <img
@@ -131,7 +179,7 @@ const WineSellerDetailModal = ({ isOpen, onClose, bottle }: WineSellerDetailModa
         />
         <h3 style={styles.name}>{wine.name}</h3>
 
-        {wineNotes.length > 0 && (
+        {readyToRender && (
           <div style={styles.noteContainer}>
             {isEditing ? (
               <>
