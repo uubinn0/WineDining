@@ -260,8 +260,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   list: {
     display: "flex",
+    paddingRight: "0.9vh",
     flexDirection: "column",
-    gap: vh(1.875), // 카드 사이 간격을 1.875로 지정 (약 15px)
     overflowY: "auto",
     paddingBottom: vh(1.875), // 화면 맨 아래쪽 여백을 1.875로 지정 (약 15px)
     maxHeight: "45vh",
