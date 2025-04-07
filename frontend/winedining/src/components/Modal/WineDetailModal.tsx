@@ -5,6 +5,10 @@ import { addWish, removeWish } from "../../store/slices/wishSlice";
 import { RootState, AppDispatch } from "../../store/store";
 import { WishItem } from "../../types/wish";
 import closeButton from "../../assets/icons/closebutton.png";
+import redWineImage from "../../assets/types/red_wine.png";
+import whiteWineImage from "../../assets/types/white_wine.png";
+import roseWineImage from "../../assets/types/rose_wine.png";
+import sparklingWineImage from "../../assets/types/sparkling_wine.png";
 
 interface WineDetailModalProps {
   isOpen: boolean;
@@ -17,6 +21,8 @@ const WineDetailModal = ({ isOpen, onClose, wine }: WineDetailModalProps) => {
   const wishList = useSelector((state: RootState) => state.wish.items);
   const isInWishList = wishList.some((wish: WishItem) => wish.wine.wineId === wine.wineId);
 
+  console.log("와인 데이터:", wine);
+
   const handleWishToggle = () => {
     if (!wine.wineId) return;
     if (isInWishList) {
@@ -27,6 +33,30 @@ const WineDetailModal = ({ isOpen, onClose, wine }: WineDetailModalProps) => {
   };
 
   if (!isOpen) return null;
+
+  // 이미지가 없을 경우, 와인 타입에 따라 기본 이미지 반환
+  const getDefaultImageByType = (type: string) => {
+    switch (type.toLowerCase()) {
+      case "red":
+        return redWineImage;
+      case "white":
+        return whiteWineImage;
+      case "rose":
+        return roseWineImage;
+      case "sparkling":
+        return sparklingWineImage;
+      default:
+        return redWineImage; // 타입이 불명확할 때 기본값
+    }
+  };
+
+  // 이미지가 null, undefined, "no_image", "" 인 경우 타입별 기본 이미지 반환
+  const getWineImage = (wine: WineDetail) => {
+    if (!wine.image || wine.image === "no_image" || wine.image === "") {
+      return getDefaultImageByType(wine.type);
+    }
+    return wine.image;
+  };
 
   return (
     <div style={styles.overlay} onClick={onClose}>
@@ -70,11 +100,8 @@ const WineDetailModal = ({ isOpen, onClose, wine }: WineDetailModalProps) => {
 
           {/* 와인 이미지 */}
           <div style={styles.imageContainer}>
-            <img
-              src={wine.image !== "no_image" ? wine.image : "../../assets/images/winesample/defaultwine.png"}
-              alt={wine.krName}
-              style={styles.image}
-            />
+            {/*(null, 빈 문자열, "no_image"일 경우 타입에 맞는 기본 이미지 보여줌) */}
+            <img src={getWineImage(wine)} alt={wine.krName} style={styles.image} />
           </div>
         </div>
 
