@@ -166,7 +166,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     position: "relative",
     border: "1vh solid #D6BA91",
     width: "90vw",
-    height: "90vh",
+    height: "87vh",
     padding: "2.5vh",
     paddingTop: "1vh",
     overflowY: "auto",
