@@ -11,6 +11,10 @@ import searchbutton from "../../assets/icons/searchbutton.png";
 import customSampleWine from "../../assets/icons/customsample.png";
 import { title } from "process";
 import { vh } from "../../utils/vh";
+import redWineImage from "../../assets/types/red_wine.png";
+import whiteWineImage from "../../assets/types/white_wine.png";
+import roseWineImage from "../../assets/types/rose_wine.png";
+import sparklingWineImage from "../../assets/types/sparkling_wine.png";
 
 interface AddSeller1ModalProps {
   isOpen: boolean;
@@ -185,6 +189,28 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext, onCustomNext }: AddSeller1Mo
     }
   }, [isOpen]);
 
+  const getDefaultImageByType = (type: string | undefined) => {
+    switch (type?.toLowerCase()) {
+      case "레드":
+        return redWineImage;
+      case "화이트":
+        return whiteWineImage;
+      case "로제":
+        return roseWineImage;
+      case "스파클링":
+        return sparklingWineImage;
+      default:
+        return redWineImage;
+    }
+  };
+
+  const getWineImage = (image: string | null | undefined, type: string | undefined) => {
+    if (!image || image === "no_image" || image === "") {
+      return getDefaultImageByType(type);
+    }
+    return image;
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -236,15 +262,11 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext, onCustomNext }: AddSeller1Mo
                     onClick={() => handleSelectWine(wine)}
                   >
                     <div style={styles.wineItemContent}>
-                      <img
-                        src={wine.image || "/sample_image/default_wine.jpg"}
-                        alt={wine.name}
-                        style={styles.wineItemImage}
-                      />
+                      <img src={getWineImage(wine.image, wine.type)} alt={wine.name} style={styles.wineItemImage} />
                       <div>
                         <p style={styles.wineName}>{wine.name}</p>
                         <p style={styles.wineDetail}>
-                          {wine.country} | {wine.typeName}
+                          {wine.country} | {wine.type}
                         </p>
                       </div>
                     </div>
@@ -257,7 +279,6 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext, onCustomNext }: AddSeller1Mo
             searchResults.length === 0 && (
               <div style={styles.emptyStateContainer}>
                 <img src={customSampleWine} alt="와인 샘플" style={styles.sampleWineImage} />
-
                 <p style={styles.bottomText}>내가 마신 와인을 찾아주세요!</p>
                 <p style={styles.pagination}>1 / 3</p>
               </div>
@@ -268,15 +289,15 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext, onCustomNext }: AddSeller1Mo
             <div style={styles.selectedWineContainer}>
               <p style={styles.selectedTitle}>선택한 와인</p>
               <img
-                src={selectedWine.image || "/sample_image/default_wine.jpg"}
+                src={getWineImage(selectedWine.image, selectedWine.type)}
                 alt={selectedWine.name}
                 style={styles.wineImage}
               />
               <p style={styles.selectedWineName}>{selectedWine.name}</p>
               <p style={styles.selectedWineDetail}>
-                {selectedWine.country} | {selectedWine.typeName}
+                {selectedWine.country} | {selectedWine.type}
               </p>
-              <p style={styles.selectedWineGrape}>포도 품종: {selectedWine.grape}</p>
+              <p style={styles.selectedWineGrape}>품종: {selectedWine.grape}</p>
               <button onClick={handleNextStep} style={styles.nextButton}>
                 선택
               </button>
@@ -499,7 +520,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   nextButton: {
     width: "30%",
-    // margin: "0 auto", // 가운데 정렬을 위한 설정
     maxWidth: vh(44), // 약 350px 기준
     position: "relative",
     display: "inline-block",

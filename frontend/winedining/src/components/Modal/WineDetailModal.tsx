@@ -35,13 +35,13 @@ const WineDetailModal = ({ isOpen, onClose, wine }: WineDetailModalProps) => {
   // 이미지가 없으면 와인 타입에 따라 기본 이미지 반환
   const getDefaultImageByType = (type: string) => {
     switch (type.toLowerCase()) {
-      case "red":
+      case "레드":
         return redWineImage;
-      case "white":
+      case "화이트":
         return whiteWineImage;
-      case "rose":
+      case "로제":
         return roseWineImage;
-      case "sparkling":
+      case "스파클링":
         return sparklingWineImage;
       default:
         return redWineImage;

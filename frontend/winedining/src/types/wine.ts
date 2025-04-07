@@ -2,7 +2,7 @@
 export interface Wine {
   wineId: number;
   name: string;
-  typeName: string;
+  type: string;
   country: string;
   grape: string;
   wish: boolean;
@@ -62,7 +62,6 @@ export interface WineDetail {
   alcoholContent: number;
   pairing: string[];
 }
-
 
 // WineRecommendation 타입 정의
 export interface WineRecommendation {
