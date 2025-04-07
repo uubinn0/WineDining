@@ -1,6 +1,7 @@
 // 예: WineSpecification.java
 package com.ssafy.winedining.domain.wine.repository;
 
+import com.ssafy.winedining.domain.food.entity.Food;
 import com.ssafy.winedining.domain.food.entity.PairingSet;
 import com.ssafy.winedining.domain.wine.entity.Wine;
 import com.ssafy.winedining.domain.wine.entity.WineType;
@@ -187,39 +188,31 @@ public class WineSpecification {
         };
     }
 
-    public static Specification<Wine> hasPairing(List<String> pairingIds) {
+    public static Specification<Wine> hasPairing(List<String> foodNames) {
         return (root, query, criteriaBuilder) -> {
-            if (pairingIds == null || pairingIds.isEmpty()) {
+            if (foodNames == null || foodNames.isEmpty()) {
                 return criteriaBuilder.conjunction();
             }
 
             // 중복 제거를 위한 distinct 설정
             query.distinct(true);
 
-            // 숫자 ID로 변환
-            List<Long> foodIds = new ArrayList<>();
-            for (String id : pairingIds) {
-                try {
-                    foodIds.add(Long.parseLong(id));
-                } catch (NumberFormatException e) {
-                    // 숫자가 아닌 경우 무시
-                    continue;
-                }
-            }
-
-            if (foodIds.isEmpty()) {
-                return criteriaBuilder.conjunction();
-            }
-
             // 서브쿼리 생성
             Subquery<Long> subquery = query.subquery(Long.class);
             Root<PairingSet> pairingSetRoot = subquery.from(PairingSet.class);
+            Join<PairingSet, Food> foodJoin = pairingSetRoot.join("food");
 
             // PairingSet 엔티티에서 wine_id를 선택
             subquery.select(pairingSetRoot.get("wine").get("id"));
 
-            // food_id가 주어진 foodIds 목록에 포함되는 경우 필터링
-            subquery.where(pairingSetRoot.get("food").get("id").in(foodIds));
+            // 여러 음식 이름 중 하나라도 일치하는 경우 필터링
+            List<Predicate> foodPredicates = new ArrayList<>();
+            for (String foodName : foodNames) {
+                foodPredicates.add(criteriaBuilder.equal(foodJoin.get("foodName"), foodName));
+            }
+
+            // OR 조건으로 연결
+            subquery.where(criteriaBuilder.or(foodPredicates.toArray(new Predicate[0])));
 
             // 메인 쿼리에서 와인 ID가 서브쿼리 결과에 포함되는지 확인
             return root.get("id").in(subquery);
