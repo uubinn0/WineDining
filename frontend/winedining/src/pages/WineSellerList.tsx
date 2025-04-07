@@ -100,7 +100,9 @@ const WineSellerList = () => {
           {Array.from({ length: 3 }).map((_, index) => {
             const bottle = bestBottles[index];
             if (bottle) {
-              return <BestWineFlipCard key={bottle.bottleId} bottle={bottle} />;
+              return (
+                <BestWineFlipCard key={bottle.bottleId} bottle={bottle} isBest={true} onBestClick={handleBestClick} />
+              );
             } else {
               return (
                 <div key={`placeholder-${index}`} style={styles.bestWineCard}>

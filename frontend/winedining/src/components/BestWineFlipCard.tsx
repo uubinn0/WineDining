@@ -5,9 +5,11 @@ import { Bottle } from "../types/seller";
 
 interface BestWineFlipCardProps {
   bottle: Bottle;
+  isBest: boolean; // 이 값에 따라 BEST 배지를 렌더링할지 결정
+  onBestClick?: (bottleId: number) => void;
 }
 
-const BestWineFlipCard: React.FC<BestWineFlipCardProps> = ({ bottle }) => {
+const BestWineFlipCard: React.FC<BestWineFlipCardProps> = ({ bottle, isBest, onBestClick }) => {
   const [flipped, setFlipped] = useState(false);
 
   const toggleFlip = () => setFlipped((prev) => !prev);
@@ -27,14 +29,25 @@ const BestWineFlipCard: React.FC<BestWineFlipCardProps> = ({ bottle }) => {
       >
         {/* 앞면 */}
         <div style={styles.cardFront}>
-          <div style={styles.badge}>BEST</div>
+          {isBest && (
+            <div
+              style={styles.badge}
+              onClick={(e) => {
+                e.stopPropagation(); // 카드 플립 이벤트 방지
+                if (onBestClick) {
+                  onBestClick(bottle.bottleId);
+                }
+              }}
+            >
+              BEST
+            </div>
+          )}
           <img src={imageSrc} alt={wine.name} style={styles.image} />
           <p style={styles.name}>{wine.name}</p>
         </div>
 
         {/* 뒷면 */}
         <div style={styles.cardBack}>
-          {/* 원하는 정보 표시 */}
           <p style={styles.infoText}>{wine.country}</p>
           <p style={styles.infoText}>{wine.grape}</p>
         </div>
@@ -44,34 +57,24 @@ const BestWineFlipCard: React.FC<BestWineFlipCardProps> = ({ bottle }) => {
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
-  /**
-   * 가장 바깥 래퍼:
-   * 1) 고정된 width/height,
-   * 2) inline-block으로 layout이 튀지 않도록 함
-   * 3) perspective를 부모에 적용
-   */
   cardContainer: {
     display: "inline-block",
-    maxWidth: vh(15),
-    minWidth: vh(13),
+    width: "33.33%", // 부모 너비의 1/3
     height: vh(20),
-    perspective: "1000px", // 3D 효과를 위해 부모에 설정
+    perspective: "1000px",
     cursor: "pointer",
     position: "relative",
-    verticalAlign: "top", // 카드가 여러 개 있을 때 세로 정렬을 맞춤
+    verticalAlign: "top",
+    marginRight: vh(1),
   },
-
-  /** 카드 전체(앞/뒤 포함) */
   cardInner: {
     width: "100%",
     height: "100%",
     position: "relative",
     transformStyle: "preserve-3d",
     transition: "transform 0.6s ease-in-out",
-    transformOrigin: "center center", // 중앙 기준 회전
+    transformOrigin: "center center",
   },
-
-  /** 앞면(front) */
   cardFront: {
     position: "absolute",
     top: 0,
@@ -86,8 +89,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: "center",
     justifyContent: "center",
   },
-
-  /** 뒷면(back) */
   cardBack: {
     position: "absolute",
     top: 0,
@@ -97,15 +98,13 @@ const styles: { [key: string]: React.CSSProperties } = {
     backfaceVisibility: "hidden",
     backgroundColor: "#2a0e35",
     borderRadius: vh(1),
-    transform: "rotateY(180deg)", // 기본 상태에서 180도 돌아있음
+    transform: "rotateY(180deg)",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
     color: "white",
   },
-
-  /** BEST 배지 */
   badge: {
     position: "absolute",
     top: 0,
@@ -119,25 +118,22 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderTopRightRadius: vh(1),
     lineHeight: vh(2.5),
   },
-
-  /** 와인 이미지 */
   image: {
     width: vh(8),
     height: vh(8),
     objectFit: "contain",
   },
-
-  /** 와인 이름 */
   name: {
     fontSize: vh(1.5),
     textAlign: "center",
     padding: `0 ${vh(1)}`,
-    wordBreak: "keep-all",
     color: "white",
     marginTop: vh(1),
+    display: "-webkit-box",
+    WebkitLineClamp: 3,
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
   },
-
-  /** 뒷면 텍스트 */
   infoText: {
     fontSize: vh(1.4),
     marginBottom: vh(1),
