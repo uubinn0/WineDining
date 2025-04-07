@@ -256,7 +256,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   pairingSection: {
     backgroundColor: "#3b1845",
-    padding: "1vh",
+    padding: "2vh",
     borderRadius: "0.8vh",
     textAlign: "center",
     marginBottom: "1.5vh",
