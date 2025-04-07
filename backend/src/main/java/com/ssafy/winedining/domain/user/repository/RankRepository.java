@@ -10,4 +10,5 @@ public interface RankRepository extends JpaRepository<Rank, Long> {
     Optional<Rank> findByName(String name);
     @Query("SELECT r FROM Rank r WHERE r.condition <= :bottleCount ORDER BY r.condition DESC LIMIT 1")
     Rank findRankByBottleCount(int bottleCount);
+    Rank findTopByConditionLessThanEqualOrderByConditionDesc(int bottleCount);
 }
