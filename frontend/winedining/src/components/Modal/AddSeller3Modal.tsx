@@ -24,6 +24,18 @@ interface AddSeller3ModalProps {
   customWineForm?: CustomWineRegistrationRequest; // 추가
 }
 
+/* 국기 이미지 */
+const flags = importAll(require.context("../../assets/flags", false, /\.png$/));
+
+function importAll(r: __WebpackModuleApi.RequireContext) {
+  let images: { [key: string]: string } = {};
+  r.keys().forEach((item) => {
+    const key = item.replace("./", "").replace(".png", ""); // '대한민국.png' → '대한민국'
+    images[key] = r(item);
+  });
+  return images;
+}
+
 const AddSeller3Modal = ({
   isOpen,
   onClose,
@@ -38,7 +50,9 @@ const AddSeller3Modal = ({
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const dispatch = useDispatch<AppDispatch>();
   const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  /* 이미지 업로드 부분 */
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
     const files = Array.from(event.target.files);
@@ -60,6 +74,8 @@ const AddSeller3Modal = ({
 
   // 와인 등록
   const handleComplete = async () => {
+    if (isSubmitting) return; // 중복 클릭 방지
+    setIsSubmitting(true);
     try {
       let finalBottleId = bottleId;
 
@@ -126,8 +142,12 @@ const AddSeller3Modal = ({
         <h2 style={styles.title}>와인 수집</h2>
         {wineInfo && (
           <p style={styles.subtitle}>
-            {wineInfo.grape}
-            <img src={`/flags/${wineInfo.country}.png`} alt={wineInfo.country} style={styles.flagIcon} />
+            {wineInfo.grape}{" "}
+            {flags[wineInfo.country] ? (
+              <img src={flags[wineInfo.country]} alt={wineInfo.country} style={styles.flagIcon} />
+            ) : (
+              <span style={{ fontSize: "1.4vh", color: "#FFD447", marginLeft: "0.5vh" }}>{wineInfo.country}</span>
+            )}
           </p>
         )}
 
@@ -175,8 +195,16 @@ const AddSeller3Modal = ({
             <span style={styles.pageText}>3 / 3</span>
           </div>
 
-          <button style={styles.completeButton} onClick={handleComplete}>
-            완료
+          <button
+            style={{
+              ...styles.completeButton,
+              opacity: isSubmitting ? 0.6 : 1,
+              cursor: isSubmitting ? "not-allowed" : "pointer",
+            }}
+            onClick={handleComplete}
+            disabled={isSubmitting}
+          >
+            등록
           </button>
         </div>
       </div>
@@ -312,7 +340,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   /* 페이지네이션 */
   pagination: {
-    marginTop: vh(12),
+    marginTop: vh(12.5),
     position: "relative",
     height: vh(4),
     display: "flex",
@@ -320,6 +348,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: "center",
     fontSize: vh(1.5),
     color: "white",
+    marginLeft: vh(0),
   },
   pageCenter: {
     marginRight: vh(4.2),
@@ -333,15 +362,23 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   /* 완료 버튼 */
   completeButton: {
+    width: "30%",
+    maxWidth: vh(44), // 약 350px 기준
     position: "absolute",
-    right: 0,
-    backgroundColor: "white",
-    color: "black",
+    display: "inline-block",
+    backgroundColor: "#ddd",
+    color: "#000000",
     border: "none",
-    padding: `${vh(1)} ${vh(1.5)}`,
-    fontSize: vh(1.5),
-    borderRadius: vh(0.8),
+    borderRadius: vh(1),
+    padding: `${vh(1)} ${vh(3)}`,
     cursor: "pointer",
+    fontFamily: "Galmuri7",
+    fontSize: vh(1.5),
+    textAlign: "center",
+    boxShadow: `${vh(0.6)} ${vh(0.6)} 0 #000`,
+    transition: "all 0.2s ease",
+    whiteSpace: "nowrap",
+    marginLeft: vh(25),
   },
 };
 
