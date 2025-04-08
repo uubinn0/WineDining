@@ -175,7 +175,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   modal: {
     backgroundColor: "#2a0e35",
     borderRadius: "1.3vh",
-    maxWidth: "90vw",
+    maxWidth: "360px",
     color: "#fff",
     position: "relative",
     border: "0.5vh solid #D6BA91",

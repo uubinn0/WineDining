@@ -58,6 +58,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    maxWidth: "360px",
   },
   menuImage: {
     position: "absolute",
@@ -65,6 +66,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     height: "90%",
     objectFit: "fill",
     zIndex: -1,
+    maxWidth: "400px",
   },
   title: {
     fontSize: vh(2.5),

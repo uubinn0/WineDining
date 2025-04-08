@@ -358,6 +358,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     msOverflowStyle: "none",
     maxHeight: "80vh",
     position: "relative",
+    maxWidth: "360px",
   },
   /* 닫기 버튼 */
   closeButton: {
