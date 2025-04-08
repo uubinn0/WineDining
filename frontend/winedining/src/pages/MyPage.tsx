@@ -57,7 +57,7 @@ function MyPage() {
       </div>
 
       <div style={styles.buttonGroup}>
-        <PixelButton onClick={() => navigate("/winesellerlist")}>MY WINE SELLER</PixelButton>
+        <PixelButton onClick={() => navigate("/winesellerlist")}>MY WINE CELLAR</PixelButton>
         <PixelButton onClick={() => navigate("/wishlist")}>WISH LIST</PixelButton>
         <PixelButton onClick={goToRecommendTest}>WINE TEST</PixelButton>
       </div>
