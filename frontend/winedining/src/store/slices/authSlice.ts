@@ -34,7 +34,7 @@ export const fetchUserProfile = createAsyncThunk<UserProfile, void, { rejectValu
       const response = await axios.get("/api/v1/user/profile", {
         withCredentials: true,
       });
-      // console.log("[fetchUserProfile] 성공 응답:", response.data);
+      console.log("[fetchUserProfile] 성공 응답:", response.data);
       return response.data.data;
     } catch (error) {
       return rejectWithValue("유저 정보 불러오기 실패");

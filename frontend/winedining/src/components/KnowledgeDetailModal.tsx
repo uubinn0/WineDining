@@ -20,8 +20,6 @@ const KnowledgeDetailModal: React.FC<KnowledgeDetailModalProps> = ({ isOpen, onC
         <button style={styles.closeButton} onClick={onClose}>
           <img src={closeButton} alt="Close" style={styles.closeIcon} /> {/* 이미지 버튼 */}
         </button>
-        {/* <h2 style={styles.title}>{selectedInfo.title}</h2>
-        <p style={styles.content}>{selectedInfo.content}</p> */}
         <MarkdownRenderer markdownContent={selectedInfo.title} customStyle={styles.title} />
         <MarkdownRenderer markdownContent={selectedInfo.content} customStyle={styles.content} />
       </div>
@@ -44,19 +42,19 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   modal: {
     backgroundColor: "#21101B",
-    border: "solid 5px #D6BA91",
+    border: "solid 0.8vh #D6BA91",
     padding: "2vh",
     paddingTop: "1vh",
     borderRadius: "1.3vh",
-    width: "calc( 40 * var(--custom-vh))",
+    width: "90%",
     color: "white",
     position: "relative",
-    height: "80%",
+    height: "90%",
     overflowY: "auto",
     scrollbarWidth: "none",
     msOverflowStyle: "none",
     boxSizing: "border-box",
-    transition: "transform 0.3s ease",
+    transition: "transform 0.5s ease",
     display: "flex",
     flexDirection: "column",
   },
