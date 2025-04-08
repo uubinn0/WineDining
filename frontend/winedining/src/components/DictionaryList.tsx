@@ -18,27 +18,25 @@ const KnowledgeList: React.FC = () => {
   useEffect(() => {
     dispatch(fetchInfos());
     }, [dispatch]);
-
-  // const handleCardClick = async (knowledge: InfoItem) => {
-  //   await dispatch(fetchInfoDetailThunk(knowledge.id));
-  //   setIsModalOpen(true);
-  // };
-
+    
 
   const handleCardClick = async (knowledge: InfoItem) => {
     if (knowledge.title === "???") {
-      // 레벨 부족 메시지를 selectedInfo에 설정
+      // "???" 카드를 클릭했을 때, 레벨 부족 메시지 설정
       dispatch({
         type: 'info/setSelectedInfo', // selectedInfo 설정하는 액션
         payload: {
-          title: "레벨이 부족합니다!",
-          content: "아직 레벨이 부족하군요. \n와인기록을 통해 레벨을 올려오세요.",
+          id: -1,
+          title: "???",
+          image: DeactiveBook,
+          content: "아직 레벨이 부족하군요. \n와인기록을 통해 레벨을 올려보세요.",
         }
       });
-      setIsModalOpen(true);
+      setIsModalOpen(true); // 모달 열기
     } else {
+      // 기존 정보 클릭 시, 와인 상세 정보 가져오기
       await dispatch(fetchInfoDetailThunk(knowledge.id));
-      setIsModalOpen(true);
+      setIsModalOpen(true); // 모달 열기
     }
   };
 
@@ -55,17 +53,18 @@ const KnowledgeList: React.FC = () => {
       id: -1,
       title: "???",
       image: DeactiveBook,
-      content: "아직 레벨이 부족하군요. \n와인기록을 통해 레벨을 올려오세요.",
+      content: "아직 레벨이 부족하군요. \n와인기록을 통해 레벨을 올려보세요.",
     }),
   ];
 
   return (
     <div style={styles.container}>
-      {/* 조건문 수정: user.rank가 "초보자"일 경우 메시지 표시 */}
+      <div style={styles.overlay}>
+
       {user?.rank === "초보자" ? (
         <div style={styles.messageContainer}>
           <div style={styles.message}>
-            초보자인 당신은 <br /> 아직 접근이 불가합니다. <br /> 기록을 쌓아 다시오세요.
+            입문자 이상만 <br />열람 가능합니다.
           </div>
         </div>
       ) : (
@@ -87,6 +86,8 @@ const KnowledgeList: React.FC = () => {
         <KnowledgeDetailModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       )}
     </div>
+    
+    </div>
   );
 };
 
@@ -94,23 +95,20 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     display: "flex",
     justifyContent: "center",
-    // alignItems : "center",
   },
   cardContainer: {
+    padding : "2vh",
     display: "grid",
     gridTemplateColumns: "repeat(2, 1fr)", // 2개의 컬럼으로 설정
-    justifyContent: "center",
+    gap : "2vh",
   },
   messageContainer: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    paddingTop : "50%",
     textAlign: "center",
     height: "100vh",
   },
   message: {
     fontSize: "2.5vh",
-    
     color: "white", // 메시지 색상
     fontFamily: "Galmuri9",
   },

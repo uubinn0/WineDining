@@ -60,19 +60,19 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   closeButton: {
     position: "absolute",
-    top: "15px",
-    right: "15px",
+    top: "2vh",
+    right: "2vh",
     border: "none",
     backgroundColor: "transparent",
-    fontSize: "20px",
+    fontSize: "3vh",
     cursor: "pointer",
   },
   closeIcon: {
-    width: "30px", // 아이콘 크기 조정
-    height: "30px", // 아이콘 크기 조정
+    width: "5vh", // 아이콘 크기 조정
+    height: "5vh", // 아이콘 크기 조정
   },
   title: {
-    fontSize: "20px",
+    fontSize: "3vh",
     color: "#FFF7F7",
     textAlign: "center",
     // WebkitTextStroke: "1px #6A3512",
@@ -84,7 +84,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   content: {
     textAlign: "start",
     color: "white",
-    fontSize: "14px",
+    fontSize: "2vh",
     fontFamily: "Galmuri9",
     fontStyle: "normal",
     fontWeight: "400",

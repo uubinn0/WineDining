@@ -109,7 +109,7 @@ const WineSellerList = () => {
       </div>
 
       <PixelTitle
-        text="MY WINE SELLER"
+        text="MY WINE CELLAR"
         imageSrc="/sample_image/yellow_lightning.png"
         fontSize="1.8vh"
         color="#fefefe"
