@@ -1,5 +1,4 @@
 import React from "react";
-import { WineDetail } from "../../types/wine";
 import { useDispatch, useSelector } from "react-redux";
 import { addWish, removeWish } from "../../store/slices/wishSlice";
 import { RootState, AppDispatch } from "../../store/store";
@@ -9,30 +8,47 @@ import redWineImage from "../../assets/types/red_wine.png";
 import whiteWineImage from "../../assets/types/white_wine.png";
 import roseWineImage from "../../assets/types/rose_wine.png";
 import sparklingWineImage from "../../assets/types/sparkling_wine.png";
+import { WineDetail } from "../../types/wine";
+import { trackEvent } from "../../utils/analytics"; // GA 이벤트 트래커 추가
 
 interface WineDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   wine: WineDetail;
+  fromPage?: string; // 어디서 왔는지 (ex: 'wishlist' or 'winelist')
 }
 
-const WineDetailModal = ({ isOpen, onClose, wine }: WineDetailModalProps) => {
+const WineDetailModal = ({ isOpen, onClose, wine, fromPage }: WineDetailModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
+
   const wishList = useSelector((state: RootState) => state.wish.items);
   const isInWishList = wishList.some((wish: WishItem) => wish.wine.wineId === wine.wineId);
 
+  if (!isOpen) return null;
+
   const handleWishToggle = () => {
     if (!wine.wineId) return;
+
+    const fromParam = fromPage || "detail";
+
     if (isInWishList) {
+      trackEvent("remove_item", {
+        wineId: wine.wineId,
+        krName: wine.krName,
+        from: fromParam,
+      });
       dispatch(removeWish(wine.wineId));
     } else {
+      trackEvent("add_item", {
+        wineId: wine.wineId,
+        krName: wine.krName,
+        from: fromParam,
+      });
       dispatch(addWish(wine.wineId));
     }
   };
 
-  if (!isOpen) return null;
-
-  // 이미지가 없으면 와인 타입에 따라 기본 이미지 반환
+  // 와인 타입별 기본 이미지
   const getDefaultImageByType = (type: string) => {
     switch (type.toLowerCase()) {
       case "레드":
@@ -48,14 +64,13 @@ const WineDetailModal = ({ isOpen, onClose, wine }: WineDetailModalProps) => {
     }
   };
 
-  const getWineImage = (wine: WineDetail) => {
-    if (!wine.image || wine.image === "no_image" || wine.image === "") {
+  const getWineImage = () => {
+    if (!wine.image || wine.image === "no_image") {
       return getDefaultImageByType(wine.type);
     }
     return wine.image;
   };
 
-  // 페어링 추천 배열을 3개 항목 기준으로 채움 (3개 미만이면 '-'로 채움)
   const pairingItems = (() => {
     const items = wine.pairing ? [...wine.pairing] : [];
     while (items.length < 3) {
@@ -69,13 +84,11 @@ const WineDetailModal = ({ isOpen, onClose, wine }: WineDetailModalProps) => {
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
         <img src={closeButton} alt="닫기" style={styles.closeButton} onClick={onClose} />
 
-        {/* 와인 제목 */}
         <div style={styles.title}>{wine.krName}</div>
         <p style={styles.subTitle}>
           ‘{wine.country}’에서 생산된 ‘{wine.type} 와인’
         </p>
 
-        {/* 맛 그래프 */}
         <h3 style={styles.sectionHighlight}>맛 그래프</h3>
         <div style={styles.tasteGraph}>
           <div style={styles.tasteItem}>{wine.country}</div>
@@ -83,7 +96,6 @@ const WineDetailModal = ({ isOpen, onClose, wine }: WineDetailModalProps) => {
           <div style={styles.tasteItem}>{wine.type}</div>
         </div>
 
-        {/* 와인 특징 */}
         <div style={styles.tasteBars}>
           <p style={styles.label}>당도</p>
           <ProgressBar value={wine.sweetness} />
@@ -95,7 +107,6 @@ const WineDetailModal = ({ isOpen, onClose, wine }: WineDetailModalProps) => {
           <ProgressBar value={wine.body} />
         </div>
 
-        {/* 페어링 추천 */}
         <h3 style={styles.sectionHighlight}>페어링 추천</h3>
         <div style={styles.pairingSection}>
           <div style={styles.pairingItems}>
@@ -107,17 +118,17 @@ const WineDetailModal = ({ isOpen, onClose, wine }: WineDetailModalProps) => {
           </div>
         </div>
 
-        {/* 와인 정보 및 이미지 */}
         <div style={styles.detailWrapper}>
           <div style={styles.imageContainer}>
-            <img src={getWineImage(wine)} alt={wine.krName} style={styles.image} />
+            <img src={getWineImage()} alt={wine.krName} style={styles.image} />
           </div>
           <div style={styles.detailInfo}>
             <p>✦ {wine.price ? `${wine.price.toLocaleString()}원` : "가격 정보 없음"}</p>
             <p>✦ 도수 {wine.alcoholContent ? `${wine.alcoholContent}%` : "정보 없음"}</p>
           </div>
         </div>
-        {/* 담기 버튼: 모달 창의 맨 오른쪽 맨 아래에 고정 */}
+
+        {/* 담기 버튼 */}
         <button
           style={{
             ...styles.button,
@@ -147,6 +158,9 @@ const ProgressBar = ({ value }: { value: number }) => (
   </div>
 );
 
+export default WineDetailModal;
+
+// 스타일
 const styles: { [key: string]: React.CSSProperties } = {
   overlay: {
     position: "fixed",
@@ -156,7 +170,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: "center",
     alignItems: "center",
     zIndex: 1000,
-    textAlign: "left",
   },
   modal: {
     backgroundColor: "#2a0e35",
@@ -171,7 +184,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     paddingTop: "1vh",
     overflowY: "auto",
     boxSizing: "border-box",
-    transition: "transform 0.3s ease",
     display: "flex",
     flexDirection: "column",
   },
@@ -240,7 +252,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: "space-between",
     alignItems: "center",
     width: "95%",
-    maxWidth: "95%",
     height: "2.2vh",
     padding: "0.5vh 0.6vh",
     borderRadius: "1vh",
@@ -264,19 +275,20 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: "#f3f3f3",
     boxSizing: "border-box",
   },
+  pairingItems: {
+    display: "flex",
+    justifyContent: "space-between",
+    padding: "0 1vh",
+  },
+  pairingText: {
+    flex: 1,
+    textAlign: "center",
+    fontSize: "1.75vh",
+  },
   detailWrapper: {
     display: "flex",
     gap: "1vh",
     marginBottom: "1vh",
-  },
-  detailInfo: {
-    padding: "1.2vh",
-    borderRadius: "0.8vh",
-    textAlign: "left",
-    fontSize: "1.8vh",
-    color: "#fff",
-    lineHeight: 1.3,
-    flex: 1,
   },
   imageContainer: {
     display: "flex",
@@ -289,30 +301,24 @@ const styles: { [key: string]: React.CSSProperties } = {
     objectFit: "contain",
     filter: "drop-shadow(0 0 0.5vh rgba(255, 255, 255, 0.4))",
   },
-  // 담기 버튼을 모달의 맨 오른쪽 맨 아래에 고정
+  detailInfo: {
+    padding: "1.2vh",
+    borderRadius: "0.8vh",
+    textAlign: "left",
+    fontSize: "1.8vh",
+    color: "#fff",
+    lineHeight: 1.3,
+    flex: 1,
+  },
   button: {
     position: "absolute",
     bottom: "2vh",
     right: "2vh",
-    backgroundColor: "#FFFFFF",
-    width: "5vh",
-    color: "#000000",
-    fontSize: "1.5vh",
+    width: "8vh",
+    padding: "1vh",
     border: "none",
-    padding: "0.5vh 0.8vh",
     borderRadius: "0.6vh",
     cursor: "pointer",
-  },
-  pairingItems: {
-    display: "flex",
-    justifyContent: "space-between",
-    padding: "0 1vh",
-  },
-  pairingText: {
-    flex: 1,
-    textAlign: "center",
-    fontSize: "1.75vh",
+    fontSize: "1.8vh",
   },
 };
-
-export default WineDetailModal;

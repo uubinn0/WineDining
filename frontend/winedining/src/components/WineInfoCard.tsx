@@ -36,12 +36,16 @@ const WineInfoCard = ({ wine, onClick }: WineInfoCardProps) => {
 
   const handleWishToggle = () => {
     if (!wine.wineId) return;
+
+    const fromParam = "card"; // InfoCard 에서 담기시 'card'로 구분
+
     if (isInWishList) {
-      dispatch(removeWish(wine.wineId)); // 담기 취소 추가
+      dispatch(removeWish(wine.wineId));
       trackEvent("toggle_wish", {
         item_id: wine.wineId,
         item_name: wine.name,
         action: "remove",
+        from: fromParam,
       });
     } else {
       dispatch(addWish(wine.wineId));
@@ -49,6 +53,7 @@ const WineInfoCard = ({ wine, onClick }: WineInfoCardProps) => {
         item_id: wine.wineId,
         item_name: wine.name,
         action: "add",
+        from: fromParam,
       });
     }
   };

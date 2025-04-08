@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { trackEvent } from "../../utils/analytics";
 import { withdrawUser } from "../../api/axios";
 
 const hasAuthCookie = document.cookie.includes("Authorization=");
@@ -103,6 +104,16 @@ const authSlice = createSlice({
         state.user = action.payload;
         state.isAuthenticated = true; // 실제 로그인 성공일 때만 true
         state.status = "succeeded";
+
+        // 로그인 성공 이벤트 추가
+        if (action.payload && action.payload.userId) {
+          // localStorage.getItem("provider") 활용(없으면 "unknown")
+          const provider = localStorage.getItem("provider") || "unknown";
+          trackEvent("login_success", {
+            userId: action.payload.userId,
+            provider,
+          });
+        }
       })
       .addCase(fetchUserProfile.rejected, (state, action) => {
         state.status = "failed";
