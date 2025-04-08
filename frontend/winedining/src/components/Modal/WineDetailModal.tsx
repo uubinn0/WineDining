@@ -311,7 +311,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     // padding: "1vh",
     borderRadius: "0.8vh",
     // textAlign: "left",
-    fontSize: "1.8vh",
+    fontSize: "1.5vh",
     color: "#fff",
     lineHeight: 1.5,
     flex: 1,
