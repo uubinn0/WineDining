@@ -69,7 +69,7 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext, onCustomNext }: AddSeller1Mo
       }
       setHasMore(response.wines.length === 20);
     } catch (error) {
-      console.error("와인 검색 오류:", error);
+      // console.error("와인 검색 오류:", error);
       setError("검색 중 오류가 발생했습니다");
     } finally {
       setLoading(false);
@@ -139,7 +139,7 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext, onCustomNext }: AddSeller1Mo
 
       setHasMore(newWines.length === 20);
     } catch (error) {
-      console.error("와인 검색 오류:", error);
+      // console.error("와인 검색 오류:", error);
       setError("검색 중 오류가 발생했습니다");
     } finally {
       setLoading(false);
