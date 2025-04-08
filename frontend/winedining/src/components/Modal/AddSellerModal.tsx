@@ -73,7 +73,27 @@ const AddSellerModal = ({ isOpen, onClose, onPrev, onNext, wineInfo }: AddSeller
       taste,
       rating,
     };
+
+    // 다음 단계로 이동하기 전에 현재 상태 초기화
+    setDrinkDate(getTodayDate());
+    setSelectedCompanion("혼자");
+    setFood("");
+    setNote("");
+    setTaste("");
+    setRating(0);
+
     onNext(drinkData);
+  };
+
+  // onClose 시에도 초기화
+  const handleClose = () => {
+    setDrinkDate(getTodayDate());
+    setSelectedCompanion("혼자");
+    setFood("");
+    setNote("");
+    setTaste("");
+    setRating(0);
+    onClose();
   };
 
   const getDefaultImageByType = (type: string | undefined) => {
@@ -100,9 +120,9 @@ const AddSellerModal = ({ isOpen, onClose, onPrev, onNext, wineInfo }: AddSeller
   };
 
   return (
-    <div style={styles.overlay} onClick={onClose}>
+    <div style={styles.overlay} onClick={handleClose}>
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <img src={closebutton} alt="닫기" style={styles.closeButton} onClick={onClose} />
+        <img src={closebutton} alt="닫기" style={styles.closeButton} onClick={handleClose} />
 
         <h2 style={styles.title}>와인 수집</h2>
         <p style={styles.subtitle}>

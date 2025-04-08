@@ -15,6 +15,7 @@ import redWineImage from "../../assets/types/red_wine.png";
 import whiteWineImage from "../../assets/types/white_wine.png";
 import roseWineImage from "../../assets/types/rose_wine.png";
 import sparklingWineImage from "../../assets/types/sparkling_wine.png";
+import { fetchNotes } from "../../store/slices/noteSlice";
 
 interface Add1SellerModalProps {
   isOpen: boolean;
@@ -54,6 +55,7 @@ const Add1SellerModal = ({
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const dispatch = useDispatch<AppDispatch>();
   const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
@@ -76,6 +78,8 @@ const Add1SellerModal = ({
 
   // 와인 등록
   const handleComplete = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     try {
       let finalBottleId = bottleId;
 
@@ -119,7 +123,15 @@ const Add1SellerModal = ({
         credentials: "include",
       });
 
+      // 성공적으로 저장된 후 상태 초기화
+      setSelectedImages([]);
+      setImageFiles([]);
+      setIsSubmitting(false);
+
       alert("와인 노트가 저장되었습니다!");
+
+      // ✅ 노트 새로고침!
+      await dispatch(fetchNotes(finalBottleId));
 
       // 셀러 리스트 새로고침
       await dispatch(fetchCellar());
@@ -127,7 +139,7 @@ const Add1SellerModal = ({
 
       onClose();
     } catch (error) {
-      // console.error("저장 중 오류:", error);
+      setIsSubmitting(false);
       alert("저장 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
@@ -214,8 +226,16 @@ const Add1SellerModal = ({
             <span style={styles.pageText}>3 / 3</span>
           </div>
 
-          <button style={styles.completeButton} onClick={handleComplete}>
-            완료
+          <button
+            style={{
+              ...styles.completeButton,
+              opacity: isSubmitting ? 0.6 : 1,
+              cursor: isSubmitting ? "not-allowed" : "pointer",
+            }}
+            onClick={handleComplete}
+            disabled={isSubmitting}
+          >
+            등록
           </button>
         </div>
       </div>

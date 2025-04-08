@@ -94,7 +94,7 @@ const WineInfoCard = ({ wine, onClick }: WineInfoCardProps) => {
           alt={wine.name}
           style={styles.image}
           onError={(e) => {
-            (e.target as HTMLImageElement).src = "/sample_image/wine_sample.jpg";
+            (e.target as HTMLImageElement).src = getDefaultImageByType(wine.type);
           }}
         />
       </div>
