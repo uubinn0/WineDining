@@ -10,10 +10,10 @@ function Dictionary() {
     <div style={styles.container}>
       <BackButton onClick={() => navigate("/home")}/>
       {/* <button onClick={() => navigate("/home")}>뒤로가기</button> */}
-      <h1 style={styles.headertext}>
+      <div style={styles.headertext}>
         <img src={"/sample_image/yellow_lightning.png"} alt={"번개 이미지"} style={styles.image} />
         WINE DICTIONARY<img src={"/sample_image/yellow_lightning.png"} alt={"번개 이미지"} style={styles.image} />
-      </h1>
+      </div>
       <DictionaryList/> 
     </div>
   );
@@ -26,29 +26,27 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
     width: "100%",
-    height: "calc(100 * var(--custom-vh))",
+    height: "100%",
+    display : "flex",
+    flexDirection : "column",
+    justifyContent : "center"
+    
   },
   headertext: {
     fontFamily: "PressStart2P",
-    fontSize: "16px",
+    fontSize: "1.8vh",
     color: "white",
     display: "flex",
     alignItems: "center", // ✅ 고친 부분
     justifyContent: "center",
-    gap: "10px", // 번개 이미지와 간격 조정
+    gap: "3vh", // 번개 이미지와 간격 조정
     textAlign: "center",
-    marginTop: "16px",
+    marginTop : "10dvh"
   },
-  grid: {
-    // display: "grid",
-    // gridTemplateColumns: "repeat(2, 1fr)",
-    // gap: "12px",
-    // justifyContent: "center",
-    // padding: "10px",
-  },
+
   image: {
-    width: "18px",
-    height: "20px",
+    width: "2vh",
+    height: "3vh",
   },
 };
 
