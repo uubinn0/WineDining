@@ -11,6 +11,10 @@ import { fetchCellar, fetchBest } from "../../store/slices/sellarSlice";
 import closebutton from "../../assets/icons/closebutton.png";
 import { vh } from "../../utils/vh";
 import camera from "../../assets/icons/camera.png";
+import redWineImage from "../../assets/types/red_wine.png";
+import whiteWineImage from "../../assets/types/white_wine.png";
+import roseWineImage from "../../assets/types/rose_wine.png";
+import sparklingWineImage from "../../assets/types/sparkling_wine.png";
 
 interface Add1SellerModalProps {
   isOpen: boolean;
@@ -22,6 +26,18 @@ interface Add1SellerModalProps {
   bottleId?: number;
   isCustom?: boolean;
   customWineForm?: CustomWineRegistrationRequest; // 추가
+}
+
+/* 국기 이미지 */
+const flags = importAll(require.context("../../assets/flags", false, /\.png$/));
+
+function importAll(r: __WebpackModuleApi.RequireContext) {
+  let images: { [key: string]: string } = {};
+  r.keys().forEach((item) => {
+    const key = item.replace("./", "").replace(".png", ""); // '대한민국.png' → '대한민국'
+    images[key] = r(item);
+  });
+  return images;
 }
 
 const Add1SellerModal = ({
@@ -116,6 +132,29 @@ const Add1SellerModal = ({
     }
   };
 
+  const getDefaultImageByType = (type: string | undefined) => {
+    switch (type?.toLowerCase()) {
+      case "레드":
+        return redWineImage;
+      case "화이트":
+        return whiteWineImage;
+      case "로제":
+        return roseWineImage;
+      case "스파클링":
+        return sparklingWineImage;
+      default:
+        return redWineImage;
+    }
+  };
+
+  const getWineImage = () => {
+    const img = wineInfo.image;
+    if (!img || img === "no_image" || img === "") {
+      return getDefaultImageByType((wineInfo as any).type || (wineInfo as any).typeName);
+    }
+    return img;
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -126,19 +165,19 @@ const Add1SellerModal = ({
         <h2 style={styles.title}>와인 수집</h2>
         {wineInfo && (
           <p style={styles.subtitle}>
-            {wineInfo.grape}
-            <img src={`/flags/${wineInfo.country}.png`} alt={wineInfo.country} style={styles.flagIcon} />
+            {wineInfo.grape}{" "}
+            {flags[wineInfo.country] ? (
+              <img src={flags[wineInfo.country]} alt={wineInfo.country} style={styles.flagIcon} />
+            ) : (
+              <span style={{ fontSize: "1.4vh", color: "#FFD447", marginLeft: "0.5vh" }}>{wineInfo.country}</span>
+            )}
           </p>
         )}
 
         <div style={styles.wineContainer}>
           {wineInfo && (
             <>
-              <img
-                src={wineInfo.image || "/sample_image/wine_bottle.png"}
-                alt={wineInfo.name}
-                style={styles.wineImage}
-              />
+              <img src={getWineImage()} alt={wineInfo.name} style={styles.wineImage} />
               <p style={styles.wineName}>{wineInfo.name}</p>
             </>
           )}
@@ -188,8 +227,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   /* 오버레이 스타일 */
   overlay: {
     position: "fixed",
-    top: 25,
-    left: -20,
+    top: -6,
+    left: -21,
     right: -20,
     bottom: 0,
     backgroundColor: "rgba(0, 0, 0, 0.5)",

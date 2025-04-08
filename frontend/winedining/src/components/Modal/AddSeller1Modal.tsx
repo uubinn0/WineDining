@@ -262,7 +262,14 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext, onCustomNext }: AddSeller1Mo
                     onClick={() => handleSelectWine(wine)}
                   >
                     <div style={styles.wineItemContent}>
-                      <img src={getWineImage(wine.image, wine.type)} alt={wine.name} style={styles.wineItemImage} />
+                      <img
+                        src={getWineImage(wine.image, wine.type)}
+                        alt={wine.name}
+                        style={styles.wineItemImage}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = getDefaultImageByType(wine.type);
+                        }}
+                      />
                       <div>
                         <p style={styles.wineName}>{wine.name}</p>
                         <p style={styles.wineDetail}>
@@ -292,6 +299,9 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext, onCustomNext }: AddSeller1Mo
                 src={getWineImage(selectedWine.image, selectedWine.type)}
                 alt={selectedWine.name}
                 style={styles.wineImage}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = getDefaultImageByType(selectedWine.type);
+                }}
               />
               <p style={styles.selectedWineName}>{selectedWine.name}</p>
               <p style={styles.selectedWineDetail}>
