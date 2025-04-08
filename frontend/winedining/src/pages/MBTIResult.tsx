@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom"; // useLocation 훅 임포트
-import Homebackground from "../assets/images/background/Home.png"
+import Homebackground from "../assets/images/background/Home.png";
 import winemenu from "../assets/images/modal/winemenu.png";
 import { vh } from "../utils/vh";
 import { wineMbti } from "../data/MBTIresult";
-import defaultImage from "../assets/images/winesample/MBTIimage/defaultChardonnay.png"
+import defaultImage from "../assets/images/winesample/MBTIimage/defaultChardonnay.png";
 import PixelButton from "../components/PixelButton";
+import kakao from "../assets/icons/kakao.png";
 
 // 성격 유형 점수의 타입을 정의
 interface Scores {
@@ -19,47 +20,90 @@ interface Scores {
   J: number;
 }
 
+declare global {
+  interface Window {
+    Kakao: any;
+  }
+}
+
 function MBTIResults() {
   const location = useLocation(); // useLocation을 통해 location 객체 가져오기
   const { E, I, S, N, F, T, P, J }: Scores = location.state || {};
   // 성격 유형 계산
   const personalityType = `${E > I ? "E" : "I"}${S > N ? "S" : "N"}${F > T ? "F" : "T"}${P > J ? "P" : "J"}`;
 
-  const mbtiDictionary :Record<string, number> = {
-    "ISTJ": 1,
-    "ISFJ": 2,
-    "INFJ": 3,
-    "INTJ": 4,
-    "ISTP": 5,
-    "ISFP": 6,
-    "INFP": 7,
-    "INTP": 8,
-    "ESTP": 9,
-    "ESFP": 10,
-    "ENFP": 11,
-    "ENTP": 12,
-    "ESTJ": 13,
-    "ESFJ": 14,
-    "ENFJ": 15,
-    "ENTJ": 16
+  const mbtiDictionary: Record<string, number> = {
+    ISTJ: 1,
+    ISFJ: 2,
+    INFJ: 3,
+    INTJ: 4,
+    ISTP: 5,
+    ISFP: 6,
+    INFP: 7,
+    INTP: 8,
+    ESTP: 9,
+    ESFP: 10,
+    ENFP: 11,
+    ENTP: 12,
+    ESTJ: 13,
+    ESFJ: 14,
+    ENFJ: 15,
+    ENTJ: 16,
   };
-  
+
   // personalityType에 해당하는 와인 정보 찾기
   const matchedWineId = mbtiDictionary[personalityType];
-  const matchedWine = wineMbti.find(wine => wine.id === matchedWineId);
+  const matchedWine = wineMbti.find((wine) => wine.id === matchedWineId);
 
   // best와 worst 와인 정보 찾기
-  const bestWine = matchedWine ? wineMbti.find(wine => wine.id === matchedWine.best) : null;
-  const worstWine = matchedWine ? wineMbti.find(wine => wine.id === matchedWine.worst) : null;
+  const bestWine = matchedWine ? wineMbti.find((wine) => wine.id === matchedWine.best) : null;
+  const worstWine = matchedWine ? wineMbti.find((wine) => wine.id === matchedWine.worst) : null;
 
-  const nav = useNavigate()
+  const nav = useNavigate();
+  // 카카오 SDK 초기화
+  useEffect(() => {
+    if (window.Kakao && !window.Kakao.isInitialized()) {
+      window.Kakao.init(process.env.REACT_APP_API_KAKAO);
+    }
+  }, []);
 
+  // 실제 공유할 URL (예: https://winedining.store/?)
+  const shareUrl = "https://winedining.store";
+
+  const shareToKakao = () => {
+    if (!window.Kakao || !window.Kakao.Share) {
+      alert("카카오톡 공유 기능을 사용할 수 없습니다.");
+      return;
+    }
+
+    window.Kakao.Share.sendDefault({
+      objectType: "feed",
+      content: {
+        title: "와인다이닝",
+        description: "지금 바로 와인 다이닝 사이트에서 다양한 정보를 확인해보세요!",
+        imageUrl: "https://winedining-s3.s3.ap-northeast-2.amazonaws.com/kakao_share_image.png", // 필요에 따라 이미지 주소 변경
+        link: {
+          mobileWebUrl: shareUrl,
+          webUrl: shareUrl,
+        },
+      },
+      buttons: [
+        {
+          title: "사이트 방문하기",
+          link: {
+            mobileWebUrl: shareUrl,
+            webUrl: shareUrl,
+          },
+        },
+      ],
+    });
+  };
 
   return (
     <div style={styles.container}>
       <div style={styles.overlay}>
-      <div style={styles.modal}>
-        <img src={winemenu} alt="와인 메뉴판" style={styles.menuImage} />
+        <div style={styles.modal}>
+          <img src={winemenu} alt="와인 메뉴판" style={styles.menuImage} />
 
           <div style={styles.title}>{matchedWine?.ko_name}</div>
           <ul style={styles.wineList}>
@@ -67,57 +111,52 @@ function MBTIResults() {
               <li style={styles.wineItem}>
                 {/* 여기! */}
                 <div style={styles.wineImageWrapper}>
-                <div style={styles.wineShadow}></div>
-                <img src={matchedWine.image || defaultImage} alt={matchedWine.ko_name} style={styles.wineImage} />
+                  <div style={styles.wineShadow}></div>
+                  <img src={matchedWine.image || defaultImage} alt={matchedWine.ko_name} style={styles.wineImage} />
                 </div>
-                <div style={styles.wineText}>              
+                <div style={styles.wineText}>
                   <div style={styles.engName}>{matchedWine.eng_name}</div>
-                  
+
                   <div style={styles.content}>
                     <div>{matchedWine.content}</div>
                   </div>
 
-            <div style={styles.matchingContainer} >
-                  <div style={styles.matching}>
-                    <div style={styles.matchingtitle}>
-                    나랑 찰떡궁합
-                    </div>
-                    <img 
-                      src={bestWine?.image || defaultImage} 
-                      alt={bestWine?.ko_name || "Best Wine"} 
-                      style={styles.wineMatchingImg} 
+                  <div style={styles.matchingContainer}>
+                    <div style={styles.matching}>
+                      <div style={styles.matchingtitle}>나랑 찰떡궁합</div>
+                      <img
+                        src={bestWine?.image || defaultImage}
+                        alt={bestWine?.ko_name || "Best Wine"}
+                        style={styles.wineMatchingImg}
                       />
                       <div style={styles.matchingName}>{bestWine?.ko_name || "N/A"}</div>
-                  </div>
-                  <div style={styles.matching}>
-                    <div style={styles.matchingtitle}>
-                    살짝쿵 안맞아
                     </div>
+                    <div style={styles.matching}>
+                      <div style={styles.matchingtitle}>살짝쿵 안맞아</div>
 
-                    <img 
-                      src={worstWine?.image || defaultImage} 
-                      alt={worstWine?.ko_name || "Worst Wine"} 
-                      style={styles.wineMatchingImg} 
+                      <img
+                        src={worstWine?.image || defaultImage}
+                        alt={worstWine?.ko_name || "Worst Wine"}
+                        style={styles.wineMatchingImg}
                       />
                       <div style={styles.matchingName}>{worstWine?.ko_name || "N/A"}</div>
+                    </div>
                   </div>
-
-            </div>
-
                 </div>
               </li>
             )}
           </ul>
-      </div>
+        </div>
 
+        {/* 카카오톡 공유하기 버튼 */}
+        <button onClick={shareToKakao} style={styles.loginBtn}>
+          <img src={kakao} alt="카카오" style={styles.icon} />
+        </button>
         <button style={styles.shareButton} onClick={() => nav("/")}>
           홈으로 이동
         </button>
-
       </div>
-      <div>
-
-      </div>
+      <div></div>
     </div>
   );
 }
@@ -132,17 +171,17 @@ const styles: { [key: string]: React.CSSProperties } = {
     height: "calc(100 * var(--custom-vh))",
     margin: "0 auto",
     position: "relative",
-  },  
+  },
   overlay: {
     position: "fixed",
     top: 0,
     left: 0,
-    paddingTop : vh(3),
-    width : "100vw",
+    paddingTop: vh(3),
+    width: "100vw",
     height: "100vh",
     backgroundColor: "rgba(39, 31, 31, 0.5)",
     display: "flex",
-    flexDirection : "column",
+    flexDirection: "column",
     // justifyContent: "center",
     alignItems: "center",
     zIndex: 1000,
@@ -159,7 +198,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   menuImage: {
     position: "absolute",
-    width : vh(48),
+    width: vh(48),
     maxWidth: "420px", // 디자인 width 기준
     height: vh(85),
     // top : vh(10),
@@ -167,15 +206,15 @@ const styles: { [key: string]: React.CSSProperties } = {
     zIndex: -1,
   },
   title: {
-    fontSize : vh(2.5),
+    fontSize: vh(2.5),
     marginTop: vh(13),
-    fontFamily : "Galmuri7",
+    fontFamily: "Galmuri7",
   },
   engName: {
-    marginTop : vh(1),
-    fontSize : vh(2),
-    textAlign : "center",
-    fontFamily : "Galmuri7",
+    marginTop: vh(1),
+    fontSize: vh(2),
+    textAlign: "center",
+    fontFamily: "Galmuri7",
   },
   wineList: {
     listStyle: "none",
@@ -183,7 +222,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   wineItem: {
     display: "flex",
-    flexDirection : "column",
+    flexDirection: "column",
     alignItems: "center",
   },
 
@@ -193,7 +232,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     alignItems: "flex-end",
   },
-  
+
   wineShadow: {
     position: "absolute",
     bottom: 0,
@@ -208,8 +247,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   wineImage: {
     width: vh(13),
     objectFit: "contain",
-    zIndex : 1,
-
+    zIndex: 1,
   },
   wineText: {
     flex: 1,
@@ -217,53 +255,63 @@ const styles: { [key: string]: React.CSSProperties } = {
     // wordBreak : "keep-all",
     // color: "#333",
   },
-  matching : {
-    display : "flex",
-    flexDirection : "column",
-    justifyContent : "space-around",
-    alignItems : "center",
-    gap : vh(1),
-    textAlign : "center",
-    
+  matching: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-around",
+    alignItems: "center",
+    gap: vh(1),
+    textAlign: "center",
   },
-  matchingtitle : {
-    fontWeight : "bold",
+  matchingtitle: {
+    fontWeight: "bold",
     textDecoration: "underline",
     textUnderlineOffset: vh(0.6),
     textDecorationColor: "#333333",
     textDecorationThickness: vh(0.3),
-    marginBottom : vh(1),
+    marginBottom: vh(1),
   },
-  wineMatchingImg : {
-    width : vh(10)
+  wineMatchingImg: {
+    width: vh(10),
   },
-  matchingContainer :{
-    display : "flex",
-    justifyContent : "space-around",
-    
+  matchingContainer: {
+    display: "flex",
+    justifyContent: "space-around",
   },
-  matchingName : {
-    fontFamily : "Galmuri7"
+  matchingName: {
+    fontFamily: "Galmuri7",
   },
-  content : {
-    padding : vh(2),
+  content: {
+    padding: vh(2),
   },
   shareButton: {
-  position: "fixed", /* absolute에서 relative로 변경 */
-  bottom: vh(6),
-  padding: `${vh(1.5)} ${vh(3)}`,
-  backgroundColor: "#fff",
-  border: `1px solid #333`,
-  borderRadius: vh(1),
-  fontFamily: "Galmuri7",
-  fontSize: vh(1.8),
-  boxShadow: "0 0.3vh 0.8vh rgba(0,0,0,0.3)",
-  zIndex: 1010,
-  cursor: "pointer",
-},
-}
-
-
+    position: "fixed" /* absolute에서 relative로 변경 */,
+    bottom: vh(6),
+    padding: `${vh(1.5)} ${vh(3)}`,
+    backgroundColor: "#fff",
+    border: `1px solid #333`,
+    borderRadius: vh(1),
+    fontFamily: "Galmuri7",
+    fontSize: vh(1.8),
+    boxShadow: "0 0.3vh 0.8vh rgba(0,0,0,0.3)",
+    zIndex: 1010,
+    cursor: "pointer",
+  },
+  loginBtn: {
+    width: "42px",
+    height: "42px",
+    borderRadius: "50%",
+    border: "none",
+    backgroundColor: "#fff",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    cursor: "pointer",
+  },
+  icon: {
+    width: "45px",
+    height: "45px",
+  },
+};
 
 export default MBTIResults;
-
