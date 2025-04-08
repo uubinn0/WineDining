@@ -484,7 +484,7 @@ const WineFilterBar = ({ filter, onChange }: WineFilterBarProps) => {
 
             if (key === "minPrice" && typeof value === "number") {
               const maxValue = filter.filters.maxPrice;
-              if (!(value === 0 && maxValue === 1500000000)) {
+              if (!(value === 0 && maxValue === 1500000)) {
                 return [
                   <span key="price-range" style={styles.filterTag}>
                     <span style={styles.priceRangeLabel}>{value.toLocaleString()}원</span>
@@ -499,7 +499,7 @@ const WineFilterBar = ({ filter, onChange }: WineFilterBarProps) => {
                           filters: {
                             ...filter.filters,
                             minPrice: 0,
-                            maxPrice: 1500000000,
+                            maxPrice: 1500000,
                           },
                         });
                       }}
