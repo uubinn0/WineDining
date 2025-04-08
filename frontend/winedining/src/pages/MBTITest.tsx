@@ -51,7 +51,7 @@ const MBTITest = () => {
       if (newScores[personality] !== undefined) {
         newScores[personality] += 1;
       }
-      console.log(newScores);
+      // console.log(newScores);
 
       setScores(newScores);
     };
@@ -195,16 +195,15 @@ const styles: { [key: string]: React.CSSProperties } = {
     position: "absolute", // ✅ 기준만 설정
     top: vh(7),
     width: "80%",
-    height : "auto",
+    height: "auto",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
   },
-  speechbubble : {
-    width : "100%",
-    height : "auto"
+  speechbubble: {
+    width: "100%",
+    height: "auto",
   },
-
 
   speechtext: {
     position: "absolute",

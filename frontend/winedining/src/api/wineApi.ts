@@ -14,7 +14,7 @@ export const fetchFilteredWines = async (filter: WineFilter): Promise<WineListRe
     const response = await api.post("/api/v1/product", filter);
     return response.data.data;
   } catch (error) {
-    console.error("와인 리스트 불러오기 실패:", error);
+    // console.error("와인 리스트 불러오기 실패:", error);
     throw error;
   }
 };
@@ -25,7 +25,7 @@ export const fetchWineDetail = async (wineId: number): Promise<WineDetail> => {
     const response = await api.get(`/api/v1/product/${wineId}`);
     return response.data.data;
   } catch (error) {
-    console.log("와인 상세보기 실패", error);
+    // console.log("와인 상세보기 실패", error);
     throw error;
   }
 };

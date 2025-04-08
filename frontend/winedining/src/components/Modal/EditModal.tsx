@@ -41,7 +41,7 @@ const EditModal = ({ nickname: initialNickname, isOpen, onClose, onNicknameUpdat
       setError("");
       onClose();
     } catch (error) {
-      console.error("닉네임 변경 실패:", error);
+      // console.error("닉네임 변경 실패:", error);
       setError("닉네임 변경에 실패했습니다. 다시 시도해주세요.");
     }
   };
@@ -53,7 +53,7 @@ const EditModal = ({ nickname: initialNickname, isOpen, onClose, onNicknameUpdat
         alert("탈퇴가 완료되었습니다. 이용해주셔서 감사합니다!");
         navigate("/");
       } catch (err) {
-        console.error("회원탈퇴 실패:", err);
+        // console.error("회원탈퇴 실패:", err);
         alert("탈퇴 중 문제가 발생했습니다. 다시 시도해주세요.");
       }
     }

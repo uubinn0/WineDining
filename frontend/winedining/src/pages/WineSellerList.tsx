@@ -60,7 +60,7 @@ const WineSellerList = () => {
           const res = await fetchWineNotes(bottle.bottleId);
           counts[bottle.bottleId] = res.notes.length;
         } catch (err) {
-          console.warn(`노트 가져오기 실패: bottleId ${bottle.bottleId}`);
+          // console.warn(`노트 가져오기 실패: bottleId ${bottle.bottleId}`);
         }
       }
       setNoteCounts(counts);
