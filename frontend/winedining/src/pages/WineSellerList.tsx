@@ -12,6 +12,8 @@ import { vh } from "../utils/vh";
 import sampleimg from "../assets/images/winesample/defaultwine.png";
 import BestWineFlipCard from "../components/BestWineFlipCard";
 import PixelTitle from "../components/PixcelTitle";
+import { fetchWineNotes } from "../api/noteApi";
+import { useMemo } from "react";
 
 const WineSellerList = () => {
   const navigate = useNavigate();
@@ -21,6 +23,7 @@ const WineSellerList = () => {
   const [selectedBottle, setSelectedBottle] = useState<Bottle | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [page, setPage] = useState(1);
+  const [noteCounts, setNoteCounts] = useState<{ [bottleId: number]: number }>({});
 
   // hasMore: 더 불러올 와인이 있는지 확인 (현재 불러온 bottles 수가 총 와인 수보다 적으면 true)
   const hasMore = bottles.length < totalCount;
@@ -48,6 +51,25 @@ const WineSellerList = () => {
     },
     [status, hasMore, page, dispatch]
   );
+
+  useEffect(() => {
+    const fetchNotesForBottles = async () => {
+      const counts: { [bottleId: number]: number } = {};
+      for (const bottle of bottles) {
+        try {
+          const res = await fetchWineNotes(bottle.bottleId);
+          counts[bottle.bottleId] = res.notes.length;
+        } catch (err) {
+          console.warn(`노트 가져오기 실패: bottleId ${bottle.bottleId}`);
+        }
+      }
+      setNoteCounts(counts);
+    };
+
+    if (bottles.length > 0) {
+      fetchNotesForBottles();
+    }
+  }, [bottles]);
 
   const closeDetailModal = () => {
     setSelectedBottle(null);
@@ -116,7 +138,7 @@ const WineSellerList = () => {
         </div>
       </div>
 
-      {/* 헤더 영역: "와인 추가하기" 버튼과 총 와인 수집 텍스트 */}
+      {/* 총 와인의 개수 */}
       <div style={styles.headerContainer}>
         <div style={styles.addButtonWrapper}>
           <CustomAddWineButton />
@@ -137,6 +159,7 @@ const WineSellerList = () => {
                   isBest={isBest(bottle.bottleId)}
                   onBestClick={handleBestClick}
                   onDetailClick={() => handleDetailClick(bottle)}
+                  totalNote={noteCounts[bottle.bottleId] || 0}
                 />
               </div>
             );
@@ -148,6 +171,7 @@ const WineSellerList = () => {
                   isBest={isBest(bottle.bottleId)}
                   onBestClick={handleBestClick}
                   onDetailClick={() => handleDetailClick(bottle)}
+                  totalNote={noteCounts[bottle.bottleId] || 0}
                 />
               </div>
             );
@@ -252,7 +276,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginBottom: vh(2),
   },
   totalCountWrapper: {
-    marginTop: vh(1),
+    marginTop: vh(-1),
     width: "95%",
     maxWidth: "500px",
     textAlign: "end",

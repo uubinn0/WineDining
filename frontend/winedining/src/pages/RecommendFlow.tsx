@@ -51,15 +51,9 @@ const RecommendFlow: React.FC = () => {
     { question: "완벽하네요🍷 \n추천 와인을 찾는 중이에요!", options: [] },
     { question: "이런 와인은 어떠신가요?", options: ["추천 리스트 보기"] },
   ];
-
+  
   useEffect(() => {
-    if (testState.testCompleted && currentStep === 0) {
-      dispatch(setCurrentStep(6)); // Redux에서 currentStep 업데이트
-    }
-  }, [testState.testCompleted, currentStep, dispatch]);
-
-
-  useEffect(() => {
+    console.log("지금 몇단계?", currentStep)
     if (currentStep === 0) {
       setTimeout(() => dispatch(setCurrentStep(1)), 2000);
     } else if (currentStep === 2) {
@@ -79,10 +73,13 @@ const RecommendFlow: React.FC = () => {
   const handleSelectOption = (selectedOption: string) => {
     if (currentStep === 1 && selectedOption === "아니오") {
       dispatch(setCurrentStep(2));
+      
+      // setCurrentStepState(2);
       return;
     }
 
     if (currentStep === 1 && selectedOption === "예") {
+      // setCurrentStepState(3);
       dispatch(setCurrentStep(3));
       return;
     }
@@ -166,27 +163,23 @@ const styles: { [key: string]: React.CSSProperties } = {
     // position: "relative",
     backgroundImage: `url(${Homebackground})`,
     backgroundSize: "contain",
-    width: "100dvw",
-    height: "100dvh",
+    width: "100vw",
     maxWidth: "430px", // 디자인 한계 지정 (선택)
     maxHeight: "100vh",
-    // height: "calc(100 * var(--custom-vh))",
+    height: "calc(100 * var(--custom-vh))",
     margin: "0 auto",
     position: "relative",
   
   },
   bartenderStyle: {
     position: "absolute",
-    top: vh(53.9), // top 비율
-    left: vh(20), // left 비율
-    // width: vw(54.2), // width 비율
+    top: "54%", // top 비율
+    left: "40%", // left 비율
     height: vh(30.6), // height 비율
     transform: "rotate(0.69deg)", // 회전 적용
   },
   speechBubbleContainer: {
-    position: "absolute",
-    top: vh(23.9),
-    // width : vh(30)
+    paddingTop : "25dvh",
   },
   nextButton: {
     // width: "25%", // 버튼의 너비 설정

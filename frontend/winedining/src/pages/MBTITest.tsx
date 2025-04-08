@@ -192,23 +192,30 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: vh(1.5),
   },
   speechBubbleContainer: {
-    position: "relative", // ✅ 기준만 설정
-    top: vh(3),
+    position: "absolute", // ✅ 기준만 설정
+    top: vh(7),
     width: "80%",
+    height : "auto",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
   },
+  speechbubble : {
+    width : "100%",
+    height : "auto"
+  },
+
+
   speechtext: {
     position: "absolute",
-    top: "50%",
+    top: "45%",
     left: "50%",
     transform: "translate(-50%, -50%)", // ✅ 정확한 중앙 배치
     textAlign: "center",
     color: "black",
     fontSize: vh(2.3),
     fontFamily: "Galmuri7",
-    width: "80%",
+    width: "100%",
   },
   mainContent: {
     display: "flex",
