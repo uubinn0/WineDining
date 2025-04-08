@@ -10,6 +10,7 @@ import roseWineImage from "../../assets/types/rose_wine.png";
 import sparklingWineImage from "../../assets/types/sparkling_wine.png";
 import { WineDetail } from "../../types/wine";
 import { trackEvent } from "../../utils/analytics"; // GA 이벤트 트래커 추가
+import { vh } from "../../utils/vh";
 
 interface WineDetailModalProps {
   isOpen: boolean;
@@ -119,12 +120,12 @@ const WineDetailModal = ({ isOpen, onClose, wine, fromPage }: WineDetailModalPro
         </div>
 
         <div style={styles.detailWrapper}>
-          <div style={styles.imageContainer}>
-            <img src={getWineImage()} alt={wine.krName} style={styles.image} />
-          </div>
           <div style={styles.detailInfo}>
             <p>✦ {wine.price ? `${wine.price.toLocaleString()}원` : "가격 정보 없음"}</p>
             <p>✦ 도수 {wine.alcoholContent ? `${wine.alcoholContent}%` : "정보 없음"}</p>
+          </div>
+          <div style={styles.imageContainer}>
+            <img src={getWineImage()} alt={wine.krName} style={styles.image} />
           </div>
         </div>
 
@@ -177,7 +178,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     maxWidth: "90vw",
     color: "#fff",
     position: "relative",
-    border: "1vh solid #D6BA91",
+    border: "0.5vh solid #D6BA91",
     width: "90vw",
     height: "87vh",
     padding: "2.5vh",
@@ -186,6 +187,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
+    scrollbarWidth: "none",
   },
   closeButton: {
     position: "absolute",
@@ -232,6 +234,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: "1.6vh",
     textAlign: "center",
   },
+  /* 맛 담는 부분 */
   tasteBars: {
     display: "grid",
     gridTemplateColumns: "6vh 1fr",
@@ -265,8 +268,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundColor: "#d3bfe4",
     boxShadow: "inset 0 0 0.2vh #000",
   },
+  /* 페어링 부분 */
   pairingSection: {
-    backgroundColor: "#3b1845",
+    // backgroundColor: "#3b1845",
     padding: "2vh",
     borderRadius: "0.8vh",
     textAlign: "center",
@@ -295,23 +299,28 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: "center",
     justifyContent: "center",
   },
+  /* 와인 이미지 */
   image: {
-    width: "7vh",
-    maxHeight: "10vh",
+    width: "14vh",
+    // maxHeight: "10vh",
     objectFit: "contain",
     filter: "drop-shadow(0 0 0.5vh rgba(255, 255, 255, 0.4))",
+    marginRight: vh(10),
   },
   detailInfo: {
-    padding: "1.2vh",
+    // padding: "1vh",
     borderRadius: "0.8vh",
-    textAlign: "left",
+    // textAlign: "left",
     fontSize: "1.8vh",
     color: "#fff",
-    lineHeight: 1.3,
+    lineHeight: 1.5,
     flex: 1,
+    marginRight: vh(0),
+    marginTop: vh(1.5),
   },
   button: {
     position: "absolute",
+    display: "inline-block",
     bottom: "2vh",
     right: "2vh",
     width: "8vh",
@@ -320,5 +329,12 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: "0.6vh",
     cursor: "pointer",
     fontSize: "1.8vh",
+    backgroundColor: "#ddd",
+    color: "#000000",
+    fontFamily: "Galmuri7",
+    textAlign: "center",
+    boxShadow: `${vh(0.6)} ${vh(0.6)} 0 #000`,
+    transition: "all 0.2s ease",
+    whiteSpace: "nowrap",
   },
 };

@@ -165,6 +165,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     padding: "0.5vh 1vh", // 4px 8px (4/8, 8/8)
     borderRadius: "0.75vh", // 6px (6/8)
     cursor: "pointer",
+    fontFamily: "Galmuri7",
+    textAlign: "center",
+    boxShadow: `${vh(0.6)} ${vh(0.6)} 0 #000`,
+    transition: "all 0.2s ease",
+    whiteSpace: "nowrap",
   },
 };
 

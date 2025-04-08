@@ -198,11 +198,12 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: "1.8vh",
     color: "#ccc",
     marginRight: "2vh",
+    marginTop: "-2vh",
   },
   wineListContainer: {
     maxHeight: "60vh",
     overflowY: "auto",
     paddingRight: "0.9vh",
-    marginTop: "2.2vh",
+    marginTop: "2vh",
   },
 };
