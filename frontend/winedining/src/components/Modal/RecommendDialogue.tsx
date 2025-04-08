@@ -19,6 +19,12 @@ const RecommendDialogue: React.FC<DialogueProps> = ({
   onSelect,
   onSubmit,
 }) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      onSubmit?.(); // onSubmit이 정의되어 있으면 호출
+    }
+  };
+
   return (
     <div style={styles.container}>
       <img src={speechbubble} alt="대화창" style={styles.speechBubbleContainer} />
@@ -31,6 +37,7 @@ const RecommendDialogue: React.FC<DialogueProps> = ({
               type="text"
               value={input}
               onChange={(e) => onInputChange(e.target.value)}
+              onKeyDown={handleKeyDown}
               style={styles.input}
               placeholder="ex. 스테이크, 치즈, 해산물"
             />
