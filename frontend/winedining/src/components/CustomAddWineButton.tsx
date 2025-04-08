@@ -43,7 +43,7 @@ const CustomAddWineButton = () => {
     <>
       <button
         onClick={() => {
-          trackEvent("open_add_seller_modal", {
+          trackEvent("add_seller_modal", {
             location: "wineseller_page",
           });
           setIsStep1Open(true);
