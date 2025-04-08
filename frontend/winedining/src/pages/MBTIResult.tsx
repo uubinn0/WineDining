@@ -148,12 +148,14 @@ function MBTIResults() {
           </ul>
         </div>
 
-        {/* 카카오톡 공유하기 버튼 */}
-        <button onClick={shareToKakao} style={styles.loginBtn}>
-          <img src={kakao} alt="카카오" style={styles.icon} />
-        </button>
+        {/* 홈으로 이동 버튼 (기존처럼 fixed 중앙) */}
         <button style={styles.shareButton} onClick={() => nav("/")}>
           홈으로 이동
+        </button>
+
+        {/* 카카오 공유 버튼 (오른쪽에 붙음) */}
+        <button onClick={shareToKakao} style={styles.kakaoBtn}>
+          <img src={kakao} alt="카카오" style={styles.icon} />
         </button>
       </div>
       <div></div>
@@ -285,8 +287,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     padding: vh(2),
   },
   shareButton: {
-    position: "fixed" /* absolute에서 relative로 변경 */,
+    position: "fixed",
     bottom: vh(6),
+    left: "50%",
+    transform: "translateX(-50%)",
     padding: `${vh(1.5)} ${vh(3)}`,
     backgroundColor: "#fff",
     border: `1px solid #333`,
@@ -297,20 +301,28 @@ const styles: { [key: string]: React.CSSProperties } = {
     zIndex: 1010,
     cursor: "pointer",
   },
-  loginBtn: {
-    width: "42px",
-    height: "42px",
+  kakaoBtn: {
+    position: "fixed",
+    bottom: vh(5.7),
+    left: "calc(50% + 9vh)", // 홈 버튼 기준 오른쪽 위치
+    width: vh(6),
+    height: vh(6),
     borderRadius: "50%",
     border: "none",
-    backgroundColor: "#fff",
+    outline: "none",
+    backgroundColor: "transparent", // 배경도 투명하게
+    boxShadow: "none",
+    padding: 0,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     cursor: "pointer",
   },
+
   icon: {
-    width: "45px",
-    height: "45px",
+    width: "90%",
+    height: "90%",
+    objectFit: "contain",
   },
 };
 
