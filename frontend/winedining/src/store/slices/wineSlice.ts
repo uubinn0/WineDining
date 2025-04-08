@@ -77,6 +77,13 @@ const wineSlice = createSlice({
 
         const { wines, page, totalPages, totalCount } = action.payload;
 
+        console.log("응답 확인:", {
+          page,
+          totalPages,
+          totalCount,
+          currentWinesCount: wines.length,
+        });
+
         state.wines = [...state.wines, ...wines];
         state.page = page;
         state.totalPages = totalPages;

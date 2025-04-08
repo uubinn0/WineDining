@@ -36,12 +36,16 @@ const WineInfoCard = ({ wine, onClick }: WineInfoCardProps) => {
 
   const handleWishToggle = () => {
     if (!wine.wineId) return;
+
+    const fromParam = "card"; // InfoCard 에서 담기시 'card'로 구분
+
     if (isInWishList) {
-      dispatch(removeWish(wine.wineId)); // 담기 취소 추가
+      dispatch(removeWish(wine.wineId));
       trackEvent("toggle_wish", {
         item_id: wine.wineId,
         item_name: wine.name,
         action: "remove",
+        from: fromParam,
       });
     } else {
       dispatch(addWish(wine.wineId));
@@ -49,6 +53,7 @@ const WineInfoCard = ({ wine, onClick }: WineInfoCardProps) => {
         item_id: wine.wineId,
         item_name: wine.name,
         action: "add",
+        from: fromParam,
       });
     }
   };
@@ -199,6 +204,12 @@ const styles: { [key: string]: React.CSSProperties } = {
     padding: "0.5vh 1vh", // 4px 8px (4/8, 8/8)
     borderRadius: "0.75vh", // 6px (6/8)
     cursor: "pointer",
+    display: "inline-block",
+    fontFamily: "Galmuri7",
+    textAlign: "center",
+    boxShadow: `${vh(0.6)} ${vh(0.6)} 0 #000`,
+    transition: "all 0.2s ease",
+    whiteSpace: "nowrap",
   },
   /* 국기 아이콘 */
   flagIcon: {

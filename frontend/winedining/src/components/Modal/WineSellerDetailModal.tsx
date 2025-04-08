@@ -390,8 +390,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   /* 와인 이미지 */
   wineImage: {
-    width: vh(8),
-    height: vh(12),
+    width: vh(20),
+    height: vh(20),
     display: "block",
     margin: `${vh(1)} auto`,
   },

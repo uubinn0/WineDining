@@ -1,6 +1,7 @@
+// src/pages/WishList.tsx
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchWishes } from "../store/slices/wishSlice";
 import { fetchWineDetailThunk } from "../store/slices/wineSlice";
 import { RootState, AppDispatch } from "../store/store";
@@ -10,12 +11,13 @@ import { WineDetail } from "../types/wine";
 import BackButton from "../components/BackButton";
 import PixelTitle from "../components/PixcelTitle";
 import Wish from "../assets/images/background/Wish.png";
+import { trackEvent } from "../utils/analytics"; // GA 이벤트 트래커 추가
 
 const WishList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { items, status } = useSelector((state: RootState) => state.wish);
-  const { wineDetail } = useSelector((state: RootState) => state.wine); // wineSlice에서 가져온 상세
+  const { wineDetail } = useSelector((state: RootState) => state.wine);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -23,7 +25,11 @@ const WishList = () => {
     dispatch(fetchWishes());
   }, [dispatch]);
 
+  // 위시 아이템 클릭 시
   const handleWishClick = (wineId: number) => {
+    // 이벤트 추가
+    trackEvent("wishlist_item_click", { wineId });
+
     dispatch(fetchWineDetailThunk(wineId));
     setIsModalOpen(true);
   };
@@ -45,6 +51,7 @@ const WishList = () => {
       </div>
       {status === "loading" && <p>위시리스트를 불러오는 중...</p>}
       {status === "failed" && <p>위시리스트를 불러오는 데 실패했습니다.</p>}
+
       {items.length === 0 ? (
         <p>위시리스트가 비어 있습니다.</p>
       ) : (
@@ -56,8 +63,14 @@ const WishList = () => {
           ))}
         </div>
       )}
+
       {isModalOpen && wineDetail && (
-        <WineDetailModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} wine={wineDetail} />
+        <WineDetailModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          wine={wineDetail}
+          fromPage="wishlist" // 담기 이벤트 시 from: "wishlist" 로 구분
+        />
       )}
     </div>
   );

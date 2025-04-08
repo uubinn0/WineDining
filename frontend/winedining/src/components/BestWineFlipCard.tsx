@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { vh } from "../utils/vh";
-import sampleimg from "../assets/images/winesample/defaultwine.png";
 import { Bottle } from "../types/seller";
+import redWineImage from "../assets/types/red_wine.png";
+import whiteWineImage from "../assets/types/white_wine.png";
+import roseWineImage from "../assets/types/rose_wine.png";
+import sparklingWineImage from "../assets/types/sparkling_wine.png";
 
 interface BestWineFlipCardProps {
   bottle: Bottle;
@@ -15,9 +18,24 @@ const BestWineFlipCard: React.FC<BestWineFlipCardProps> = ({ bottle, isBest, onB
   const toggleFlip = () => setFlipped((prev) => !prev);
 
   const { wine } = bottle;
-  const isValidImage =
-    wine.image && wine.image !== "no_image" && wine.image.trim() !== "" && wine.image.startsWith("http");
-  const imageSrc = isValidImage ? wine.image : sampleimg;
+
+  const getDefaultImageByType = (type: string | undefined) => {
+    switch (type?.toLowerCase()) {
+      case "레드":
+        return redWineImage;
+      case "화이트":
+        return whiteWineImage;
+      case "로제":
+        return roseWineImage;
+      case "스파클링":
+        return sparklingWineImage;
+      default:
+        return redWineImage;
+    }
+  };
+
+  const imageSrc =
+    wine.image && wine.image !== "no_image" && wine.image.trim() !== "" ? wine.image : getDefaultImageByType(wine.type);
 
   return (
     <div style={styles.cardContainer} onClick={toggleFlip}>
@@ -42,7 +60,9 @@ const BestWineFlipCard: React.FC<BestWineFlipCardProps> = ({ bottle, isBest, onB
               BEST
             </div>
           )}
-          <img src={imageSrc} alt={wine.name} style={styles.image} />
+          <div style={styles.imageBox}>
+            <img src={imageSrc} alt={wine.name} style={styles.image} />
+          </div>
           <p style={styles.name}>{wine.name}</p>
         </div>
 
@@ -60,7 +80,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   cardContainer: {
     display: "inline-block",
     width: "33.33%", // 부모 너비의 1/3
-    height: vh(20),
+    height: vh(18),
     perspective: "1000px",
     cursor: "pointer",
     position: "relative",
@@ -87,7 +107,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
+    paddingTop: vh(1.5),
   },
   cardBack: {
     position: "absolute",
@@ -118,17 +139,24 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderTopRightRadius: vh(1),
     lineHeight: vh(2.5),
   },
+  /* 이미지 박스 */
+  imageBox: {
+    height: vh(10),
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  /* 이미지 */
   image: {
-    width: vh(8),
-    height: vh(8),
+    height: "100%",
     objectFit: "contain",
   },
   name: {
-    fontSize: vh(1.5),
+    fontSize: vh(1.3),
     textAlign: "center",
-    padding: `0 ${vh(1)}`,
+    padding: `0 ${vh(0.5)}`,
     color: "white",
-    marginTop: vh(1),
+    marginTop: vh(1.3),
     display: "-webkit-box",
     WebkitLineClamp: 3,
     WebkitBoxOrient: "vertical",
