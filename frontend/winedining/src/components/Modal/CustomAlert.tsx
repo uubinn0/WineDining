@@ -42,7 +42,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: "1vh",
     textAlign: "center",
     maxWidth: "80vw",
-    boxShadow: "0 0 10px rgba(0,0,0,0.3)",
+    boxShadow: "0 0 1vh rgba(0,0,0,0.3)",
   },
   message: {
     marginBottom: "2vh",

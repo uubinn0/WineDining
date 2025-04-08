@@ -117,7 +117,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     bottom: vh(6),
     padding: `${vh(1.5)} ${vh(3)}`,
     backgroundColor: "#fff",
-    border: `1px solid #333`,
+    border: `0.1vh solid #333`,
     borderRadius: vh(1),
     fontFamily: "Galmuri7",
     fontSize: vh(1.8),

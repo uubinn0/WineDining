@@ -72,53 +72,53 @@ function MyPage() {
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
     textAlign: "center",
-    padding: "20px",
+    padding: "2.7vh",
     color: "white",
     backgroundColor: "#2a0e35",
     minHeight: "100vh",
   },
   image: {
-    width: "100px",
-    height: "100px",
-    border: "4px solid #d4b27a",
+    width: "12vh",
+    height: "12vh",
+    border: "0.6vh solid #d4b27a",
     backgroundColor: "#F5F4E6",
-    borderRadius: "50px",
-    marginTop: "40px",
+    borderRadius: "6vh",
+    marginTop: "5vh",
   },
   title: {
     fontFamily: "PressStart2P",
-    fontSize: "24px",
-    marginBottom: "20px",
+    fontSize: "3vh",
+    marginBottom: "2.4vh",
   },
   nickname: {
-    fontSize: "18px",
-    paddingLeft: "25px",
+    fontSize: "2.2vh",
+    paddingLeft: "1.8vh",
   },
   backButtonWrapper: {
     position: "absolute",
-    top: "16px",
-    left: "16px",
+    top: "1.6vh",
+    left: "1.6vh",
   },
   buttonGroup: {
-    padding: "30px 0",
+    padding: "4vh 0",
     display: "flex",
     justifyContent: "center",
-    gap: "30px",
+    gap: "3.8vh",
     flexWrap: "wrap",
   },
   modalButtonGroup: {
-    marginBottom: "40px",
+    marginBottom: "4vh",
     display: "flex",
     justifyContent: "center",
-    gap: "10px",
+    gap: "1.3vh",
   },
   button: {
     backgroundColor: "#5a1a5e",
     color: "white",
     border: "none",
-    padding: "10px 15px",
-    fontSize: "14px",
-    borderRadius: "8px",
+    padding: "1.2vh 1.8vh",
+    fontSize: "1.6vh",
+    borderRadius: "1vh",
     cursor: "pointer",
     transition: "0.2s",
   },
@@ -126,14 +126,14 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundColor: "#ffcc00",
     color: "#2a0e35",
     border: "none",
-    padding: "10px 15px",
-    fontSize: "14px",
-    borderRadius: "8px",
+    padding: "1.2vh 1.7vh",
+    fontSize: "1.6vh",
+    borderRadius: "0.8vh",
     cursor: "pointer",
     transition: "0.2s",
   },
   userInfo: {
-    margin: "10px 0",
+    margin: "1.2vh 0",
     minHeight: "70px",
   },
   placeholder: {
@@ -143,8 +143,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    gap: "4px",
-    marginBottom: "4px",
+    gap: "0.6vh",
+    marginBottom: "0.6vh",
   },
 
   nicknameColumn: {
@@ -152,37 +152,37 @@ const styles: { [key: string]: React.CSSProperties } = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    gap: "4px",
+    gap: "0.6vh",
   },
 
   editIconButton: {
-    height: "16px",
+    height: "1.8vh",
     background: "none",
     border: "none",
     cursor: "pointer",
     padding: 0,
   },
   editIcon: {
-    width: "18px",
-    height: "18px",
+    width: "2vh",
+    height: "2vh",
   },
   rank: {
     display: "flex",
     alignItems: "flex-end", // 왕관 기준으로 맞추기
     justifyContent: "center",
-    gap: "4px",
-    fontSize: "12px",
+    gap: "0.6vh",
+    fontSize: "1.5vh",
     color: "#FFD700",
-    marginBottom: "5px",
+    marginBottom: "0.7vh",
   },
 
   crown: {
-    fontSize: "12px",
+    fontSize: "1.4vh",
     lineHeight: 1,
   },
 
   rankText: {
-    fontSize: "12px",
+    fontSize: "1.4vh",
     lineHeight: 1,
     position: "relative",
     top: "1.6px", // 왕관과 수직 정렬 위해 아래로 살짝 내림
@@ -190,8 +190,8 @@ const styles: { [key: string]: React.CSSProperties } = {
 
   floatingAddButton: {
     position: "absolute",
-    bottom: "24px",
-    right: "24px",
+    bottom: "2.6vh",
+    right: "2.6vh",
   },
 };
 

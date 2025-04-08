@@ -16,7 +16,7 @@ const ErrorPage = () => {
 const style: { [key: string]: React.CSSProperties } = {
   ErrorPage: {
     textAlign: "center",
-    marginTop: "50px",
+    marginTop: "5vh",
   },
 };
 

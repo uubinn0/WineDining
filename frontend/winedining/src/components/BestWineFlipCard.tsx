@@ -86,6 +86,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     position: "relative",
     verticalAlign: "top",
     marginRight: vh(1),
+    marginBottom: vh(1.5),
   },
   cardInner: {
     width: "100%",

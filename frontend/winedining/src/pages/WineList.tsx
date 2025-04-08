@@ -125,9 +125,9 @@ const WineList = () => {
       <PixelTitle
         text="WINE"
         imageSrc="/sample_image/yellow_lightning.png"
-        fontSize="16px"
+        fontSize="1.8vh"
         color="#fefefe"
-        imageSize="24px"
+        imageSize="2.8vh"
       />
 
       {/* 검색 */}

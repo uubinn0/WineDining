@@ -402,7 +402,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   /* 완료 버튼 */
   completeButton: {
     width: "30%",
-    maxWidth: vh(44), // 약 350px 기준
+    maxWidth: vh(44),
     position: "absolute",
     display: "inline-block",
     backgroundColor: "#ddd",

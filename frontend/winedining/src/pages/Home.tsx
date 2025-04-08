@@ -5,7 +5,6 @@ import { AppDispatch, RootState } from "../store/store";
 import { fetchUserProfile, logoutUser } from "../store/slices/authSlice";
 import { setCameFromRecommendFlow } from "../store/slices/testSlice";
 
-
 import Homebackground from "../assets/images/background/Home.png";
 import mypageIcon from "../assets/icons/mypageicon.png";
 import winelistIcon from "../assets/icons/winelisticon.png";
@@ -26,7 +25,7 @@ function Home() {
   // 최초 클릭 여부를 기록할 상태
   const [firstButtonClicked, setFirstButtonClicked] = useState(false);
 
-  const testCompleted = useSelector((state: RootState) => state.test.testCompleted);  
+  const testCompleted = useSelector((state: RootState) => state.test.testCompleted);
 
   useEffect(() => {
     if (status === "idle") {
@@ -140,20 +139,20 @@ const wineListStyle: React.CSSProperties = {
 const wineListPositionStyle: React.CSSProperties = {
   position: "absolute",
   top: "45%",
-  left: "15%",   // 화면 너비 기준 25%
+  left: "15%", // 화면 너비 기준 25%
 };
 
 const dictionaryPositionStyle: React.CSSProperties = {
   position: "absolute",
-  zIndex : 999,
-  bottom : "5%",
+  zIndex: 999,
+  bottom: "5%",
   right: "20%",
 };
 
 const myPagePositionStyle: React.CSSProperties = {
   position: "absolute",
-  zIndex : 999,
-  bottom : "5%",
+  zIndex: 999,
+  bottom: "5%",
   right: "5%",
 };
 

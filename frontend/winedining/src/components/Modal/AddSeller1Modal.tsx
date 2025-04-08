@@ -530,7 +530,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   nextButton: {
     width: "30%",
-    maxWidth: vh(44), // 약 350px 기준
+    maxWidth: vh(44),
     position: "relative",
     display: "inline-block",
     backgroundColor: "#ddd",
