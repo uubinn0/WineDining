@@ -4,6 +4,7 @@ import { AppDispatch } from "../../store/store"; // store 경로에 맞게 수�
 import { updateNickname } from "../../store/slices/authSlice";
 import { deleteUser } from "../../store/slices/authSlice";
 import { useNavigate } from "react-router-dom";
+import { vh } from "../../utils/vh";
 
 interface EditModalProps {
   isOpen: boolean;
@@ -146,6 +147,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     padding: "0.4vh",
     fontSize: "1.8vh",
     outline: "none",
+    fontFamily: "Galmuri9",
   },
   error: {
     fontSize: "1.3vh",
@@ -161,22 +163,34 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginTop: "1vh",
   },
   cancelButton: {
-    backgroundColor: "#ffffff",
-    color: "#000",
-    padding: "1vh 1.3vh",
-    borderRadius: "0.5vh",
-    border: "0.3vh solid #000",
-    fontSize: "1.2vh",
+    backgroundColor: "#FFFFFF",
+    minWidth: "6.25vh", // 50px (50/8)
+    color: "#000000",
+    fontSize: "1.25vh", // 10px (10/8)
+    border: "none",
+    padding: "1vh 1vh", // 4px 8px (4/8, 8/8)
+    borderRadius: "0.75vh", // 6px (6/8)
     cursor: "pointer",
+    fontFamily: "Galmuri7",
+    textAlign: "center",
+    boxShadow: `${vh(0.6)} ${vh(0.6)} 0 #000`,
+    transition: "all 0.2s ease",
+    whiteSpace: "nowrap",
   },
   confirmButton: {
-    backgroundColor: "#ffffff",
-    color: "#000",
-    padding: "1vh 1.3vh",
-    borderRadius: "0.5vh",
-    border: "0.3vh solid #000",
-    fontSize: "1.2vh",
+    backgroundColor: "#FFFFFF",
+    minWidth: "6.25vh", // 50px (50/8)
+    color: "#000000",
+    fontSize: "1.25vh", // 10px (10/8)
+    border: "none",
+    padding: "1vh 1vh", // 4px 8px (4/8, 8/8)
+    borderRadius: "0.75vh", // 6px (6/8)
     cursor: "pointer",
+    fontFamily: "Galmuri7",
+    textAlign: "center",
+    boxShadow: `${vh(0.6)} ${vh(0.6)} 0 #000`,
+    transition: "all 0.2s ease",
+    whiteSpace: "nowrap",
   },
 };
 
