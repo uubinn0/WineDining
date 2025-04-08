@@ -5,6 +5,7 @@ import AddSeller3Modal from "./Modal/AddSeller3Modal";
 import { Wine } from "../types/wine";
 import { CustomWineRegistrationRequest } from "../types/seller";
 import { vh } from "../utils/vh"; // vh 유틸 쓰는 경우
+import { trackEvent } from "../utils/analytics";
 
 const CustomAddWineButton = () => {
   const [isStep1Open, setIsStep1Open] = useState(false);
@@ -41,7 +42,12 @@ const CustomAddWineButton = () => {
   return (
     <>
       <button
-        onClick={() => setIsStep1Open(true)}
+        onClick={() => {
+          trackEvent("open_add_seller_modal", {
+            location: "wineseller_page",
+          });
+          setIsStep1Open(true);
+        }}
         style={{
           width: "90%",
           margin: "0 auto", // 가운데 정렬을 위한 설정
