@@ -8,17 +8,18 @@ import { trackEvent } from "../utils/analytics";
 const MainPage = () => {
   const navigate = useNavigate();
   // const baseUrl = window.location.origin;
+  //"https://j12b202.p.ssafy.io/api/v1/auth/oauth2/authorization/kakao";
 
   const handleKakaoLogin = () => {
     trackEvent("mainpage_kakao_login_click", { provider: "KAKAO" });
     localStorage.setItem("provider", "KAKAO");
-    window.location.href = "https://j12b202.p.ssafy.io/api/v1/auth/oauth2/authorization/kakao";
+    window.location.href = "https://winedining.store/api/v1/auth/oauth2/authorization/kakao";
   };
 
   const handleGoogleLogin = () => {
     trackEvent("mainpage_google_login_click", { provider: "GOOGLE" });
     localStorage.setItem("provider", "GOOGLE");
-    window.location.href = "https://j12b202.p.ssafy.io/api/v1/auth/oauth2/authorization/google";
+    window.location.href = "https://winedining.store/api/v1/auth/oauth2/authorization/google";
   };
 
   const handleMBTITestClick = () => {
