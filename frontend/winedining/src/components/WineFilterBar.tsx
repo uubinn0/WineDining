@@ -296,7 +296,7 @@ const WineFilterBar = ({ filter, onChange }: WineFilterBarProps) => {
                   <input
                     type="range"
                     min={0}
-                    max={1500000000}
+                    max={1500000}
                     step={10000}
                     value={filter.filters.minPrice}
                     onChange={(e) => handlePriceRangeChange(Number(e.target.value), filter.filters.maxPrice)}

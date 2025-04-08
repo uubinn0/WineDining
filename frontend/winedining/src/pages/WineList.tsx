@@ -35,7 +35,7 @@ const WineList = () => {
       grape: [],
       country: [],
       minPrice: 0,
-      maxPrice: 1500000000,
+      maxPrice: 1500000,
       minSweetness: 0,
       maxSweetness: 5,
       minAcidity: 0,
