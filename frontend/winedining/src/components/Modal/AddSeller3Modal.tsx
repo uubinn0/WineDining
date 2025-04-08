@@ -15,6 +15,7 @@ import redWineImage from "../../assets/types/red_wine.png";
 import whiteWineImage from "../../assets/types/white_wine.png";
 import roseWineImage from "../../assets/types/rose_wine.png";
 import sparklingWineImage from "../../assets/types/sparkling_wine.png";
+import CustomAlert from "./CustomAlert";
 
 interface AddSeller3ModalProps {
   isOpen: boolean;
@@ -55,6 +56,8 @@ const AddSeller3Modal = ({
   const dispatch = useDispatch<AppDispatch>();
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   /* 이미지 업로드 부분 */
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,7 +65,8 @@ const AddSeller3Modal = ({
     const files = Array.from(event.target.files);
 
     if (selectedImages.length + files.length > 3) {
-      alert("최대 3장까지 업로드할 수 있습니다!");
+      setAlertMessage("최대 3장까지 업로드할 수 있습니다!");
+      setAlertOpen(true);
       return;
     }
 
@@ -98,7 +102,8 @@ const AddSeller3Modal = ({
       }
 
       if (!finalBottleId) {
-        alert("Bottle ID가 존재하지 않습니다.");
+        setAlertMessage("와인병이 존재하지 않습니다.");
+        setAlertOpen(true);
         return;
       }
       const noteData = {
@@ -123,7 +128,7 @@ const AddSeller3Modal = ({
         credentials: "include",
       });
 
-      alert("와인 노트가 저장되었습니다!");
+      setAlertMessage("와인 노트가 저장되었습니다!");
 
       // 셀러 리스트 새로고침
       await dispatch(fetchCellar());
@@ -132,7 +137,7 @@ const AddSeller3Modal = ({
       onClose();
     } catch (error) {
       // console.error("저장 중 오류:", error);
-      alert("저장 중 오류가 발생했습니다. 다시 시도해주세요.");
+      setAlertMessage("저장 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
 
@@ -162,76 +167,87 @@ const AddSeller3Modal = ({
   if (!isOpen) return null;
 
   return (
-    <div style={styles.overlay} onClick={onClose}>
-      <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <img src={closebutton} alt="닫기" style={styles.closeButton} onClick={onClose} />
+    <>
+      <div style={styles.overlay} onClick={onClose}>
+        <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
+          <img src={closebutton} alt="닫기" style={styles.closeButton} onClick={onClose} />
 
-        <h2 style={styles.title}>와인 수집</h2>
-        {wineInfo && (
-          <p style={styles.subtitle}>
-            {wineInfo.grape}{" "}
-            {flags[wineInfo.country] ? (
-              <img src={flags[wineInfo.country]} alt={wineInfo.country} style={styles.flagIcon} />
-            ) : (
-              <span style={{ fontSize: "1.4vh", color: "#FFD447", marginLeft: "0.5vh" }}>{wineInfo.country}</span>
-            )}
-          </p>
-        )}
-
-        <div style={styles.wineContainer}>
+          <h2 style={styles.title}>와인 수집</h2>
           {wineInfo && (
-            <>
-              <img src={getWineImage(wineInfo.image, wineInfo.type)} alt={wineInfo.name} style={styles.wineImage} />
-              <p style={styles.wineName}>{wineInfo.name}</p>
-            </>
-          )}
-        </div>
-
-        {/* 사진 업로드 */}
-        <p style={styles.sectionTitle}>오늘을 함께 기억할 사진</p>
-        <div style={styles.imageUploadContainer}>
-          {Array.from({ length: 3 }).map((_, index) => (
-            <div key={index} style={styles.uploadBox}>
-              {selectedImages[index] ? (
-                <>
-                  <img src={selectedImages[index]} alt={`Uploaded ${index}`} style={styles.uploadedImage} />
-                  <button style={styles.removeButton} onClick={() => removeImage(index)}>
-                    ✕
-                  </button>
-                </>
+            <p style={styles.subtitle}>
+              {wineInfo.grape}{" "}
+              {flags[wineInfo.country] ? (
+                <img src={flags[wineInfo.country]} alt={wineInfo.country} style={styles.flagIcon} />
               ) : (
-                <label style={styles.uploadLabel}>
-                  <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: "none" }} />
-                  <img src={camera} alt="" />
-                </label>
+                <span style={{ fontSize: "1.4vh", color: "#FFD447", marginLeft: "0.5vh" }}>{wineInfo.country}</span>
               )}
-            </div>
-          ))}
-        </div>
+            </p>
+          )}
 
-        {/* 페이지 이동 */}
-        <div style={styles.pagination}>
-          <div style={styles.pageCenter}>
-            <span style={styles.pageArrow} onClick={onPrev}>
-              ←
-            </span>
-            <span style={styles.pageText}>3 / 3</span>
+          <div style={styles.wineContainer}>
+            {wineInfo && (
+              <>
+                <img src={getWineImage(wineInfo.image, wineInfo.type)} alt={wineInfo.name} style={styles.wineImage} />
+                <p style={styles.wineName}>{wineInfo.name}</p>
+              </>
+            )}
           </div>
 
-          <button
-            style={{
-              ...styles.completeButton,
-              opacity: isSubmitting ? 0.6 : 1,
-              cursor: isSubmitting ? "not-allowed" : "pointer",
-            }}
-            onClick={handleComplete}
-            disabled={isSubmitting}
-          >
-            등록
-          </button>
+          {/* 사진 업로드 */}
+          <p style={styles.sectionTitle}>오늘을 함께 기억할 사진</p>
+          <div style={styles.imageUploadContainer}>
+            {Array.from({ length: 3 }).map((_, index) => (
+              <div key={index} style={styles.uploadBox}>
+                {selectedImages[index] ? (
+                  <>
+                    <img src={selectedImages[index]} alt={`Uploaded ${index}`} style={styles.uploadedImage} />
+                    <button style={styles.removeButton} onClick={() => removeImage(index)}>
+                      ✕
+                    </button>
+                  </>
+                ) : (
+                  <label style={styles.uploadLabel}>
+                    <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: "none" }} />
+                    <img src={camera} alt="" />
+                  </label>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* 페이지 이동 */}
+          <div style={styles.pagination}>
+            <div style={styles.pageCenter}>
+              <span style={styles.pageArrow} onClick={onPrev}>
+                ←
+              </span>
+              <span style={styles.pageText}>3 / 3</span>
+            </div>
+
+            <button
+              style={{
+                ...styles.completeButton,
+                opacity: isSubmitting ? 0.6 : 1,
+                cursor: isSubmitting ? "not-allowed" : "pointer",
+              }}
+              onClick={handleComplete}
+              disabled={isSubmitting}
+            >
+              등록
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+      {/* 커스텀 알림창 */}
+      <CustomAlert
+        isOpen={alertOpen}
+        message={alertMessage}
+        onClose={() => {
+          setAlertOpen(false);
+          onClose();
+        }}
+      />
+    </>
   );
 };
 

@@ -59,7 +59,7 @@ const AddSeller2Modal = ({ isOpen, onClose, onPrev, onNext, wineInfo }: AddSelle
 
     for (const validation of validations) {
       if (validation.condition) {
-        alert(validation.message);
+        // alert(validation.message);
         return;
       }
     }

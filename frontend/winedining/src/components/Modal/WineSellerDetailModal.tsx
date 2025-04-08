@@ -150,6 +150,7 @@ const WineSellerDetailModal = ({ isOpen, onClose, bottle }: WineSellerDetailModa
   const handleAddStep3Close = () => {
     setIsAddStep3Open(false);
     setNewNoteData(null);
+    setIsAddStep2Open(false);  // 추가: 두 번째 단계 모달도 닫기
   };
 
   const getDefaultImageByType = (type: string | undefined) => {
