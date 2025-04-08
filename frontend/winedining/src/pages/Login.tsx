@@ -64,6 +64,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontFamily: "PressStart2P",
     display: "flex",
     flexDirection: "column",
+    justifyContent : "center",
     alignItems: "center",
     overflow: "hidden",
     position: "relative",
