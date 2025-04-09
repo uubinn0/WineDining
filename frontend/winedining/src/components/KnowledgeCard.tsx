@@ -50,7 +50,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     margin: "1vh",
   },
   image: {
-    width: "80%",
+    width: "13vh",
   },
   cardContent: {
     fontSize: "1.5vh",
