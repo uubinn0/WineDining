@@ -49,10 +49,10 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
     if not data.foodIds:
         print("🚀 음식 ID가 없음 → 기본 추천 수행")
         query = text("""
-            SELECT wine_id, feature_vector <=> CAST(:user_vector AS vector) AS cos
+            SELECT wine_id, vector <=> CAST(:user_vector AS vector) AS cos
             FROM preference_wine_vectors
             WHERE wine_id > 10
-                     AND feature_vector <-> CAST(:user_vector AS vector) >= 0.5
+                     AND vector <-> CAST(:user_vector AS vector) >= 0.5
             ORDER BY cos DESC
             LIMIT 3
         """)
@@ -61,7 +61,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
     else:
         print("🚀 음식 ID가 있음 → 음식과 매칭된 추천 수행")
         query = text("""                   
-            SELECT wine_id, feature_vector <=> CAST(:user_vector AS vector) AS similarity
+            SELECT wine_id, vector <=> CAST(:user_vector AS vector) AS similarity
             FROM preference_wine_vectors
             WHERE wine_id IN (SELECT id
                               FROM wines
@@ -69,7 +69,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
                                            FROM pairing_sets 
                                            WHERE food_id = ANY(:food_ids))
 						      AND sweetness = ANY(:sweetness))
-            AND feature_vector <=> CAST(:user_vector AS vector) >= 0.5
+            AND vector <=> CAST(:user_vector AS vector) >= 0.5
             AND wine_id > 10
             ORDER BY similarity DESC
             LIMIT 3;
@@ -94,7 +94,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
         # 추천 데이터가 있는 경우
         if existing_ids:
             additional_query = text("""
-                SELECT wine_id, feature_vector <=> CAST(:user_vector AS vector) AS cos
+                SELECT wine_id, vector <=> CAST(:user_vector AS vector) AS cos
                 FROM preference_wine_vectors 
                 WHERE wine_id > 10
                 AND wine_id NOT IN (SELECT wine_id FROM unnest(:existing_ids) AS wine_id)
@@ -109,7 +109,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
         else:
             # 추천 데이터가 하나도 없는 경우 
             additional_query = text("""
-                SELECT wine_id, feature_vector <=> CAST(:user_vector AS vector) AS cos
+                SELECT wine_id, vector <=> CAST(:user_vector AS vector) AS cos
                 FROM preference_wine_vectors 
                 WHERE wine_id > 10
                 ORDER BY cos DESC
