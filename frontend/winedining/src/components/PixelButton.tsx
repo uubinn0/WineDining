@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 
 const styles: { [key: string]: React.CSSProperties } = {
   button: {
@@ -38,7 +39,7 @@ const PixelButton: React.FC<PixelButtonProps> = ({
   fontFamily = "PressStart2P",
 }) => {
   return (
-    <button
+    <motion.button
       onClick={onClick}
       style={{
         ...styles.button,
@@ -50,9 +51,14 @@ const PixelButton: React.FC<PixelButtonProps> = ({
         fontFamily,
       }}
       className={className}
+      whileHover={{
+        scale: 1.05,
+        boxShadow: "0 0 1.5vh rgba(255, 255, 255, 0.3)",
+      }}
+      transition={{ type: "spring", stiffness: 300 }}
     >
       {children}
-    </button>
+    </motion.button>
   );
 };
 

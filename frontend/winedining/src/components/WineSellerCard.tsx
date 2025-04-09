@@ -43,14 +43,7 @@ const WineSellerCard = ({ wine, onBestClick, onDetailClick, isBest, totalNote }:
   const wineImage = getWineImage();
 
   return (
-    <motion.div
-      style={styles.card}
-      whileHover={{
-        scale: 1.05,
-        boxShadow: "0 0 1.5vh rgba(255, 255, 255, 0.3)",
-      }}
-      transition={{ type: "spring", stiffness: 300 }}
-    >
+    <motion.div style={styles.card}>
       {/* 와인 이미지 */}
       <div style={styles.imageBox}>
         <img
