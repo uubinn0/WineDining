@@ -4,6 +4,7 @@ import kakao from "../assets/icons/kakao.png";
 import google from "../assets/icons/google.png";
 import PixelButton from "../components/PixelButton";
 import { trackEvent } from "../utils/analytics";
+import { motion } from "framer-motion";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -28,7 +29,12 @@ const MainPage = () => {
   };
 
   return (
-    <div style={styles.container}>
+    <motion.div
+      style={styles.container}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1.5 }}
+    >
       <div style={styles.titleSection}>
         <h1 style={styles.logoTitle}>Wine Dining</h1>
         <p style={styles.subText}>
@@ -53,7 +59,7 @@ const MainPage = () => {
           <PixelButton onClick={handleMBTITestClick}>WINE MBTI TEST</PixelButton>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -65,7 +71,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontFamily: "PressStart2P",
     display: "flex",
     flexDirection: "column",
-    justifyContent : "center",
+    justifyContent: "center",
     alignItems: "center",
     overflow: "hidden",
     position: "relative",
