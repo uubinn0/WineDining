@@ -99,7 +99,6 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
             additional_query = text("""
                 SELECT wine_id, vector <=> CAST(:user_vector AS vector) AS cos
                 FROM preference_wine_vectors 
-                WHERE wine_id > 10
                 AND wine_id NOT IN (SELECT wine_id FROM unnest(:existing_ids) AS wine_id
                                     WHERE sweetness = ANY(:sweetness)
                                     AND price <= 100000)
