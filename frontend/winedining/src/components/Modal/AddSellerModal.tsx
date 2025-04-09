@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import { Wine } from "../../types/wine";
 import closebutton from "../../assets/icons/closebutton.png";
 import { vh } from "../../utils/vh";
+import redWineImage from "../../assets/types/red_wine.png";
+import whiteWineImage from "../../assets/types/white_wine.png";
+import roseWineImage from "../../assets/types/rose_wine.png";
+import sparklingWineImage from "../../assets/types/sparkling_wine.png";
 
 interface AddSellerModalProps {
   isOpen: boolean;
@@ -9,6 +13,18 @@ interface AddSellerModalProps {
   onPrev: () => void;
   onNext: (data: any) => void;
   wineInfo: Wine;
+}
+
+/* 국기 이미지 */
+const flags = importAll(require.context("../../assets/flags", false, /\.png$/));
+
+function importAll(r: __WebpackModuleApi.RequireContext) {
+  let images: { [key: string]: string } = {};
+  r.keys().forEach((item) => {
+    const key = item.replace("./", "").replace(".png", ""); // '대한민국.png' → '대한민국'
+    images[key] = r(item);
+  });
+  return images;
 }
 
 const AddSellerModal = ({ isOpen, onClose, onPrev, onNext, wineInfo }: AddSellerModalProps) => {
@@ -57,22 +73,69 @@ const AddSellerModal = ({ isOpen, onClose, onPrev, onNext, wineInfo }: AddSeller
       taste,
       rating,
     };
+
+    // 다음 단계로 이동하기 전에 현재 상태 초기화
+    setDrinkDate(getTodayDate());
+    setSelectedCompanion("혼자");
+    setFood("");
+    setNote("");
+    setTaste("");
+    setRating(0);
+
     onNext(drinkData);
   };
 
+  // onClose 시에도 초기화
+  const handleClose = () => {
+    setDrinkDate(getTodayDate());
+    setSelectedCompanion("혼자");
+    setFood("");
+    setNote("");
+    setTaste("");
+    setRating(0);
+    onClose();
+  };
+
+  const getDefaultImageByType = (type: string | undefined) => {
+    switch (type?.toLowerCase()) {
+      case "레드":
+        return redWineImage;
+      case "화이트":
+        return whiteWineImage;
+      case "로제":
+        return roseWineImage;
+      case "스파클링":
+        return sparklingWineImage;
+      default:
+        return redWineImage;
+    }
+  };
+
+  const getWineImage = () => {
+    const img = wineInfo.image;
+    if (!img || img === "no_image" || img === "") {
+      return getDefaultImageByType((wineInfo as any).type || (wineInfo as any).typeName);
+    }
+    return img;
+  };
+
   return (
-    <div style={styles.overlay} onClick={onClose}>
+    <div style={styles.overlay} onClick={handleClose}>
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <img src={closebutton} alt="닫기" style={styles.closeButton} onClick={onClose} />
+        <img src={closebutton} alt="닫기" style={styles.closeButton} onClick={handleClose} />
 
         <h2 style={styles.title}>와인 수집</h2>
         <p style={styles.subtitle}>
-          {wineInfo.grape}
-          <img src={`/flags/${wineInfo.country}.png`} alt={wineInfo.country} style={styles.flagIcon} />
+          {wineInfo.grape}{" "}
+          {flags[wineInfo.country] ? (
+            <img src={flags[wineInfo.country]} alt={wineInfo.country} style={styles.flagIcon} />
+          ) : (
+            <span style={{ fontSize: "1.4vh", color: "#FFD447", marginLeft: "0.5vh" }}>{wineInfo.country}</span>
+          )}
         </p>
 
         <div style={styles.wineContainer}>
-          <img src={wineInfo.image || "/sample_image/whitewine_pixel.png"} alt="와인" style={styles.wineImage} />
+          <img src={getWineImage()} alt="와인" style={styles.wineImage} />
           <p style={styles.wineName}>{wineInfo.name.toUpperCase()}</p>
         </div>
 
@@ -172,9 +235,9 @@ const styles: { [key: string]: React.CSSProperties } = {
   /* 오버레이 스타일 */
   overlay: {
     position: "fixed",
-    left: -20,
+    left: -21,
     right: -20,
-    top: 25,
+    top: -6,
     bottom: 0,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     display: "flex",

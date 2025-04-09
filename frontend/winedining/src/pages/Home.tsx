@@ -34,11 +34,6 @@ function Home() {
 
   const testCompleted = useSelector((state: RootState) => state.test.testCompleted);
 
-  const [isTutorialOpen, setIsTutorialOpen] = useState(false);
-  const [tutorialPage, setTutorialPage] = useState(0);
-
-  const tutorialImages = [p1, p2, p3, p4];
-
   useEffect(() => {
     if (status === "idle") {
       dispatch(fetchUserProfile());
@@ -204,35 +199,11 @@ const wineListPositionStyle: React.CSSProperties = {
   left: "15%", // 화면 너비 기준 25%
 };
 
-const tutorialPositionStyle: React.CSSProperties = {
-  position: "absolute",
-  bottom: "5%",
-  left: "5%",
-  width: vh(6), // 버튼 전체 크기
-  height: vh(6),
-  backgroundColor: "#111", // 검정 배경
-  borderRadius: "50%", // 완전 동그라미
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  padding: 0,
-  border: "none",
-  zIndex: 999,
-  cursor: "pointer",
-};
-
-const tutorialIconStyle: React.CSSProperties = {
-  width: vh(2.2), // 이미지 자체는 더 작게
-  height: vh(3.5),
-  objectFit: "contain",
-  cursor: "pointer",
-};
-
 const dictionaryPositionStyle: React.CSSProperties = {
   position: "absolute",
   zIndex: 999,
   bottom: "5%",
-  right: "19%",
+  right: "20%",
 };
 
 const myPagePositionStyle: React.CSSProperties = {

@@ -20,7 +20,7 @@ export const fetchInfoDetail = async (infoId: number): Promise<InfoDetail> => {
     const response = await api.get<InfoDetailResponse>(`/api/v1/info/wine/${infoId}`);
     return response.data.data;
   } catch (error) {
-    console.log("알쓸신잡 상세보기 실패", error);
+    // console.log("알쓸신잡 상세보기 실패", error);
     throw error;
   }
 };

@@ -7,7 +7,7 @@ interface BackButtonProps {
 const BackButton: React.FC<BackButtonProps> = ({ onClick }) => {
   return (
     <button style={styles.button} onClick={onClick}>
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="19" viewBox="0 0 8 12" fill="none">
+      <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 8 14" fill="none">
         <path d="M8 2L3 7L8 12L7 14L0 7L7 0L8 2Z" fill="#C1C1C1" />
       </svg>
     </button>
@@ -16,11 +16,14 @@ const BackButton: React.FC<BackButtonProps> = ({ onClick }) => {
 
 const styles: { [key: string]: React.CSSProperties } = {
   button: {
+    position: "fixed",
     backgroundColor: "transparent",
     border: "none",
     cursor: "pointer",
-    padding: "2.5vh 1.25vh",
-    flexShrink: 0,
+    padding: "2.5vh 2.5vh",
+    top: "1.875vh",
+    left: "0vh",
+    zIndex: 99,
   },
 };
 

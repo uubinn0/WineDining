@@ -4,6 +4,7 @@ import { AppDispatch } from "../../store/store"; // store 경로에 맞게 수�
 import { updateNickname } from "../../store/slices/authSlice";
 import { deleteUser } from "../../store/slices/authSlice";
 import { useNavigate } from "react-router-dom";
+import { vh } from "../../utils/vh";
 
 interface EditModalProps {
   isOpen: boolean;
@@ -41,7 +42,7 @@ const EditModal = ({ nickname: initialNickname, isOpen, onClose, onNicknameUpdat
       setError("");
       onClose();
     } catch (error) {
-      console.error("닉네임 변경 실패:", error);
+      // console.error("닉네임 변경 실패:", error);
       setError("닉네임 변경에 실패했습니다. 다시 시도해주세요.");
     }
   };
@@ -53,7 +54,7 @@ const EditModal = ({ nickname: initialNickname, isOpen, onClose, onNicknameUpdat
         alert("탈퇴가 완료되었습니다. 이용해주셔서 감사합니다!");
         navigate("/");
       } catch (err) {
-        console.error("회원탈퇴 실패:", err);
+        // console.error("회원탈퇴 실패:", err);
         alert("탈퇴 중 문제가 발생했습니다. 다시 시도해주세요.");
       }
     }
@@ -103,80 +104,93 @@ const styles: { [key: string]: React.CSSProperties } = {
   modal: {
     position: "relative",
     backgroundColor: "#2a0e35",
-    border: "4px solid #d4b27a",
-    padding: "20px 24px",
+    border: "0.4vh solid #d4b27a",
+    padding: "2vh 2.4vh",
     width: "80%",
     maxWidth: "340px",
-    borderRadius: "12px",
+    borderRadius: "1.2vh",
     textAlign: "left",
     color: "white",
   },
   closeButton: {
     position: "absolute",
-    top: "10px",
-    right: "12px",
+    top: "1vh",
+    right: "1.2vh",
     background: "none",
     border: "none",
-    fontSize: "16px",
+    fontSize: "1.6vh",
     color: "white",
     cursor: "pointer",
   },
   title: {
     textAlign: "center",
-    fontSize: "18px",
-    marginBottom: "30px",
+    fontSize: "2.2vh",
+    marginBottom: "3.3vh",
   },
   inputRow: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: "16px",
+    marginBottom: "2vh",
   },
   label: {
-    fontSize: "16px",
+    fontSize: "1.8vh",
     color: "white",
-    marginRight: "10px",
+    marginRight: "1.2vh",
   },
   input: {
     flexGrow: 1,
     backgroundColor: "transparent",
     border: "none",
-    borderBottom: "2px solid white",
+    borderBottom: "0.2vh solid white",
     color: "white",
-    padding: "4px",
-    fontSize: "16px",
+    padding: "0.4vh",
+    fontSize: "1.8vh",
     outline: "none",
+    fontFamily: "Galmuri9",
   },
   error: {
-    fontSize: "10px",
+    fontSize: "1.3vh",
     color: "#ff4d4d",
     textAlign: "center",
-    marginTop: "-8px",
-    marginBottom: "8px",
+    marginTop: "-1vh",
+    marginBottom: "1vh",
   },
   buttonRow: {
     display: "flex",
     justifyContent: "flex-end",
-    gap: "5px",
-    marginTop: "10px",
+    gap: "1vh",
+    marginTop: "1vh",
   },
   cancelButton: {
-    backgroundColor: "#ffffff",
-    color: "#000",
-    padding: "8px 10px",
-    borderRadius: "4px",
-    border: "2px solid #000",
-    fontSize: "10px",
+    backgroundColor: "#FFFFFF",
+    minWidth: "6.25vh", // 50px (50/8)
+    color: "#000000",
+    fontSize: "1.25vh", // 10px (10/8)
+    border: "none",
+    padding: "1vh 1vh", // 4px 8px (4/8, 8/8)
+    borderRadius: "0.75vh", // 6px (6/8)
     cursor: "pointer",
+    fontFamily: "Galmuri7",
+    textAlign: "center",
+    boxShadow: `${vh(0.6)} ${vh(0.6)} 0 #000`,
+    transition: "all 0.2s ease",
+    whiteSpace: "nowrap",
   },
   confirmButton: {
-    backgroundColor: "#ffffff",
-    color: "#000",
-    padding: "8px 10px",
-    borderRadius: "4px",
-    border: "2px solid #000",
-    fontSize: "10px",
+    backgroundColor: "#FFFFFF",
+    minWidth: "6.25vh", // 50px (50/8)
+    color: "#000000",
+    fontSize: "1.25vh", // 10px (10/8)
+    border: "none",
+    padding: "1vh 1vh", // 4px 8px (4/8, 8/8)
+    borderRadius: "0.75vh", // 6px (6/8)
     cursor: "pointer",
+    fontFamily: "Galmuri7",
+    textAlign: "center",
+    boxShadow: `${vh(0.6)} ${vh(0.6)} 0 #000`,
+    transition: "all 0.2s ease",
+    whiteSpace: "nowrap",
   },
 };
 

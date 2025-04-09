@@ -60,7 +60,7 @@ const WineSellerList = () => {
           const res = await fetchWineNotes(bottle.bottleId);
           counts[bottle.bottleId] = res.notes.length;
         } catch (err) {
-          console.warn(`노트 가져오기 실패: bottleId ${bottle.bottleId}`);
+          // console.warn(`노트 가져오기 실패: bottleId ${bottle.bottleId}`);
         }
       }
       setNoteCounts(counts);
@@ -109,11 +109,11 @@ const WineSellerList = () => {
       </div>
 
       <PixelTitle
-        text="MY WINE SELLER"
+        text="MY WINE CELLAR"
         imageSrc="/sample_image/yellow_lightning.png"
-        fontSize="16px"
+        fontSize="1.8vh"
         color="#fefefe"
-        imageSize="24px"
+        imageSize="2.8vh"
       />
 
       {/* 베스트 와인 영역 */}
@@ -129,7 +129,9 @@ const WineSellerList = () => {
               return (
                 <div key={`placeholder-${index}`} style={styles.bestWineCard}>
                   <div style={styles.bestBadge}>BEST</div>
-                  <img src={sampleimg} alt="Wine Sample" style={styles.bestWineImage} />
+                  <div style={styles.imageBox}>
+                    <img src={sampleimg} alt="Wine Sample" style={styles.bestWineImage} />
+                  </div>
                   <p style={styles.bestWineName}>등록된 와인 없음</p>
                 </div>
               );
@@ -205,6 +207,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     top: vh(2),
     left: vh(2),
   },
+  /* best wine 부분 */
   bestWinesSection: {
     marginBottom: vh(3),
     display: "flex",
@@ -227,7 +230,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    boxShadow: "0 2px 6px rgba(0, 0, 0, 0.3)",
+    boxShadow: "0 0.2vh 0.6vh rgba(0, 0, 0, 0.3)",
     overflow: "hidden",
   },
   bestBadge: {
@@ -246,7 +249,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     width: vh(8),
     height: vh(8),
     objectFit: "contain",
-    marginBottom: vh(1),
+    marginBottom: vh(-3),
   },
   bestWineName: {
     fontSize: vh(1.5),
@@ -254,6 +257,14 @@ const styles: { [key: string]: React.CSSProperties } = {
     padding: `0 ${vh(1)}`,
     wordBreak: "keep-all",
     color: "#888",
+    marginTop: vh(3),
+  },
+  /* 이미지 박스 */
+  imageBox: {
+    height: vh(10),
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   headerContainer: {
     position: "sticky",

@@ -94,7 +94,7 @@ const WineInfoCard = ({ wine, onClick }: WineInfoCardProps) => {
           alt={wine.name}
           style={styles.image}
           onError={(e) => {
-            (e.target as HTMLImageElement).src = "/sample_image/wine_sample.jpg";
+            (e.target as HTMLImageElement).src = getDefaultImageByType(wine.type);
           }}
         />
       </div>
@@ -204,6 +204,12 @@ const styles: { [key: string]: React.CSSProperties } = {
     padding: "0.5vh 1vh", // 4px 8px (4/8, 8/8)
     borderRadius: "0.75vh", // 6px (6/8)
     cursor: "pointer",
+    display: "inline-block",
+    fontFamily: "Galmuri7",
+    textAlign: "center",
+    boxShadow: `${vh(0.6)} ${vh(0.6)} 0 #000`,
+    transition: "all 0.2s ease",
+    whiteSpace: "nowrap",
   },
   /* 국기 아이콘 */
   flagIcon: {

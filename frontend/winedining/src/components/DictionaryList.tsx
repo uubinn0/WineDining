@@ -12,15 +12,34 @@ const KnowledgeList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { infos, selectedInfo, loading } = useSelector((state: RootState) => state.info);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { user } = useSelector((state: RootState) => state.auth);
+
 
   useEffect(() => {
     dispatch(fetchInfos());
-  }, [dispatch]);
+    }, [dispatch]);
+    
 
   const handleCardClick = async (knowledge: InfoItem) => {
-    await dispatch(fetchInfoDetailThunk(knowledge.id));
-    setIsModalOpen(true);
+    if (knowledge.title === "???") {
+      // "???" 카드를 클릭했을 때, 레벨 부족 메시지 설정
+      dispatch({
+        type: 'info/setSelectedInfo', // selectedInfo 설정하는 액션
+        payload: {
+          id: -1,
+          title: "???",
+          image: DeactiveBook,
+          content: "아직 레벨이 부족하군요. \n와인기록을 통해 레벨을 올려보세요.",
+        }
+      });
+      setIsModalOpen(true); // 모달 열기
+    } else {
+      // 기존 정보 클릭 시, 와인 상세 정보 가져오기
+      await dispatch(fetchInfoDetailThunk(knowledge.id));
+      setIsModalOpen(true); // 모달 열기
+    }
   };
+
 
   const totalCards = 6;
   const cardsToDisplay = [
@@ -34,49 +53,64 @@ const KnowledgeList: React.FC = () => {
       id: -1,
       title: "???",
       image: DeactiveBook,
-      content: "아직 비밀입니다...두둥둥",
+      content: "아직 레벨이 부족하군요. \n와인기록을 통해 레벨을 올려보세요.",
     }),
   ];
 
   return (
     <div style={styles.container}>
-      <div style={styles.cardContainer}>
-        {cardsToDisplay.map((knowledge, index) => (
-          <KnowledgeCard
-            key={index}
-            image={knowledge.image}
-            title={knowledge.title}
-            isColor={knowledge.title !== "???"}
-            onClick={() => {
-              if (knowledge.title !== "???") {
-                handleCardClick(knowledge);
-              }
-            }}
-          />
-        ))}
-      </div>
+      <div style={styles.overlay}>
+
+      {user?.rank === "초보자" ? (
+        <div style={styles.messageContainer}>
+          <div style={styles.message}>
+            입문자 이상만 <br />열람 가능합니다.
+          </div>
+        </div>
+      ) : (
+        <div style={styles.cardContainer}>
+          {cardsToDisplay.map((knowledge, index) => (
+            <KnowledgeCard
+              key={index}
+              image={knowledge.image}
+              title={knowledge.title}
+              isColor={knowledge.title !== "???"}
+              onClick={() => handleCardClick(knowledge)}
+            />
+          ))}
+        </div>
+      )}
 
       {/* 클릭된 카드에 대한 정보 모달 */}
       {isModalOpen && selectedInfo && (
         <KnowledgeDetailModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       )}
     </div>
+    
+    </div>
   );
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
-    padding: "20px",
-    textAlign: "center",
     display: "flex",
     justifyContent: "center",
-    // alignItems : "center",
-    // height : "100%"
   },
   cardContainer: {
+    padding : "2vh",
     display: "grid",
     gridTemplateColumns: "repeat(2, 1fr)", // 2개의 컬럼으로 설정
-    justifyContent: "center",
+    gap : "2vh",
+  },
+  messageContainer: {
+    paddingTop : "50%",
+    textAlign: "center",
+    height: "100vh",
+  },
+  message: {
+    fontSize: "2.5vh",
+    color: "white", // 메시지 색상
+    fontFamily: "Galmuri9",
   },
 };
 

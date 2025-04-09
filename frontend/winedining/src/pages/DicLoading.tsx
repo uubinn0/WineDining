@@ -11,8 +11,8 @@ function DicLoading() {
   };
 
   return (
-    <div style={styles.container} onClick={() => {navigate("/dictionary")}}>
-      <video autoPlay playsInline muted onEnded={handleVideoEnd} style={styles.video}>
+    <div style={styles.container}>
+      <video autoPlay playsInline muted onEnded={handleVideoEnd} style={styles.video} onClick={() => {navigate("/dictionary")}}>
         <source src="/videos/bookvideos.mp4" type="video/mp4" />
       </video>
     </div>

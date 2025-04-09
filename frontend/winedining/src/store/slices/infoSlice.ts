@@ -4,7 +4,7 @@ import { fetchInfo as fetchInfoApi, fetchInfoDetail as fetchInfoDetailApi } from
 
 interface InfoState {
   infos: InfoItem[];
-  selectedInfo: InfoDetail | null;
+  selectedInfo: InfoDetail | { title: string; content: string } | null;
   loading: boolean;
   error: string | null;
 }
@@ -49,6 +49,10 @@ const infoSlice = createSlice({
     clearSelectedInfo(state) {
       state.selectedInfo = null;
     },
+    // ✅ selectedInfo 수동 설정용 액션 추가
+    setSelectedInfo(state, action: PayloadAction<{ title: string; content: string }>) {
+      state.selectedInfo = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -82,5 +86,5 @@ const infoSlice = createSlice({
   },
 });
 
-export const { clearSelectedInfo } = infoSlice.actions;
+export const { clearSelectedInfo, setSelectedInfo } = infoSlice.actions;
 export default infoSlice.reducer;

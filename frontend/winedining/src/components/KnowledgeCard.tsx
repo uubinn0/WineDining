@@ -19,7 +19,7 @@ const KnowledgeCard: React.FC<KnowledgeCardProps> = ({ image, title, isColor, on
         }}
       />
       <div style={styles.cardContent}>
-        <h3>{title}</h3>
+        <div>{title}</div>
       </div>
     </div>
   );
@@ -27,32 +27,34 @@ const KnowledgeCard: React.FC<KnowledgeCardProps> = ({ image, title, isColor, on
 
 const styles: { [key: string]: React.CSSProperties } = {
   card: {
-    width: "130px",
-    height: "170px",
-    margin: "10px",
-    borderRadius: "8px",
+    width: "auto",
+    height: "80%",
+    borderRadius: "1vh",
     backgroundColor: "#21101B",
     border : "solid 5px #D6BA91",
     cursor: "pointer",
-    padding : "10px",
+    padding : "2vh",
     display : "flex",
     flexDirection: "column",
     justifyContent : "center",
-    alignItems : "center"
+    alignItems : "center",
+    margin : "1vh",
   },
   image: {
     width: "80%",
   },
   cardContent: {
-    fontSize : "10px",
+    fontSize : "1.5vh",
     display : "flex",
     flexDirection : "column",
     justifyContent : "center",
+    fontFamily : "Galmuri9",
+    fontWeight : "700",
     textAlign: "center",
     backgroundColor : "white",
-    borderRadius : "4px",
-    width: "122px",
-    height: "28px",
+    borderRadius : "1vh",
+    width: "80%",
+    padding : "1vh",
     wordBreak : "keep-all",
   },
 };

@@ -69,7 +69,7 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext, onCustomNext }: AddSeller1Mo
       }
       setHasMore(response.wines.length === 20);
     } catch (error) {
-      console.error("와인 검색 오류:", error);
+      // console.error("와인 검색 오류:", error);
       setError("검색 중 오류가 발생했습니다");
     } finally {
       setLoading(false);
@@ -139,7 +139,7 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext, onCustomNext }: AddSeller1Mo
 
       setHasMore(newWines.length === 20);
     } catch (error) {
-      console.error("와인 검색 오류:", error);
+      // console.error("와인 검색 오류:", error);
       setError("검색 중 오류가 발생했습니다");
     } finally {
       setLoading(false);
@@ -262,7 +262,14 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext, onCustomNext }: AddSeller1Mo
                     onClick={() => handleSelectWine(wine)}
                   >
                     <div style={styles.wineItemContent}>
-                      <img src={getWineImage(wine.image, wine.type)} alt={wine.name} style={styles.wineItemImage} />
+                      <img
+                        src={getWineImage(wine.image, wine.type)}
+                        alt={wine.name}
+                        style={styles.wineItemImage}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = getDefaultImageByType(wine.type);
+                        }}
+                      />
                       <div>
                         <p style={styles.wineName}>{wine.name}</p>
                         <p style={styles.wineDetail}>
@@ -292,6 +299,9 @@ const AddSeller1Modal = ({ isOpen, onClose, onNext, onCustomNext }: AddSeller1Mo
                 src={getWineImage(selectedWine.image, selectedWine.type)}
                 alt={selectedWine.name}
                 style={styles.wineImage}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = getDefaultImageByType(selectedWine.type);
+                }}
               />
               <p style={styles.selectedWineName}>{selectedWine.name}</p>
               <p style={styles.selectedWineDetail}>
@@ -520,7 +530,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   nextButton: {
     width: "30%",
-    maxWidth: vh(44), // 약 350px 기준
+    maxWidth: vh(44),
     position: "relative",
     display: "inline-block",
     backgroundColor: "#ddd",

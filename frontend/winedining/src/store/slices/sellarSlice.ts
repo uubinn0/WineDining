@@ -199,7 +199,7 @@ const cellarSlice = createSlice({
       // 커스텀 와인 등록
       .addCase(registerCustomWine.fulfilled, (state, action: PayloadAction<Bottle>) => {
         if (!action.payload || !action.payload.wine) {
-          console.warn("⚠️ [cellarSlice] 응답 payload에 문제가 있습니다:", action.payload);
+          // console.warn("⚠️ [cellarSlice] 응답 payload에 문제가 있습니다:", action.payload);
           return;
         }
         const alreadyExists = state.bottles.some((bottle) => {
@@ -207,7 +207,7 @@ const cellarSlice = createSlice({
           return bottle.wine.name === action.payload.wine.name;
         });
         if (!alreadyExists) {
-          console.log("✅ [cellarSlice] 커스텀 와인 등록 완료:", action.payload);
+          // console.log("✅ [cellarSlice] 커스텀 와인 등록 완료:", action.payload);
           state.bottles.push(action.payload);
           state.totalCount++;
         }

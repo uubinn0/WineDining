@@ -150,6 +150,7 @@ const WineSellerDetailModal = ({ isOpen, onClose, bottle }: WineSellerDetailModa
   const handleAddStep3Close = () => {
     setIsAddStep3Open(false);
     setNewNoteData(null);
+    setIsAddStep2Open(false); // 추가: 두 번째 단계 모달도 닫기
   };
 
   const getDefaultImageByType = (type: string | undefined) => {
@@ -346,7 +347,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   modal: {
     backgroundColor: "#2a0035",
-    border: "3px solid #FDEBD0",
+    border: "0.3vh solid #FDEBD0",
     borderRadius: vh(2),
     padding: vh(2),
     width: "80%",
@@ -357,6 +358,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     msOverflowStyle: "none",
     maxHeight: "80vh",
     position: "relative",
+    maxWidth: "360px",
   },
   /* 닫기 버튼 */
   closeButton: {
@@ -390,8 +392,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   /* 와인 이미지 */
   wineImage: {
-    width: vh(8),
-    height: vh(12),
+    width: vh(20),
+    height: vh(20),
     display: "block",
     margin: `${vh(1)} auto`,
   },
@@ -399,8 +401,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   name: {
     textAlign: "center",
     color: "#FFD447",
-    fontSize: "16px",
-    marginBottom: "15px",
+    fontSize: "1.9vh",
+    marginBottom: "1.5vh",
   },
 
   /* 리뷰 감싸는 박스 */
@@ -414,13 +416,13 @@ const styles: { [key: string]: React.CSSProperties } = {
   imageList: {
     display: "flex",
     gap: vh(1.5),
-    marginTop: "8px",
+    marginTop: "0.8vh",
   },
   /* 리뷰 사진 */
   noteImage: {
-    width: "60px",
-    height: "60px",
-    borderRadius: "6px",
+    width: "8vh",
+    height: "7vh",
+    borderRadius: vh(0.6),
     objectFit: "cover",
   },
   label: {

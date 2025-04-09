@@ -36,13 +36,13 @@ const WineList = () => {
       country: [],
       minPrice: 0,
       maxPrice: 1500000,
-      minSweetness: 1,
+      minSweetness: 0,
       maxSweetness: 5,
-      minAcidity: 1,
+      minAcidity: 0,
       maxAcidity: 5,
-      minTannin: 1,
+      minTannin: 0,
       maxTannin: 5,
-      minBody: 1,
+      minBody: 0,
       maxBody: 5,
       pairing: [],
     },
@@ -119,15 +119,14 @@ const WineList = () => {
 
   return (
     <div style={styles.container}>
-      <div style={styles.backButtonWrapper}>
-        <BackButton onClick={() => navigate("/home")} />
-      </div>
+      <BackButton onClick={() => navigate("/home")} />
+
       <PixelTitle
         text="WINE"
         imageSrc="/sample_image/yellow_lightning.png"
-        fontSize="16px"
+        fontSize="1.8vh"
         color="#fefefe"
-        imageSize="24px"
+        imageSize="2.8vh"
       />
 
       {/* 검색 */}
@@ -173,11 +172,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     padding: "2.2vh",
     position: "relative",
   },
-  backButtonWrapper: {
-    position: "absolute",
-    top: "1.8vh",
-    left: "1.8vh",
-  },
+  // backButtonWrapper: {
+  //   // position: "absolute",
+  //   // top: "1.8vh",
+  //   // left: "1.8vh",
+  // },
   searchBox: {
     display: "flex",
     justifyContent: "center",
@@ -198,11 +197,12 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: "1.8vh",
     color: "#ccc",
     marginRight: "2vh",
+    marginTop: "-2vh",
   },
   wineListContainer: {
     maxHeight: "60vh",
     overflowY: "auto",
     paddingRight: "0.9vh",
-    marginTop: "2.2vh",
+    marginTop: "2vh",
   },
 };

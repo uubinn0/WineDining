@@ -55,7 +55,7 @@ const AddCustomWineModal = ({ isOpen, onClose, onComplete }: AddCustomWineModalP
   return (
     <div style={styles.overlay} onClick={onClose}>
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <h2 style={{ textAlign: "center", color: "#FFD447", fontSize: "18px" }}>커스텀 와인 등록</h2>
+        <h2 style={{ textAlign: "center", color: "#FFD447", fontSize: "1.8vh" }}>커스텀 와인 등록</h2>
         <img src={closeButton} alt="닫기" style={styles.closeButton} onClick={onClose} />
 
         <label style={styles.label}>이름</label>

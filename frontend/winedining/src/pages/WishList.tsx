@@ -44,9 +44,9 @@ const WishList = () => {
         <PixelTitle
           text="WISH LIST"
           imageSrc="/sample_image/yellow_lightning.png"
-          fontSize="16px"
+          fontSize="1.8vh"
           color="#fefefe"
-          imageSize="24px"
+          imageSize="2.8vh"
         />
       </div>
       {status === "loading" && <p>위시리스트를 불러오는 중...</p>}

@@ -256,7 +256,7 @@ const WineFilterBar = ({ filter, onChange }: WineFilterBarProps) => {
     if (key === "minPrice" && value !== 0) return true;
     if (key === "maxPrice" && value !== 1500000) return true;
     if (key.startsWith("min") || key.startsWith("max")) {
-      const defaultRange = { min: 1, max: 5 };
+      const defaultRange = { min: 0, max: 5 };
       return (
         (key.startsWith("min") && value !== defaultRange.min) || (key.startsWith("max") && value !== defaultRange.max)
       );
@@ -352,7 +352,7 @@ const WineFilterBar = ({ filter, onChange }: WineFilterBarProps) => {
                     <div style={styles.tasteLabel}>{label}</div>
                     <input
                       type="range"
-                      min={1}
+                      min={0}
                       max={5}
                       value={min}
                       onChange={(e) => handleTasteRangeChange(minKey, maxKey, Number(e.target.value), max)}
@@ -360,7 +360,7 @@ const WineFilterBar = ({ filter, onChange }: WineFilterBarProps) => {
                     />
                     <input
                       type="range"
-                      min={1}
+                      min={0}
                       max={5}
                       value={max}
                       onChange={(e) => handleTasteRangeChange(minKey, maxKey, min, Number(e.target.value))}
@@ -451,7 +451,7 @@ const WineFilterBar = ({ filter, onChange }: WineFilterBarProps) => {
             ) {
               const maxKey = key.replace("min", "max") as keyof typeof filter.filters;
               const maxValue = filter.filters[maxKey] as number;
-              if (value !== 1 || maxValue !== 5) {
+              if (value !== 0 || maxValue !== 5) {
                 const tasteLabelMap: { [key: string]: string } = {
                   minSweetness: "당도",
                   minAcidity: "산도",
@@ -469,7 +469,7 @@ const WineFilterBar = ({ filter, onChange }: WineFilterBarProps) => {
                           page: 1,
                           filters: {
                             ...filter.filters,
-                            [key]: 1,
+                            [key]: 0,
                             [maxKey]: 5,
                           },
                         });
