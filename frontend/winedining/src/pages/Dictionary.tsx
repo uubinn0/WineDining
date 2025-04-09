@@ -68,7 +68,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: "center",
     marginTop: "6dvh",
     position: "sticky",
-    zIndex: 1000,
+    zIndex: 2,
   },
   image: {
     width: "2vh",
