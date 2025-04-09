@@ -5,13 +5,19 @@ import { AppDispatch, RootState } from "../store/store";
 import { fetchUserProfile, logoutUser } from "../store/slices/authSlice";
 import { setCameFromRecommendFlow } from "../store/slices/testSlice";
 
-
 import Homebackground from "../assets/images/background/Home.png";
 import mypageIcon from "../assets/icons/mypageicon.png";
 import winelistIcon from "../assets/icons/winelisticon.png";
 import dictionaryIcon from "../assets/icons/dictionaryicon.png";
 import bartender from "../assets/icons/bartender.png";
 import quest from "../assets/icons/questicon.png";
+import qa from "../assets/icons/qa.png";
+import PixelButton from "../components/PixelButton"; // ← PixelButton 경로 맞게 import 해줘!
+
+import p1 from "../assets/tutorial/p1.png";
+import p2 from "../assets/tutorial/p2.png";
+import p3 from "../assets/tutorial/p3.png";
+import p4 from "../assets/tutorial/p4.png";
 
 import { vh } from "../utils/vh";
 // GA 이벤트 헬퍼 (유틸리티 함수)
@@ -26,7 +32,12 @@ function Home() {
   // 최초 클릭 여부를 기록할 상태
   const [firstButtonClicked, setFirstButtonClicked] = useState(false);
 
-  const testCompleted = useSelector((state: RootState) => state.test.testCompleted);  
+  const testCompleted = useSelector((state: RootState) => state.test.testCompleted);
+
+  const [isTutorialOpen, setIsTutorialOpen] = useState(false);
+  const [tutorialPage, setTutorialPage] = useState(0);
+
+  const tutorialImages = [p1, p2, p3, p4];
 
   useEffect(() => {
     if (status === "idle") {
@@ -64,6 +75,45 @@ function Home() {
 
   return (
     <div style={homeContainer}>
+      {isTutorialOpen && (
+        <div style={tutorialModalOverlay}>
+          <div style={tutorialModalContent}>
+            <img
+              src={tutorialImages[tutorialPage]}
+              alt={`튜토리얼 ${tutorialPage + 1}`}
+              style={tutorialImageStyle}
+              onClick={() => {
+                if (tutorialPage < tutorialImages.length - 1) {
+                  setTutorialPage(tutorialPage + 1);
+                } else {
+                  setIsTutorialOpen(false);
+                  setTutorialPage(0);
+                }
+              }}
+            />
+            <div style={tutorialButtonGroup}>
+              <PixelButton
+                onClick={() => {
+                  if (tutorialPage < tutorialImages.length - 1) {
+                    setTutorialPage(tutorialPage + 1);
+                  } else {
+                    setIsTutorialOpen(false);
+                    setTutorialPage(0);
+                  }
+                }}
+                width="10vh"
+                height="3vh"
+                backgroundColor="#d4b27a"
+                textColor="#2a0e35"
+                fontSize="1.8vh"
+              >
+                {tutorialPage === tutorialImages.length - 1 ? "CLOSE" : "NEXT"}
+              </PixelButton>
+            </div>
+          </div>
+        </div>
+      )}
+
       <h3 style={logoutbutton} onClick={handleLogout}>
         로그아웃
       </h3>
@@ -88,6 +138,17 @@ function Home() {
       >
         <img src={winelistIcon} alt="와인리스트" style={wineListStyle} />
       </button>
+
+      <button
+        style={{ ...buttonStyle, ...tutorialPositionStyle }}
+        onClick={() => {
+          setIsTutorialOpen(true);
+          setTutorialPage(0);
+        }}
+      >
+        <img src={qa} alt="튜토리얼" style={tutorialIconStyle} />
+      </button>
+
       <button
         style={{ ...buttonStyle, ...dictionaryPositionStyle }}
         onClick={() => handleNavigationClick("/dictionaryloading", "dictionary")}
@@ -140,20 +201,44 @@ const wineListStyle: React.CSSProperties = {
 const wineListPositionStyle: React.CSSProperties = {
   position: "absolute",
   top: "45%",
-  left: "15%",   // 화면 너비 기준 25%
+  left: "15%", // 화면 너비 기준 25%
+};
+
+const tutorialPositionStyle: React.CSSProperties = {
+  position: "absolute",
+  bottom: "5%",
+  left: "5%",
+  width: vh(6), // 버튼 전체 크기
+  height: vh(6),
+  backgroundColor: "#111", // 검정 배경
+  borderRadius: "50%", // 완전 동그라미
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  padding: 0,
+  border: "none",
+  zIndex: 999,
+  cursor: "pointer",
+};
+
+const tutorialIconStyle: React.CSSProperties = {
+  width: vh(2.2), // 이미지 자체는 더 작게
+  height: vh(3.5),
+  objectFit: "contain",
+  cursor: "pointer",
 };
 
 const dictionaryPositionStyle: React.CSSProperties = {
   position: "absolute",
-  zIndex : 999,
-  bottom : "5%",
-  right: "20%",
+  zIndex: 999,
+  bottom: "5%",
+  right: "19%",
 };
 
 const myPagePositionStyle: React.CSSProperties = {
   position: "absolute",
-  zIndex : 999,
-  bottom : "5%",
+  zIndex: 999,
+  bottom: "5%",
   right: "5%",
 };
 
@@ -209,14 +294,57 @@ const modalContent: React.CSSProperties = {
   position: "relative",
   backgroundColor: "#2a0e35",
   border: "4px solid #d4b27a",
-  padding: "28px 24px",
-  width: "80%",
-  maxWidth: "340px",
+  padding: "12px 6px",
+  width: "90%",
+  maxWidth: "500px",
   borderRadius: "12px",
   textAlign: "center",
   color: "white",
   fontSize: "16px",
   lineHeight: "1.6",
+};
+const tutorialModalOverlay: React.CSSProperties = {
+  position: "fixed",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: "rgba(0, 0, 0, 0.8)",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  zIndex: 2000,
+};
+
+const tutorialModalContent: React.CSSProperties = {
+  backgroundColor: "#111",
+  padding: "16px",
+  borderRadius: "12px",
+  maxWidth: "90%",
+  width: "40vh",
+  textAlign: "center",
+};
+
+const tutorialImageStyle: React.CSSProperties = {
+  width: "100%",
+  height: "auto",
+  borderRadius: "8px",
+};
+
+const tutorialButtonGroup: React.CSSProperties = {
+  marginTop: "1vh",
+  display: "flex", // 가운데 정렬 추가
+  justifyContent: "center", // 버튼을 수평 중앙에
+};
+
+const tutorialNextButton: React.CSSProperties = {
+  padding: "10px 20px",
+  fontSize: "14px",
+  borderRadius: "6px",
+  backgroundColor: "#d4b27a",
+  color: "#2a0e35",
+  border: "none",
+  cursor: "pointer",
 };
 
 export default Home;
