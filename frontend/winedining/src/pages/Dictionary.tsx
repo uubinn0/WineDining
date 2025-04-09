@@ -3,9 +3,14 @@ import DictionaryBackground from "../assets/images/background/Dictionary.png";
 import DictionaryList from "../components/DictionaryList";
 import BackButton from "../components/BackButton"; // BackButton 컴포넌트 임포트
 import { motion } from "framer-motion";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store/store";
+
 
 function Dictionary() {
   const navigate = useNavigate();
+  const { user } = useSelector((state: RootState) => state.auth);
+
 
   return (
     <motion.div
@@ -28,16 +33,16 @@ function Dictionary() {
         <img src={"/sample_image/yellow_lightning.png"} alt={"번개 이미지"} style={styles.image} />
       </div>
 
-      {/* {user?.rank === "초보자" ? (
+      {user?.rank === "초보자" ? (
         <div style={styles.messageContainer}>
           <div style={styles.message}>
             입문자 이상만 <br />열람 가능합니다.
           </div>
         </div>
-      ) : ( */}
+      ) : (
       <DictionaryList />
 
-    {/* )} */}
+    )}
               
       </div>
     </motion.div>
@@ -84,6 +89,15 @@ const styles: { [key: string]: React.CSSProperties } = {
   image: {
     width: "2vh",
     height: "3vh",
+  },
+  messageContainer: {
+    paddingTop : "50%",
+    textAlign: "center",
+  },
+  message: {
+    fontSize: "2.5vh",
+    color: "white", // 메시지 색상
+    fontFamily: "Galmuri9",
   },
 };
 
