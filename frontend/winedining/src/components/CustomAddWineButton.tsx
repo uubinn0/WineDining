@@ -39,6 +39,7 @@ const CustomAddWineButton = () => {
     setIsStep1Open(false);
   };
 
+
   return (
     <>
       <button
@@ -49,32 +50,34 @@ const CustomAddWineButton = () => {
           setIsStep1Open(true);
         }}
         style={{
-          width: "90%",
+          width: "75%",
           margin: "0 auto", // 가운데 정렬을 위한 설정
           maxWidth: vh(44), // 약 350px 기준
           position: "relative",
           display: "inline-block",
-          backgroundColor: "#ddd",
+          backgroundColor: "#FCFCFC",
           color: "#000000",
           border: "none",
           borderRadius: vh(1),
-          padding: `${vh(1)} ${vh(3)}`,
+          padding: `${vh(1)} ${vh(1)}`,
           cursor: "pointer",
           fontFamily: "Galmuri7",
           fontSize: vh(1.5),
           textAlign: "center",
-          boxShadow: `${vh(0.6)} ${vh(0.6)} 0 #000`,
+          boxShadow: `-2px -2px 2px 0px rgba(0, 0, 0, 0.25) inset`, // 새로운 box-shadow
+          filter: `drop-shadow(${vh(0.6)} ${vh(0.7)} 0px rgba(0, 0, 0, 0.6))`,
+
           transition: "all 0.2s ease",
           whiteSpace: "nowrap",
         }}
         onMouseDown={(e) => {
-          (e.target as HTMLButtonElement).style.boxShadow = `${vh(0.2)} ${vh(0.2)} 0 #000`;
+          (e.target as HTMLButtonElement).style.boxShadow = `${vh(0.5)} ${vh(0.6)} 0px rgba(0, 0, 0, 0.6)`;
         }}
         onMouseUp={(e) => {
-          (e.target as HTMLButtonElement).style.boxShadow = `${vh(0.4)} ${vh(0.4)} 0 #000`;
+          (e.target as HTMLButtonElement).style.boxShadow = `${vh(0.5)} ${vh(0.6)} 0px rgba(0, 0, 0, 0.6)`;
         }}
       >
-        + 내가 마신 와인 WINE SELLER 추가하기
+        + 내가 마신 와인 추가하기 +
       </button>
 
       <AddSeller1Modal
