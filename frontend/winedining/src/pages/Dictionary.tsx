@@ -46,7 +46,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     zIndex: 99,
   },
   content :{
-    height: "80dvh",
+    height: "100%",
   },
   container: {
     backgroundImage: `url(${DictionaryBackground})`,
