@@ -46,7 +46,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     height: "100dvh",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "center",
+    // justifyContent: "center",
     overflow : "hidden"
   },
   headertext: {
@@ -54,12 +54,12 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: "2vh",
     color: "white",
     display: "flex",
-    alignItems: "center", // ✅ 고친 부분
+    alignItems: "center",
     justifyContent: "center",
     gap: "2vh", // 번개 이미지와 간격 조정
     textAlign: "center",
     marginTop: "6dvh",
-    position: "sticky",
+    // position: "sticky",
     zIndex: 1000,
   },
   image: {
