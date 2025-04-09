@@ -47,7 +47,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    
+    overflow : "hidden"
   },
   headertext: {
     fontFamily: "PressStart2P",
