@@ -99,6 +99,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     justifyContent: "center",
     height : "85dvh",
+    marginBottom : "10vh"
   },
   cardContainer: {
     padding : "2vh",
@@ -120,7 +121,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     height: "80vh", // 카드 영역의 스크롤 한계 높이
     overflowY: "auto",
     paddingBottom : "5vh",
-    marginBottom: "5vh",
     WebkitOverflowScrolling: "touch", // iOS 부드러운 스크롤
   },
 };
