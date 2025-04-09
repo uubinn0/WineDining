@@ -47,6 +47,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
+    
   },
   headertext: {
     fontFamily: "PressStart2P",
@@ -57,7 +58,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: "center",
     gap: "2vh", // 번개 이미지와 간격 조정
     textAlign: "center",
-    marginTop: "5dvh",
+    marginTop: "6dvh",
     position: "sticky",
     top: 0,
     zIndex: 1000,

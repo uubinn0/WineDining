@@ -4,6 +4,7 @@ import { RootState } from "../store/store";
 import closeButton from "../assets/icons/closebutton.png";
 import MarkdownRenderer from "./MarkdownRenderer";
 import { motion } from "framer-motion";
+import { vh } from "../utils/vh";
 
 interface KnowledgeDetailModalProps {
   isOpen: boolean;
@@ -41,12 +42,13 @@ const styles: { [key: string]: React.CSSProperties } = {
     top: 0,
     left: 0,
     width: "100vw",
-    height: "100vh",
+    height: "100dvh",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     zIndex: 1000,
+
   },
   modal: {
     backgroundColor: "#21101B",
@@ -54,10 +56,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     padding: "2vh",
     paddingTop: "1vh",
     borderRadius: "1.3vh",
-    width: "90%",
+    width: "90dvw",
+    maxWidth : "400px",
     color: "white",
     position: "relative",
-    height: "90%",
+    height: "90dvh",
     overflowY: "auto",
     scrollbarWidth: "none",
     msOverflowStyle: "none",
