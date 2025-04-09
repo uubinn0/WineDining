@@ -98,7 +98,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     display: "flex",
     justifyContent: "center",
-    height : "90dvh"
+    height : "85dvh",
   },
   cardContainer: {
     padding : "2vh",
@@ -117,9 +117,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontFamily: "Galmuri9",
   },
   gridScrollWrapper: {
-    maxHeight: "85vh", // 카드 영역의 스크롤 한계 높이
+    maxHeight: "80vh", // 카드 영역의 스크롤 한계 높이
     overflowY: "auto",
-    paddingBottom: "2vh",
+    paddingBottom: "3vh",
     WebkitOverflowScrolling: "touch", // iOS 부드러운 스크롤
   },
 };

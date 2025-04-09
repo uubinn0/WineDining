@@ -60,7 +60,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     maxWidth : "400px",
     color: "white",
     position: "relative",
-    height: "80dvh",
+    height: "90dvh",
     overflowY: "auto",
     scrollbarWidth: "none",
     msOverflowStyle: "none",
