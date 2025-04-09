@@ -25,40 +25,40 @@ query = "SELECT * FROM wines"
 df = pd.read_sql_query(query, conn)
 conn.close()
 
-# Prepare features and scale them
-df = df.iloc[10:, :]
+df['alcohol_content_was_na'] = df['alcohol_content'].isna()
+df['alcohol_content'].fillna(round(df['alcohol_content'].mean(), 1), inplace=True)
+
 # print(idx.info())
-# idx = df['id']
-features = ['acidity', 'sweetness', 'alcohol_content', 'body', 'tannin', 'country', 'type_id']  # Adjust these based on your actual columns
+idx = df['id']
+features = ['acidity', 'sweetness', 'alcohol_content', 'body', 'tannin', 'country', 'type_id', 'alcohol_content_was_na']  # Adjust these based on your actual columns
 X = df[features]
 # print(X.info())
 
-# 결측값 -1로 처리
-X['alcohol_content'] = X['alcohol_content'].fillna(-1)
-
 # one-hot 인코딩
 X = pd.get_dummies(X, columns=['country', 'type_id'], prefix=['country','type_id'])
+print(X.head())
+print(X.info())
 
 
 
-# 가중치 설정
-weights = np.ones(X.shape[1])  # 기본 가중치 1로 초기화
+# # 가중치 설정
+# weights = np.ones(X.shape[1])  # 기본 가중치 1로 초기화
 
-# 특정 컬럼에 대한 가중치 설정
-for i, col in enumerate(X.columns):
-    if 'alcohol_content' in col:
-        weights[i] = 0.3  # alcohol 관련 특성의 가중치 낮춤
-    elif 'is_alcohol_data' in col:
-        weights[i] = 0.3  # alcohol 관련 특성의 가중치 낮춤 
+# # 특정 컬럼에 대한 가중치 설정
+# for i, col in enumerate(X.columns):
+#     if 'alcohol_content' in col:
+#         weights[i] = 0.3  # alcohol 관련 특성의 가중치 낮춤
+#     elif 'is_alcohol_data' in col:
+#         weights[i] = 0.3  # alcohol 관련 특성의 가중치 낮춤 
 
-# 가중치 적용
-X_weighted = X * weights
+# # 가중치 적용
+# X_weighted = X * weights
 
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
 # Create and train K-means model
-n_clusters = 21  # 군집 수 설정
+n_clusters = 37  # 군집 수 설정
 kmeans = KMeans(n_clusters=n_clusters, random_state=42)
 clusters = kmeans.fit_predict(X_scaled)
 # print(type(idx))
@@ -70,26 +70,34 @@ clusters = kmeans.fit_predict(X_scaled)
 
 
 # cluster visualization
-# Reduce dimensions to 2D for visualization
-pca = PCA(n_components=2)
+# Reduce dimensions to 3D for visualization
+pca = PCA(n_components=3)
 X_pca = pca.fit_transform(X_scaled)
 
-# Create scatter plot
-plt.figure(figsize=(10, 8))
-scatter = plt.scatter(X_pca[:, 0], X_pca[:, 1], c=clusters, cmap='viridis')
-plt.title('Wine Clusters Visualization')
-plt.xlabel('First Principal Component')
-plt.ylabel('Second Principal Component')
-plt.colorbar(scatter, label='Cluster Labels')
+# Create 3D scatter plot
+fig = plt.figure(figsize=(12, 10))
+ax = fig.add_subplot(111, projection='3d')
+
+# Plot the points
+scatter = ax.scatter(X_pca[:, 0], X_pca[:, 1], X_pca[:, 2], c=clusters, cmap='viridis')
 
 # Add cluster centers
 centers_pca = pca.transform(kmeans.cluster_centers_)
-plt.scatter(centers_pca[:, 0], centers_pca[:, 1], c='red', marker='x', s=200, linewidths=3, label='Cluster Centers')
+ax.scatter(centers_pca[:, 0], centers_pca[:, 1], centers_pca[:, 2], 
+           c='red', marker='x', s=200, linewidths=3, label='Cluster Centers')
+
+# Set labels
+ax.set_title('Wine Clusters 3D Visualization')
+ax.set_xlabel('First Principal Component')
+ax.set_ylabel('Second Principal Component')
+ax.set_zlabel('Third Principal Component')
+
+# Add colorbar
+plt.colorbar(scatter, label='Cluster Labels')
 plt.legend()
-plt.show()
 
 # Save the plot
-plt.savefig('wine_clusters.png')
+plt.savefig('wine_clusters_3d.png')
 plt.close()
 
 # Print explained variance ratio
@@ -98,8 +106,7 @@ print(f"Explained variance ratio: {pca.explained_variance_ratio_}")
 
 # Add cluster labels to original dataframe
 df['wine_group_id'] = clusters
-print(df.head())
-print(df.info())
+
 
 
 # Save results back to database
@@ -112,15 +119,25 @@ conn = psycopg2.connect(
 )
 cursor = conn.cursor()
 
+# Batch size 설정
+batch_size = 100
+total_records = len(df)
 
-# Insert results
-for index, row in df.iterrows():
-    cursor.execute(
+# 100개 단위로 배치 처리
+for i in range(0, total_records, batch_size):
+    batch = df.iloc[i:i+batch_size]
+    print(f"Processing batch {i//batch_size + 1} of {(total_records + batch_size - 1)//batch_size}")
+    
+    # 배치 데이터 준비
+    batch_data = [(row['wine_group_id'], row['id']) for _, row in batch.iterrows()]
+    
+    # 배치 업데이트 실행
+    cursor.executemany(
         "UPDATE wines SET wine_group_id = %s WHERE id = %s",
-        (row['wine_group_id'], row['id'])
-        # "INSERT INTO wine_clusters (wine_id, cluster_label) VALUES (%s, %s) ON CONFLICT (wine_id) DO UPDATE SET cluster_label = EXCLUDED.cluster_label",
-        # (row['id'], row['cluster'])
+        batch_data
     )
+    
+    # 각 배치마다 커밋
+    conn.commit()
 
-conn.commit()
 conn.close()
