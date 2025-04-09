@@ -60,6 +60,8 @@ const KnowledgeList: React.FC = () => {
   return (
     <div style={styles.container}>
       <div style={styles.overlay}>
+<div style={styles.gridScrollWrapper}>
+  
 
       {user?.rank === "초보자" ? (
         <div style={styles.messageContainer}>
@@ -88,6 +90,7 @@ const KnowledgeList: React.FC = () => {
     </div>
     
     </div>
+    </div>
   );
 };
 
@@ -112,6 +115,12 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: "2.5vh",
     color: "white", // 메시지 색상
     fontFamily: "Galmuri9",
+  },
+  gridScrollWrapper: {
+    maxHeight: "85vh", // 카드 영역의 스크롤 한계 높이
+    overflowY: "auto",
+    paddingBottom: "2vh",
+    WebkitOverflowScrolling: "touch", // iOS 부드러운 스크롤
   },
 };
 
