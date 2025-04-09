@@ -5,6 +5,7 @@ from sqlalchemy import text
 
 def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) -> RecommendationResponse:
     print("🚀 recommend_by_preference 호출됨")
+    print("user_id", data.userId)
     print("foodIds",   data.foodIds)
 
 
@@ -51,15 +52,18 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
         query = text("""
             SELECT wine_id, vector <=> CAST(:user_vector AS vector) AS cos
             FROM preference_wine_vectors
-                     AND vector <-> CAST(:user_vector AS vector) >= 0.5
             WHERE wine_id IN (SELECT id
                               FROM wines
                               WHERE sweetness = ANY(:sweetness)
-                                AND price <= 100000)
+                              AND price <= 100000)
+            AND vector <-> CAST(:user_vector AS vector) >= 0.5
             ORDER BY cos DESC
             LIMIT 3
         """)
-        params = {"user_vector": user_vector}
+        params = {
+            "user_vector": user_vector,
+            "sweetness": sweetness_init
+        }
 
     else:
         print("🚀 음식 ID가 있음 → 음식과 매칭된 추천 수행")
@@ -132,6 +136,28 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
         rows.extend(additional_result)
 
     result = rows
+
+    # # 4. 위시리스트 추천 
+    # # 위시리스트 데이터 조회
+    # wish_query = text("""
+    #     SELECT AVG(acidity) as acidity_avg,
+    #            AVG(alcohol_content) as alcohol_avg,
+    #            AVG(body) as body_avg,
+    #            AVG(sweetness) as sweetness_avg,
+    #            AVG(tannin) as tannin_avg
+    #     FROM wines
+    #     WHERE id IN (
+    #                 (SELECT wine_id
+    #                 FROM wish_items
+    #                 WHERE user_id = :user_id)
+        
+    # """)
+    # wish_params = {
+    #     "user_id": data.userId
+    # }
+    # wish_result = session.execute(wish_query, wish_params)
+    # wish_rows = list(wish_result)
+
 
 
     recommended_ids = [row[0] for row in result]
