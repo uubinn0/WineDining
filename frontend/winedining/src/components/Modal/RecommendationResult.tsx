@@ -1,16 +1,22 @@
 import React from "react";
+import { useState } from "react";
 import winemenu from "../../assets/images/modal/winemenu.png";
 import { WineRecommendation } from "../../types/wine";
 import defaultwineimg from "../../assets/images/winesample/defaultwine.png";
 import { vh } from "../../utils/vh";
+import WineDetailModal from "./WineDetailModal";
+import { WineDetail } from "../../types/wine";
 
 interface ModalProps {
   wines: WineRecommendation[];
   onClose: () => void;
+  // wine: Wine;
 }
 
 const RecommendationResult: React.FC<ModalProps> = ({ wines, onClose }) => {
-  //  console.log("winedata", wines)
+  const [selectedWine, setSelectedWine] = useState<WineDetail | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <div style={styles.overlay}>
       <div style={styles.modal}>
@@ -18,12 +24,22 @@ const RecommendationResult: React.FC<ModalProps> = ({ wines, onClose }) => {
         <div style={styles.textContainer}>
           <div style={styles.title}>✨ 추천 리스트 ✨</div>
           <div style={styles.wineList}>
+            {/* 와인 아이템 */}
             {wines.map((wine, index) => (
               <div key={index} style={styles.wineItem}>
                 <img src={wine.image || defaultwineimg} alt={wine.krName} style={styles.wineImage} />
                 <div>
                   <div style={styles.krName}>{wine.krName}</div>
                   <div style={styles.wineText}>{wine.description}</div>
+                  <button
+                    style={styles.detailButton}
+                    onClick={() => {
+                      setSelectedWine(wine as WineDetail); // WineDetail 타입으로 캐스팅 or 변환
+                      setIsModalOpen(true);
+                    }}
+                  >
+                    자세히 보기
+                  </button>
                 </div>
               </div>
             ))}
@@ -33,6 +49,16 @@ const RecommendationResult: React.FC<ModalProps> = ({ wines, onClose }) => {
           메인으로 돌아가기
         </button>
       </div>
+
+      {/* 상세 모달 */}
+      {selectedWine && (
+        <WineDetailModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          wine={selectedWine}
+          fromPage="recommendation"
+        />
+      )}
     </div>
   );
 };
@@ -87,9 +113,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginLeft: vh(3),
     marginRight: vh(3),
     marginBottom: vh(2),
-
     // alignItems: "stretch",
-
     // margin: vh(1),
     backgroundColor: "rgba(255, 255, 255, 0.5)",
     padding: vh(1),
@@ -124,8 +148,18 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontFamily: "Galmuri7",
     fontSize: vh(1.8),
     boxShadow: "0 0.3vh 0.8vh rgba(0,0,0,0.3)",
-    zIndex: 1010,
+    zIndex: 1000,
     cursor: "pointer",
+  },
+  detailButton: {
+    marginTop: vh(1),
+    padding: `${vh(1)} ${vh(2)}`,
+    fontSize: vh(1.8),
+    backgroundColor: "#fefefe",
+    border: "1px solid #ccc",
+    borderRadius: vh(1),
+    cursor: "pointer",
+    fontFamily: "Galmuri7",
   },
 };
 
