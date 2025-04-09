@@ -32,15 +32,15 @@ const RecommendationResult: React.FC<ModalProps> = ({ wines, onClose }) => {
                   <div style={styles.krName}>{wine.krName}</div>
                   <div style={styles.wineText}>{wine.description}</div>
                   <div style={styles.buttonWrapper}>
-                  <button
-                    style={styles.detailButton}
-                    onClick={() => {
-                      setSelectedWine(wine as WineDetail); // WineDetail 타입으로 캐스팅 or 변환
-                      setIsModalOpen(true);
-                    }}
-                  >
-                    자세히
-                  </button>
+                    <button
+                      style={styles.detailButton}
+                      onClick={() => {
+                        setSelectedWine(wine as WineDetail); // WineDetail 타입으로 캐스팅 or 변환
+                        setIsModalOpen(true);
+                      }}
+                    >
+                      자세히
+                    </button>
                   </div>
                 </div>
               </div>
@@ -156,9 +156,9 @@ const styles: { [key: string]: React.CSSProperties } = {
   detailButton: {
     // width : "100%",
     margin: vh(0.5),
-    padding: `${vh(0.7)} ${vh(1.2)}`,
+    padding: `${vh(0.7)} ${vh(1.0)}`,
     fontSize: vh(1.3),
-    backgroundColor: "#fefefe",
+    backgroundColor: "#f0eae8",
     border: "1px solid #ccc",
     borderRadius: vh(1),
     cursor: "pointer",
@@ -169,11 +169,11 @@ const styles: { [key: string]: React.CSSProperties } = {
 
     transition: "all 0.2s ease",
   },
-  buttonWrapper : {
-    display : "flex",
-    justifyContent : "end",
-    marginRight : "2vh",
-  }
+  buttonWrapper: {
+    display: "flex",
+    justifyContent: "end",
+    marginRight: "0.5vh",
+  },
 };
 
 export default RecommendationResult;
