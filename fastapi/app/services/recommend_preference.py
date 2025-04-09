@@ -51,8 +51,11 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
         query = text("""
             SELECT wine_id, vector <=> CAST(:user_vector AS vector) AS cos
             FROM preference_wine_vectors
-            WHERE wine_id > 10
                      AND vector <-> CAST(:user_vector AS vector) >= 0.5
+            WHERE wine_id IN (SELECT id
+                              FROM wines
+                              WHERE sweetness = ANY(:sweetness)
+                                AND price <= 100000)
             ORDER BY cos DESC
             LIMIT 3
         """)
@@ -68,9 +71,9 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
                               WHERE id IN (SELECT DISTINCT wine_id
                                            FROM pairing_sets 
                                            WHERE food_id = ANY(:food_ids))
-						      AND sweetness = ANY(:sweetness))
+						      AND sweetness = ANY(:sweetness)
+                              AND price <= 100000)
             AND vector <=> CAST(:user_vector AS vector) >= 0.5
-            AND wine_id > 10
             ORDER BY similarity DESC
             LIMIT 3;
         """)
@@ -96,28 +99,33 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
             additional_query = text("""
                 SELECT wine_id, vector <=> CAST(:user_vector AS vector) AS cos
                 FROM preference_wine_vectors 
-                WHERE wine_id > 10
-                AND wine_id NOT IN (SELECT wine_id FROM unnest(:existing_ids) AS wine_id)
+                AND wine_id NOT IN (SELECT wine_id FROM unnest(:existing_ids) AS wine_id
+                                    WHERE sweetness = ANY(:sweetness)
+                                    AND price <= 100000)
                 ORDER BY cos DESC
                 LIMIT :needed_count
             """)
             additional_params = {
                 "user_vector": user_vector,
                 "existing_ids": existing_ids,
-                "needed_count": 3 - len(rows)
+                "needed_count": 3 - len(rows),
+                "sweetness": sweetness_init
             }
         else:
             # 추천 데이터가 하나도 없는 경우 
             additional_query = text("""
                 SELECT wine_id, vector <=> CAST(:user_vector AS vector) AS cos
                 FROM preference_wine_vectors 
-                WHERE wine_id > 10
+                WHERE wine_id IN (SELECT id FROM wines
+                                    WHERE sweetness = ANY(:sweetness)
+                                    AND price <= 100000)
                 ORDER BY cos DESC
                 LIMIT :needed_count
             """)
             additional_params = {
                 "user_vector": user_vector,
-                "needed_count": 3 - len(rows)
+                "needed_count": 3 - len(rows),
+                "sweetness": sweetness_init
             }
         
         additional_result = session.execute(additional_query, additional_params)
