@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 
 # CSV 파일 로드
-csv_file = "../data/wine_data_pairing.csv"
+csv_file = "../data/pairing_dataset_4_6.csv"
 df = pd.read_csv(csv_file)
 
 load_dotenv('../../.env')
@@ -25,7 +25,7 @@ conn = psycopg2.connect(
 )
 cur = conn.cursor()
 
-drop_col = ['kr_name', 'en_name', 'pairing']
+drop_col = ['kr_name', 'en_name']
 df.drop(columns=drop_col, inplace=True)
 
 print(df.info())
@@ -52,10 +52,15 @@ food_mapping = {
 }
 
 def insert_pairing_data(df):
-    # pairing 컬럼의 값을 쉼표로 분리하고 각각의 음식에 대해 매핑된 ID로 변환
+    inserted_count = 0
+    skipped_count = 0
+    
+    print(f"처리할 총 데이터 수: {len(df)}")
+    
     for index, row in df.iterrows():
         # NaN값인 경우 건너뛰기
-        if pd.isna(row['pairing_list']):
+        if pd.isna(row['pairing']):
+            skipped_count += 1
             continue
             
         # wines 테이블에 해당 id가 있는지 확인
@@ -64,20 +69,49 @@ def insert_pairing_data(df):
         
         # wines 테이블에 없는 id면 건너뛰기
         if not exists:
+            skipped_count += 1
             continue
             
-        # 각 와인의 food_id에 대해 처리 
-        food_id = food_mapping[row['pairing_list'].strip()]
-        
-        # cur.execute("INSERT INTO pairing_sets (id, wine_id, food_id) VALUES (%s, %s, %s)", (index, row['idx'], food_id))
-        
-        # 각 food_id에 대해 개별적으로 레코드 삽입
-        cur.execute("INSERT INTO pairing_sets (wine_id, food_id) VALUES (%s, %s)", (row['idx'], food_id))
+        try:
+            # 각 행의 pairing 값을 그대로 사용
+            food_category = row['pairing'].strip()
+            if food_category in food_mapping:
+                food_id = food_mapping[food_category]
+                cur.execute(
+                    "INSERT INTO pairing_sets (wine_id, food_id) VALUES (%s, %s)", 
+                    (row['idx'], food_id)
+                )
+                inserted_count += 1
+            
+            # 100개 단위로 커밋
+            if index % 100 == 0:
+                conn.commit()
+                print(f"진행 중... {index}/{len(df)} 처리됨")
+                
+        except Exception as e:
+            print(f"에러 발생 - idx: {row['idx']}, pairing: {row['pairing']}, error: {str(e)}")
+            conn.rollback()
     
+    # 마지막 커밋
     conn.commit()
+    
+    print(f"\n처리 완료:")
+    print(f"- 삽입된 페어링 수: {inserted_count}")
+    print(f"- 건너뛴 레코드 수: {skipped_count}")
+
+# 실행 전 기존 데이터 확인
+cur.execute("SELECT COUNT(*) FROM pairing_sets")
+before_count = cur.fetchone()[0]
+print(f"삽입 전 pairing_sets 테이블의 레코드 수: {before_count}")
 
 # 데이터 삽입 실행
 insert_pairing_data(df)
+
+# 삽입 후 데이터 확인
+cur.execute("SELECT COUNT(*) FROM pairing_sets")
+after_count = cur.fetchone()[0]
+print(f"삽입 후 pairing_sets 테이블의 레코드 수: {after_count}")
+print(f"추가된 레코드 수: {after_count - before_count}")
 
 # 연결 종료
 cur.close()
