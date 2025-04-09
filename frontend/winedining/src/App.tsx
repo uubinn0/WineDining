@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AppRouter from "./routes/AppRouter";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "./store/store";
@@ -18,6 +18,31 @@ function App() {
   const dispatch = useDispatch<AppDispatch>();
   // 페이지 진입 시간을 기록할 ref
   const enterTimeRef = useRef<number>(Date.now());
+
+  // bgm 배경음악
+  const bgmRef = useRef<HTMLAudioElement | null>(null);
+  const [isBgmOn, setIsBgmOn] = useState(true);
+
+  useEffect(() => {
+    const enableAudio = () => {
+      if (bgmRef.current && bgmRef.current.paused) {
+        bgmRef.current.volume = 0.2;
+        bgmRef.current.play().catch((err) => {
+          console.warn("자동 재생 실패", err);
+        });
+      }
+      window.removeEventListener("click", enableAudio);
+      window.removeEventListener("keydown", enableAudio);
+    };
+
+    window.addEventListener("click", enableAudio);
+    window.addEventListener("keydown", enableAudio);
+
+    return () => {
+      window.removeEventListener("click", enableAudio);
+      window.removeEventListener("keydown", enableAudio);
+    };
+  }, []);
 
   // 페이지 뷰 이벤트 전송 (이미 구현되어 있는 부분)
   useEffect(() => {
@@ -68,7 +93,44 @@ function App() {
   }, [dispatch]);
 
   return (
-    <div>
+    <div style={{ position: "relative" }}>
+      {/* 🔈 토글 버튼 */}
+      <button
+        onClick={() => {
+          if (bgmRef.current) {
+            if (isBgmOn) {
+              try {
+                bgmRef.current.pause();
+                setIsBgmOn(false);
+              } catch (e) {
+                console.warn("BGM pause failed", e);
+              }
+            } else {
+              bgmRef.current
+                .play()
+                .then(() => setIsBgmOn(true))
+                .catch((e) => {
+                  console.warn("BGM play 실패", e);
+                });
+            }
+          }
+          setIsBgmOn(!isBgmOn);
+        }}
+        style={{
+          position: "absolute",
+          zIndex: 9999,
+          border: "none",
+          backgroundColor: "transparent",
+          fontSize: "3vh",
+          top: "1.5vh",
+          right: "0vh",
+          opacity: 0.6,
+        }}
+      >
+        {isBgmOn ? "🔊" : "🔇"}
+      </button>
+
+      <audio ref={bgmRef} src="/assets/bgm/winedining_bgm.mp3" loop></audio>
       <GlobalLayout>
         <AppRouter />
       </GlobalLayout>

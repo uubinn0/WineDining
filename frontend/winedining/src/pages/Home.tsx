@@ -189,7 +189,7 @@ const logoutbutton: React.CSSProperties = {
   cursor: "pointer",
   position: "absolute",
   top: "1%",
-  right: "1%",
+  right: "10%",
 };
 
 const modalOverlay: React.CSSProperties = {
