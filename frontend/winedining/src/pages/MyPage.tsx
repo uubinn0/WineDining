@@ -23,8 +23,10 @@ function MyPage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { user, status } = useSelector((state: RootState) => state.auth);
   useEffect(() => {
-    dispatch(fetchUserProfile());
-  }, [dispatch]);
+    if (status === "idle") {
+      dispatch(fetchUserProfile());
+    }
+  }, [dispatch, status]);
 
   return (
     <motion.div
