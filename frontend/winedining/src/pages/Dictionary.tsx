@@ -14,17 +14,23 @@ function Dictionary() {
       animate={{ opacity: 1 }}
       transition={{ duration: 1.5 }}
     >
+
       <button style={styles.button} onClick={() => navigate("/home")}>
         <svg xmlns="http://www.w3.org/2000/svg" width="2.5vh" height="2.5vh" viewBox="0 0 8 14" fill="none">
           <path d="M8 2L3 7L8 12L7 14L0 7L7 0L8 2Z" fill="#C1C1C1" />
         </svg>
       </button>
+      <div style={styles.content}>
+
       <div style={styles.headertext}>
         <img src={"/sample_image/yellow_lightning.png"} alt={"번개 이미지"} style={styles.image} />
         WINE DICTIONARY
         <img src={"/sample_image/yellow_lightning.png"} alt={"번개 이미지"} style={styles.image} />
       </div>
       <DictionaryList />
+
+              
+      </div>
     </motion.div>
   );
 }
@@ -39,6 +45,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     top: "0",
     zIndex: 99,
   },
+  content :{
+    height: "100%",
+  },
   container: {
     backgroundImage: `url(${DictionaryBackground})`,
     backgroundSize: "cover",
@@ -47,7 +56,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     flexDirection: "column",
     // justifyContent: "center",
-    overflow : "hidden"
   },
   headertext: {
     fontFamily: "PressStart2P",
@@ -59,7 +67,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     gap: "2vh", // 번개 이미지와 간격 조정
     textAlign: "center",
     marginTop: "6dvh",
-    // position: "sticky",
+    position: "sticky",
     zIndex: 1000,
   },
   image: {
