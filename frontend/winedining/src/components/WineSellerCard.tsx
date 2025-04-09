@@ -5,6 +5,7 @@ import redWineImage from "../assets/types/red_wine.png";
 import whiteWineImage from "../assets/types/white_wine.png";
 import roseWineImage from "../assets/types/rose_wine.png";
 import sparklingWineImage from "../assets/types/sparkling_wine.png";
+import { motion } from "framer-motion";
 
 interface WineSellerCardProps {
   wine: Bottle;
@@ -42,7 +43,14 @@ const WineSellerCard = ({ wine, onBestClick, onDetailClick, isBest, totalNote }:
   const wineImage = getWineImage();
 
   return (
-    <div style={styles.card}>
+    <motion.div
+      style={styles.card}
+      whileHover={{
+        scale: 1.05,
+        boxShadow: "0 0 1.5vh rgba(255, 255, 255, 0.3)",
+      }}
+      transition={{ type: "spring", stiffness: 300 }}
+    >
       {/* 와인 이미지 */}
       <div style={styles.imageBox}>
         <img
@@ -80,7 +88,7 @@ const WineSellerCard = ({ wine, onBestClick, onDetailClick, isBest, totalNote }:
           자세히
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

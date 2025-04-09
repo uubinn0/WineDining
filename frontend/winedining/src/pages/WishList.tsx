@@ -55,20 +55,22 @@ const WishList = () => {
           imageSize="2.8vh"
         />
       </div>
-      {status === "loading" && <p>위시리스트를 불러오는 중...</p>}
-      {status === "failed" && <p>위시리스트를 불러오는 데 실패했습니다.</p>}
+      <div style={styles.gridScrollWrapper}>
+        {status === "loading" && <p>위시리스트를 불러오는 중...</p>}
+        {status === "failed" && <p>위시리스트를 불러오는 데 실패했습니다.</p>}
 
-      {items.length === 0 ? (
-        <p>위시리스트가 비어 있습니다.</p>
-      ) : (
-        <div style={styles.grid}>
-          {items.map((wish) => (
-            <div key={wish.id} onClick={() => handleWishClick(wish.wine.wineId)}>
-              <WineWishCard wish={wish} wine={wish.wine} />
-            </div>
-          ))}
-        </div>
-      )}
+        {items.length === 0 ? (
+          <p>위시리스트가 비어 있습니다.</p>
+        ) : (
+          <div style={styles.grid}>
+            {items.map((wish) => (
+              <div key={wish.id} onClick={() => handleWishClick(wish.wine.wineId)}>
+                <WineWishCard wish={wish} wine={wish.wine} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       {isModalOpen && wineDetail && (
         <WineDetailModal
@@ -90,8 +92,16 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundPosition: "center",
     textAlign: "center",
     minHeight: "100vh", // 최소 높이 보장 (이미 vh 단위)
-    overflowX: "hidden",
+    overflow: "hidden",
+    // overflowY: "auto",
     width: "100%",
+  },
+  gridScrollWrapper: {
+    maxHeight: "75vh", // 카드 영역의 스크롤 한계 높이
+    overflowY: "auto",
+    paddingBottom: "3vh",
+    paddingTop: "1vh",
+    WebkitOverflowScrolling: "touch", // iOS 부드러운 스크롤
   },
   grid: {
     display: "grid",

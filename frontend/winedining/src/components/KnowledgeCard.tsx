@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 
 interface KnowledgeCardProps {
   image: string;
@@ -9,7 +10,15 @@ interface KnowledgeCardProps {
 
 const KnowledgeCard: React.FC<KnowledgeCardProps> = ({ image, title, isColor, onClick }) => {
   return (
-    <div style={styles.card} onClick={onClick}>
+    <motion.div
+      style={styles.card}
+      onClick={onClick}
+      whileHover={{
+        scale: 1.05,
+        boxShadow: "0 0 1.5vh rgba(255, 255, 255, 0.3)",
+      }}
+      transition={{ type: "spring", stiffness: 300 }}
+    >
       <img
         src={image}
         alt={title}
@@ -21,7 +30,7 @@ const KnowledgeCard: React.FC<KnowledgeCardProps> = ({ image, title, isColor, on
       <div style={styles.cardContent}>
         <div>{title}</div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -31,31 +40,31 @@ const styles: { [key: string]: React.CSSProperties } = {
     height: "80%",
     borderRadius: "1vh",
     backgroundColor: "#21101B",
-    border : "solid 5px #D6BA91",
+    border: "solid 5px #D6BA91",
     cursor: "pointer",
-    padding : "2vh",
-    display : "flex",
+    padding: "2vh",
+    display: "flex",
     flexDirection: "column",
-    justifyContent : "center",
-    alignItems : "center",
-    margin : "1vh",
+    justifyContent: "center",
+    alignItems: "center",
+    margin: "1vh",
   },
   image: {
     width: "80%",
   },
   cardContent: {
-    fontSize : "1.5vh",
-    display : "flex",
-    flexDirection : "column",
-    justifyContent : "center",
-    fontFamily : "Galmuri9",
-    fontWeight : "700",
+    fontSize: "1.5vh",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    fontFamily: "Galmuri9",
+    fontWeight: "700",
     textAlign: "center",
-    backgroundColor : "white",
-    borderRadius : "1vh",
+    backgroundColor: "white",
+    borderRadius: "1vh",
     width: "80%",
-    padding : "1vh",
-    wordBreak : "keep-all",
+    padding: "1vh",
+    wordBreak: "keep-all",
   },
 };
 
