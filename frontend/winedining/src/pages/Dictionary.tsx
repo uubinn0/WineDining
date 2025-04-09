@@ -27,8 +27,17 @@ function Dictionary() {
         WINE DICTIONARY
         <img src={"/sample_image/yellow_lightning.png"} alt={"번개 이미지"} style={styles.image} />
       </div>
+
+      {/* {user?.rank === "초보자" ? (
+        <div style={styles.messageContainer}>
+          <div style={styles.message}>
+            입문자 이상만 <br />열람 가능합니다.
+          </div>
+        </div>
+      ) : ( */}
       <DictionaryList />
 
+    {/* )} */}
               
       </div>
     </motion.div>
@@ -69,7 +78,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     gap: "2vh", // 번개 이미지와 간격 조정
     textAlign: "center",
     marginTop: "6dvh",
-    position: "sticky",
+    // position: "fixed",
     // zIndex: 2,
   },
   image: {
