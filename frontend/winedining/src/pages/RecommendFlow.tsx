@@ -13,6 +13,7 @@ import { setCameFromRecommendFlow } from "../store/slices/testSlice";
 import { getWineRecommendations } from "../api/recommendResultApi";
 import { WineRecommendation } from "../types/wine";
 import { motion } from "framer-motion";
+import BackButton from "../components/BackButton";
 
 const RecommendFlow: React.FC = () => {
   const navigate = useNavigate();
@@ -107,29 +108,30 @@ const RecommendFlow: React.FC = () => {
 
     try {
       const response = await getWineRecommendations({ pairing: pairingValue });
-      // console.log("data : ", response.data);
 
       if (response.success) {
         setWineRecommendations(response.data);
       } else {
-        // console.log("추천실패:", response.message);
       }
       // `input`을 입력한 후, 다음 질문으로 이동
-      // setCurrentStepState(currentStep + 1);
       dispatch(setCurrentStep(currentStep + 1));
       setUserFoodInput(""); // 입력창 초기화
     } catch (error) {
-      // console.log("api 호출 중 오류 발생: ", error);
+      console.log("api 호출 중 오류 발생: ", error);
     }
   };
 
   return (
     <motion.div
       style={styles.container}
-      // initial={{ opacity: 0 }}
-      // animate={{ opacity: 1 }}
-      // transition={{ duration: 1.5 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
     >
+      <div style={styles.BackButton}>
+        <BackButton onClick={()=> {navigate("/home"); dispatch(setCurrentStep(0));
+} }/>
+      </div>
       <img src={bartender} alt="바텐더" style={styles.bartenderStyle} />
 
       <div style={styles.speechBubbleContainer}>
@@ -192,6 +194,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     border: "none",
     cursor: "pointer",
   },
+  BackButton : {
+    position : "fixed",
+    paddingLeft : "2vh",
+    zIndex : 99999
+  }
 };
 
 export default RecommendFlow;

@@ -10,6 +10,7 @@ import { vh } from "../utils/vh";
 import { RootState } from "../store/store";
 import { relative } from "path";
 import { motion } from "framer-motion";
+import BackButton from "../components/BackButton";
 
 function RecommendTest() {
   const navigate = useNavigate();
@@ -52,11 +53,6 @@ function RecommendTest() {
     }
   }, [currentStep]);
 
-  // useEffect(() => {
-  //   if (finalMessage) {
-  //     setTimeout(() => navigate("/recommendflow"), 1500);
-  //   }
-  // }, [finalMessage, navigate]);
 
   const handleSelectOption = (selectedOption: string) => {
     const updatedResponses = [...responses, selectedOption];
@@ -93,14 +89,6 @@ function RecommendTest() {
       preferredTypes: answers[5],
     };
 
-    // 콘솔에 각 값 출력
-    // console.log("Selected Options:");
-    // console.log("Alcohol Content:", requestData.alcoholContent);
-    // console.log("Sweetness:", requestData.sweetness);
-    // console.log("Tannin:", requestData.tannin);
-    // console.log("Acidity:", requestData.acidity);
-    // console.log("Body:", requestData.body);
-    // console.log("Preferred Types:", requestData.preferredTypes);
 
     const response = await sendPreferenceTest(requestData);
     if (response.success) {
@@ -126,10 +114,10 @@ function RecommendTest() {
   return (
     <motion.div
       style={styles.container}
-      // initial={{ opacity: 0 }}
-      // animate={{ opacity: 1 }}
-      // transition={{ duration: 1.5 }}
     >
+      <div style={styles.BackButton}>
+      <BackButton onClick={()=> {navigate("/home"); dispatch(setCurrentStep(0));
+} }/>      </div>
       <img src={bartender} alt="바텐더" style={styles.bartenderStyle} />
       <div style={styles.speechBubbleContainer}>
         <Dialogue
@@ -162,5 +150,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     // paddingLeft : "5%",
     // width : "90%",
   },
+  BackButton : {
+    position : "fixed",
+    paddingLeft : "2vh",
+    zIndex : 99999
+  }
 };
 export default RecommendTest;
