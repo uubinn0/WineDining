@@ -99,7 +99,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     justifyContent: "center",
     height : "85dvh",
-    marginBottom : "10vh"
   },
   cardContainer: {
     padding : "2vh",
