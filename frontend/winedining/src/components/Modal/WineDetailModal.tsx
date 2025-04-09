@@ -11,6 +11,7 @@ import sparklingWineImage from "../../assets/types/sparkling_wine.png";
 import { WineDetail } from "../../types/wine";
 import { trackEvent } from "../../utils/analytics"; // GA 이벤트 트래커 추가
 import { vh } from "../../utils/vh";
+import { motion } from "framer-motion";
 
 interface WineDetailModalProps {
   isOpen: boolean;
@@ -81,7 +82,14 @@ const WineDetailModal = ({ isOpen, onClose, wine, fromPage }: WineDetailModalPro
   })();
 
   return (
-    <div style={styles.overlay} onClick={onClose}>
+    <motion.div
+      style={styles.overlay}
+      onClick={onClose}
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 30 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+    >
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
         <img src={closeButton} alt="닫기" style={styles.closeButton} onClick={onClose} />
 
@@ -141,7 +149,7 @@ const WineDetailModal = ({ isOpen, onClose, wine, fromPage }: WineDetailModalPro
           {isInWishList ? "담김" : "담기"}
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

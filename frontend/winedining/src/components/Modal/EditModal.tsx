@@ -5,6 +5,7 @@ import { updateNickname } from "../../store/slices/authSlice";
 import { deleteUser } from "../../store/slices/authSlice";
 import { useNavigate } from "react-router-dom";
 import { vh } from "../../utils/vh";
+import { motion } from "framer-motion";
 
 interface EditModalProps {
   isOpen: boolean;
@@ -61,7 +62,14 @@ const EditModal = ({ nickname: initialNickname, isOpen, onClose, onNicknameUpdat
   };
 
   return (
-    <div style={styles.overlay} onClick={onClose}>
+    <motion.div
+      style={styles.overlay}
+      onClick={onClose}
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 30 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+    >
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
         <button style={styles.closeButton} onClick={onClose}>
           ✕
@@ -84,7 +92,7 @@ const EditModal = ({ nickname: initialNickname, isOpen, onClose, onNicknameUpdat
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

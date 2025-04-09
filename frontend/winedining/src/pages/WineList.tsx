@@ -12,6 +12,7 @@ import BackButton from "../components/BackButton";
 import PixelTitle from "../components/PixcelTitle";
 import { trackEvent } from "../utils/analytics"; // GA 이벤트 트래커
 import { vh } from "../utils/vh";
+import { motion } from "framer-motion";
 
 const WineList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -118,7 +119,12 @@ const WineList = () => {
   };
 
   return (
-    <div style={styles.container}>
+    <motion.div
+      style={styles.container}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1.5 }}
+    >
       <div style={styles.backButtonWrapper}>
         <BackButton onClick={() => navigate("/home")} />
       </div>
@@ -159,7 +165,7 @@ const WineList = () => {
       {selectedWine && (
         <WineDetailModal isOpen={isModalOpen} onClose={handleCloseModal} wine={selectedWine} fromPage="winelist" />
       )}
-    </div>
+    </motion.div>
   );
 };
 

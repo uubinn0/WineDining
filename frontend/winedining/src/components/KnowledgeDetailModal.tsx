@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import closeButton from "../assets/icons/closebutton.png";
 import MarkdownRenderer from "./MarkdownRenderer";
+import { motion } from "framer-motion";
 
 interface KnowledgeDetailModalProps {
   isOpen: boolean;
@@ -15,7 +16,14 @@ const KnowledgeDetailModal: React.FC<KnowledgeDetailModalProps> = ({ isOpen, onC
   if (!isOpen || !selectedInfo) return null;
 
   return (
-    <div style={styles.overlay} onClick={onClose}>
+    <motion.div
+      style={styles.overlay}
+      onClick={onClose}
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 30 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+    >
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
         <button style={styles.closeButton} onClick={onClose}>
           <img src={closeButton} alt="Close" style={styles.closeIcon} /> {/* 이미지 버튼 */}
@@ -23,7 +31,7 @@ const KnowledgeDetailModal: React.FC<KnowledgeDetailModalProps> = ({ isOpen, onC
         <MarkdownRenderer markdownContent={selectedInfo.title} customStyle={styles.title} />
         <MarkdownRenderer markdownContent={selectedInfo.content} customStyle={styles.content} />
       </div>
-    </div>
+    </motion.div>
   );
 };
 

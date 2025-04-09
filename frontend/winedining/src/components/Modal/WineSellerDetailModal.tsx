@@ -15,6 +15,7 @@ import redWineImage from "../../assets/types/red_wine.png";
 import whiteWineImage from "../../assets/types/white_wine.png";
 import roseWineImage from "../../assets/types/rose_wine.png";
 import sparklingWineImage from "../../assets/types/sparkling_wine.png";
+import { motion } from "framer-motion";
 
 interface WineSellerDetailModalProps {
   isOpen: boolean;
@@ -176,7 +177,14 @@ const WineSellerDetailModal = ({ isOpen, onClose, bottle }: WineSellerDetailModa
   };
 
   return (
-    <div style={styles.overlay} onClick={onClose}>
+    <motion.div
+      style={styles.overlay}
+      onClick={onClose}
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 30 }}
+      transition={{ duration: 0.4, ease: "easeOut", delay: 0.5 }}
+    >
       <div
         style={{
           ...styles.modal,
@@ -328,7 +336,7 @@ const WineSellerDetailModal = ({ isOpen, onClose, bottle }: WineSellerDetailModa
           />
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

@@ -9,6 +9,7 @@ import { setTestCompleted, setCurrentStep, setCameFromRecommendFlow } from "../s
 import { vh } from "../utils/vh";
 import { RootState } from "../store/store";
 import { relative } from "path";
+import { motion } from "framer-motion";
 
 function RecommendTest() {
   const navigate = useNavigate();
@@ -23,8 +24,7 @@ function RecommendTest() {
 
   const [finalMessage, setFinalMessage] = useState<string | null>(null);
 
-  const testCompleted = useSelector((state: RootState) => state.test.testCompleted);  
-
+  const testCompleted = useSelector((state: RootState) => state.test.testCompleted);
 
   const dialogues = [
     { question: `취향테스트를 시작할게요. \n${nickname} 님의 취향을 알려주세요!`, options: [] },
@@ -69,16 +69,16 @@ function RecommendTest() {
         submitPreferences(updatedResponses);
       } else {
         setFinalMessage("알겠습니다! 다음에 다시 알려주세요!");
-          
-          if (cameFromRecommendFlow === "home") {
-            navigate("/home");  // 홈에서 왔으면 홈으로
-          } else if (cameFromRecommendFlow === "mypage") {
-            navigate("/mypage");  // 마이페이지에서 왔으면 마이페이지로
-          } else if (cameFromRecommendFlow === "recommend") {
-            dispatch(setCurrentStep(6)); // **6번째 질문부터 시작**
-            navigate("/recommendflow");  // recommendflow에서 왔으면 recommendflow로
-          }
-          console.log("어디로 가니", cameFromRecommendFlow)
+
+        if (cameFromRecommendFlow === "home") {
+          navigate("/home"); // 홈에서 왔으면 홈으로
+        } else if (cameFromRecommendFlow === "mypage") {
+          navigate("/mypage"); // 마이페이지에서 왔으면 마이페이지로
+        } else if (cameFromRecommendFlow === "recommend") {
+          dispatch(setCurrentStep(6)); // **6번째 질문부터 시작**
+          navigate("/recommendflow"); // recommendflow에서 왔으면 recommendflow로
+        }
+        // console.log("어디로 가니", cameFromRecommendFlow);
       }
     }
   };
@@ -93,39 +93,43 @@ function RecommendTest() {
       preferredTypes: answers[5],
     };
 
-                // 콘솔에 각 값 출력
-            console.log("Selected Options:");
-            console.log("Alcohol Content:", requestData.alcoholContent);
-            console.log("Sweetness:", requestData.sweetness);
-            console.log("Tannin:", requestData.tannin);
-            console.log("Acidity:", requestData.acidity);
-            console.log("Body:", requestData.body);
-            console.log("Preferred Types:", requestData.preferredTypes);
-
+    // 콘솔에 각 값 출력
+    // console.log("Selected Options:");
+    // console.log("Alcohol Content:", requestData.alcoholContent);
+    // console.log("Sweetness:", requestData.sweetness);
+    // console.log("Tannin:", requestData.tannin);
+    // console.log("Acidity:", requestData.acidity);
+    // console.log("Body:", requestData.body);
+    // console.log("Preferred Types:", requestData.preferredTypes);
 
     const response = await sendPreferenceTest(requestData);
     if (response.success) {
       dispatch(setTestCompleted(true)); // **테스트 완료 표시**
-      
+
       if (cameFromRecommendFlow === "home") {
-        navigate("/home");  // 홈에서 왔으면 홈으로
+        navigate("/home"); // 홈에서 왔으면 홈으로
       } else if (cameFromRecommendFlow === "mypage") {
-        navigate("/mypage");  // 마이페이지에서 왔으면 마이페이지로
+        navigate("/mypage"); // 마이페이지에서 왔으면 마이페이지로
       } else if (cameFromRecommendFlow === "recommend") {
         dispatch(setCurrentStep(6)); // **6번째 질문부터 시작**
-        navigate("/recommendflow");  // recommendflow에서 왔으면 recommendflow로
+        navigate("/recommendflow"); // recommendflow에서 왔으면 recommendflow로
       }
-      console.log("어디로 가니", cameFromRecommendFlow)
+      // console.log("어디로 가니", cameFromRecommendFlow);
     } else {
-      alert("취향테스트 실패")
+      alert("취향테스트 실패");
       // dispatch(setTestCompleted(true)); // **테스트 완료 표시**
       navigate("/home"); // api 연결후 삭제 예정
-      console.error("API 호출 실패:", response.message);
+      // console.error("API 호출 실패:", response.message);
     }
   };
 
   return (
-    <div style={styles.container}>
+    <motion.div
+      style={styles.container}
+      // initial={{ opacity: 0 }}
+      // animate={{ opacity: 1 }}
+      // transition={{ duration: 1.5 }}
+    >
       <img src={bartender} alt="바텐더" style={styles.bartenderStyle} />
       <div style={styles.speechBubbleContainer}>
         <Dialogue
@@ -134,7 +138,7 @@ function RecommendTest() {
           onSelect={handleSelectOption}
         />
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -144,7 +148,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundSize: "contain",
     width: "100%",
     height: "100dvh",
-    position : "relative",
+    position: "relative",
   },
   bartenderStyle: {
     position: "absolute",
@@ -154,7 +158,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     transform: "rotate(0.69deg)", // 회전 적용
   },
   speechBubbleContainer: {
-    paddingTop : "25dvh",
+    paddingTop: "25dvh",
     // paddingLeft : "5%",
     // width : "90%",
   },
