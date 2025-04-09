@@ -28,6 +28,26 @@ function MyPage() {
     }
   }, [dispatch, status]);
 
+  // 등급에 따라 이미지와 색상 반환 함수
+  const getLevelAssets = (rank: string) => {
+    switch (rank) {
+      case "주정뱅이":
+        return { img: "/sample_image/rank_100.png", color: "#A83A9D", level: "Lv.6" };
+      case "마스터":
+        return { img: "/sample_image/rank_20.png", color: "#444EBF", level: "Lv.5" };
+      case "소믈리에":
+        return { img: "/sample_image/rank_10.png", color: "#5AB5A4", level: "Lv.4" };
+      case "애호가":
+        return { img: "/sample_image/rank_5.png", color: "#CCA742", level: "Lv.3" };
+      case "입문자":
+        return { img: "/sample_image/rank_1.png", color: "#BE7272", level: "Lv.2" };
+      case "초보자":
+      default:
+        return { img: "/sample_image/rank_0.png", color: "#FFE2E2", level: "Lv.1" };
+    }
+  };
+
+  const { img, color, level } = getLevelAssets(user?.rank ?? "초보자");
   return (
     <motion.div
       style={styles.container}
@@ -40,15 +60,18 @@ function MyPage() {
       </div>
       <h1 style={styles.title}>MY PAGE</h1>
 
-      <img src={"/sample_image/myimg.png"} alt={"myimg"} style={styles.image} />
+      {/* <img src={"/sample_image/myimg.png"} alt={"myimg"} style={styles.image} /> */}
 
+      <img src={img} alt="레벨 이미지" style={styles.image} />
       <div style={styles.userInfo}>
         {status === "loading" || !user ? (
           <div style={styles.placeholder}>로딩 중...</div>
         ) : (
           <div style={styles.nicknameColumn}>
             <p style={styles.rank}>
-              <span style={styles.rankText}>{user.rank}</span>
+              <span style={{ ...styles.rankText, color }}>
+                {level} {user.rank}
+              </span>
             </p>
             <div style={styles.nicknameRow}>
               <span style={styles.nickname}>{user.nickname}</span>
@@ -106,7 +129,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     left: "1.6vh",
   },
   buttonGroup: {
-    padding: "4vh 0",
+    padding: "7vh 0",
     display: "flex",
     justifyContent: "center",
     gap: "3.8vh",
@@ -188,7 +211,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 
   rankText: {
-    fontSize: "1.4vh",
+    fontSize: "1.7vh",
     lineHeight: 1,
     position: "relative",
     top: "1.6px", // 왕관과 수직 정렬 위해 아래로 살짝 내림
