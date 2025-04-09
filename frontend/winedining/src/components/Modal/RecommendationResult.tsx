@@ -31,6 +31,7 @@ const RecommendationResult: React.FC<ModalProps> = ({ wines, onClose }) => {
                 <div>
                   <div style={styles.krName}>{wine.krName}</div>
                   <div style={styles.wineText}>{wine.description}</div>
+                  <div style={styles.buttonWrapper}>
                   <button
                     style={styles.detailButton}
                     onClick={() => {
@@ -38,8 +39,9 @@ const RecommendationResult: React.FC<ModalProps> = ({ wines, onClose }) => {
                       setIsModalOpen(true);
                     }}
                   >
-                    자세히 보기
+                    자세히
                   </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -152,15 +154,26 @@ const styles: { [key: string]: React.CSSProperties } = {
     cursor: "pointer",
   },
   detailButton: {
-    marginTop: vh(1),
-    padding: `${vh(1)} ${vh(2)}`,
-    fontSize: vh(1.8),
+    // width : "100%",
+    margin: vh(0.5),
+    padding: `${vh(0.7)} ${vh(1.2)}`,
+    fontSize: vh(1.3),
     backgroundColor: "#fefefe",
     border: "1px solid #ccc",
     borderRadius: vh(1),
     cursor: "pointer",
     fontFamily: "Galmuri7",
+    textAlign: "center",
+    boxShadow: `-2px -2px 2px 0px rgba(0, 0, 0, 0.25) inset`, // 새로운 box-shadow
+    // filter: `drop-shadow(${vh(0.1)} ${vh(0.2)} 0px rgba(0, 0, 0, 0.6))`,
+
+    transition: "all 0.2s ease",
   },
+  buttonWrapper : {
+    display : "flex",
+    justifyContent : "end",
+    marginRight : "2vh",
+  }
 };
 
 export default RecommendationResult;
