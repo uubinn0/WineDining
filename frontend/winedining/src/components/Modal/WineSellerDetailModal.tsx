@@ -5,8 +5,6 @@ import { RootState, AppDispatch } from "../../store/store";
 import { editNote, removeNote, fetchNotes } from "../../store/slices/noteSlice";
 import { WineNoteRequest } from "../../types/note";
 import { fetchCellar } from "../../store/slices/sellarSlice";
-import AddSeller2Modal from "../Modal/AddSeller2Modal";
-import AddSeller3Modal from "../Modal/AddSeller3Modal";
 import closeButton from "../../assets/icons/closebutton.png";
 import AddSellerModal from "./AddSellerModal";
 import Add1SellerModal from "./add1SellerModal";
@@ -95,12 +93,15 @@ const WineSellerDetailModal = ({ isOpen, onClose, bottle }: WineSellerDetailModa
       await dispatch(removeNote(noteId));
 
       const updatedNotes = notes.filter((n) => n.noteId !== noteId);
+
       if (updatedNotes.length === 0) {
         alert("노트가 모두 삭제되어 셀러에서 해당 와인이 제거됩니다.");
         onClose();
         dispatch(fetchCellar());
       } else {
-        if (page > 0) setPage((prev) => prev - 1);
+        if (page >= updatedNotes.length) {
+          setPage(updatedNotes.length - 1);
+        }
       }
     }
   };
@@ -175,6 +176,8 @@ const WineSellerDetailModal = ({ isOpen, onClose, bottle }: WineSellerDetailModa
     }
     return image;
   };
+
+  if (!currentNote) return null;
 
   return (
     <motion.div
