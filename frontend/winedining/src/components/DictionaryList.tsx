@@ -98,7 +98,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     display: "flex",
     justifyContent: "center",
-    height : "85dvh",
+    height : "85%",
     paddingBottom : "3vh",
   },
   cardContainer: {
@@ -117,12 +117,12 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: "white", // 메시지 색상
     fontFamily: "Galmuri9",
   },
-  // gridScrollWrapper: {
-  //   height: "80vh", // 카드 영역의 스크롤 한계 높이
-  //   overflowY: "auto",
-  //   paddingBottom : "5vh",
-  //   WebkitOverflowScrolling: "touch", // iOS 부드러운 스크롤
-  // },
+  gridScrollWrapper: {
+    height: "100%", // 카드 영역의 스크롤 한계 높이
+    overflowY: "auto",
+    paddingBottom : "5vh",
+    WebkitOverflowScrolling: "touch", // iOS 부드러운 스크롤
+  },
 };
 
 export default KnowledgeList;
