@@ -51,8 +51,11 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
         query = text("""
             SELECT wine_id, vector <=> CAST(:user_vector AS vector) AS cos
             FROM preference_wine_vectors
-            WHERE wine_id > 10
                      AND vector <-> CAST(:user_vector AS vector) >= 0.5
+            WHERE wine_id IN (SELECT id
+                              FROM wines
+                              WHERE sweetness = ANY(:sweetness)
+                                AND price <= 100000)
             ORDER BY cos DESC
             LIMIT 3
         """)
