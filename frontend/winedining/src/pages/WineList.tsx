@@ -119,9 +119,8 @@ const WineList = () => {
 
   return (
     <div style={styles.container}>
-      <div style={styles.backButtonWrapper}>
-        <BackButton onClick={() => navigate("/home")} />
-      </div>
+      <BackButton onClick={() => navigate("/home")} />
+
       <PixelTitle
         text="WINE"
         imageSrc="/sample_image/yellow_lightning.png"
@@ -173,11 +172,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     padding: "2.2vh",
     position: "relative",
   },
-  backButtonWrapper: {
-    position: "absolute",
-    top: "1.8vh",
-    left: "1.8vh",
-  },
+  // backButtonWrapper: {
+  //   // position: "absolute",
+  //   // top: "1.8vh",
+  //   // left: "1.8vh",
+  // },
   searchBox: {
     display: "flex",
     justifyContent: "center",
