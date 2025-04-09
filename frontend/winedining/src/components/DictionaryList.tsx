@@ -119,7 +119,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   gridScrollWrapper: {
     maxHeight: "80vh", // 카드 영역의 스크롤 한계 높이
     overflowY: "auto",
-    paddingBottom: "3vh",
+    paddingBottom: "5vh",
     WebkitOverflowScrolling: "touch", // iOS 부드러운 스크롤
   },
 };
