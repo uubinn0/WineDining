@@ -100,14 +100,17 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
                 SELECT wine_id, vector <=> CAST(:user_vector AS vector) AS cos
                 FROM preference_wine_vectors 
                 WHERE wine_id > 10
-                AND wine_id NOT IN (SELECT wine_id FROM unnest(:existing_ids) AS wine_id)
+                AND wine_id NOT IN (SELECT wine_id FROM unnest(:existing_ids) AS wine_id
+                                    WHERE sweetness = ANY(:sweetness)
+                                    AND price <= 100000)
                 ORDER BY cos DESC
                 LIMIT :needed_count
             """)
             additional_params = {
                 "user_vector": user_vector,
                 "existing_ids": existing_ids,
-                "needed_count": 3 - len(rows)
+                "needed_count": 3 - len(rows),
+                "sweetness": sweetness_init
             }
         else:
             # 추천 데이터가 하나도 없는 경우 
