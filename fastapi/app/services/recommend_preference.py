@@ -35,7 +35,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
         data.acidity / 6,  
         data.alcoholContent / 100,
         data.body / 6,
-        data.sweetness / 5,   # 당도는 단계가1부터 시작
+        data.sweetness / 6,
         data.tannin / 6,
         int(data.red),
         int(data.white), 
@@ -91,7 +91,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
         
         existing_ids = [row[0] for row in rows]
         
-        # existing_ids가 비어있는 경우와 아닌 경우 쿼리 분기
+        # 추천 데이터가 있는 경우
         if existing_ids:
             additional_query = text("""
                 SELECT wine_id, feature_vector <=> CAST(:user_vector AS vector) AS cos
@@ -107,7 +107,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
                 "needed_count": 3 - len(rows)
             }
         else:
-            # existing_ids가 비어있는 경우 단순 쿼리 실행
+            # 추천 데이터가 하나도 없는 경우 
             additional_query = text("""
                 SELECT wine_id, feature_vector <=> CAST(:user_vector AS vector) AS cos
                 FROM preference_wine_vectors 
