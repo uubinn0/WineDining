@@ -95,6 +95,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     display: "flex",
     justifyContent: "center",
+    height : "90dvh"
   },
   cardContainer: {
     padding : "2vh",
