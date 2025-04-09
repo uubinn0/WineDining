@@ -22,7 +22,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     cursor: "pointer",
     padding: "2.5vh 2.5vh",
     top: "1.875vh",
-    left: "0vh",
+    marginLeft: "-2vh",
     zIndex: 99,
   },
 };
