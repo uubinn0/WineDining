@@ -116,13 +116,16 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
             additional_query = text("""
                 SELECT wine_id, vector <=> CAST(:user_vector AS vector) AS cos
                 FROM preference_wine_vectors 
-                WHERE wine_id > 10
+                WHERE wine_id IN (SELECT id FROM wines
+                                    WHERE sweetness = ANY(:sweetness)
+                                    AND price <= 100000)
                 ORDER BY cos DESC
                 LIMIT :needed_count
             """)
             additional_params = {
                 "user_vector": user_vector,
-                "needed_count": 3 - len(rows)
+                "needed_count": 3 - len(rows),
+                "sweetness": sweetness_init
             }
         
         additional_result = session.execute(additional_query, additional_params)
