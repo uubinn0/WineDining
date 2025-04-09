@@ -71,9 +71,9 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
                               WHERE id IN (SELECT DISTINCT wine_id
                                            FROM pairing_sets 
                                            WHERE food_id = ANY(:food_ids))
-						      AND sweetness = ANY(:sweetness))
+						      AND sweetness = ANY(:sweetness)
+                              AND price <= 100000)
             AND vector <=> CAST(:user_vector AS vector) >= 0.5
-            AND wine_id > 10
             ORDER BY similarity DESC
             LIMIT 3;
         """)
