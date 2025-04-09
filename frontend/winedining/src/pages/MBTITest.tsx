@@ -73,6 +73,10 @@ const MBTITest = () => {
 
   const currentQuestion = questions[currentQuestionIndex];
 
+  const [hoveredOption, setHoveredOption] = useState<number | null>(null); // 현재 호버된 옵션을 추적
+
+
+
   return (
     <div style={styles.container}>
       <BackButton onClick={() => navigate("/")} />
@@ -92,8 +96,15 @@ const MBTITest = () => {
               {currentQuestion.options.map((option, index) => (
                 <button
                   key={index}
-                  style={styles.optionButton}
+                  // style={styles.optionButton}
+                  style={{
+                    ...styles.optionButton,
+                    ...(hoveredOption === index ? styles.optionButtonHover : {}),
+                  }}
                   onClick={() => handleOptionSelect(option)} // 옵션 텍스트 선택
+                  onMouseEnter={() => setHoveredOption(index)} // 마우스가 올라간 버튼 인덱스 설정
+                  onMouseLeave={() => setHoveredOption(null)} // 마우스가 벗어난 버튼 인덱스 초기화
+                
                 >
                   {option.option}
                 </button>
@@ -170,6 +181,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     cursor: "pointer",
     // wordBreak : "keep-all",
     textAlign: "start",
+    transition: "transform 150ms cubic-bezier(0, 0, 0.58, 1), background-color 150ms cubic-bezier(0, 0, 0.58, 1)",
+  },
+  optionButtonHover: {
+    backgroundColor: "rgba(255, 255, 255, 0.20)",
+    transform: "translateY(-0.2em)",
   },
   progressContainer: {
     position: "absolute",
