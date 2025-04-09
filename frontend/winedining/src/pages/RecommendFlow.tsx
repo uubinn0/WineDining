@@ -12,6 +12,7 @@ import { fetchUserProfile } from "../store/slices/authSlice";
 import { setCameFromRecommendFlow } from "../store/slices/testSlice";
 import { getWineRecommendations } from "../api/recommendResultApi";
 import { WineRecommendation } from "../types/wine";
+import { motion } from "framer-motion";
 
 const RecommendFlow: React.FC = () => {
   const navigate = useNavigate();
@@ -123,7 +124,12 @@ const RecommendFlow: React.FC = () => {
   };
 
   return (
-    <div style={styles.container}>
+    <motion.div
+      style={styles.container}
+      // initial={{ opacity: 0 }}
+      // animate={{ opacity: 1 }}
+      // transition={{ duration: 1.5 }}
+    >
       <img src={bartender} alt="바텐더" style={styles.bartenderStyle} />
 
       <div style={styles.speechBubbleContainer}>
@@ -147,7 +153,7 @@ const RecommendFlow: React.FC = () => {
           }}
         />
       )}
-    </div>
+    </motion.div>
   );
 };
 

@@ -9,6 +9,7 @@ import pencilIcon from "../assets/icons/raphael_pensil.png";
 import { fetchUserProfile } from "../store/slices/authSlice";
 import { RootState, AppDispatch } from "../store/store";
 import { setCameFromRecommendFlow } from "../store/slices/testSlice";
+import { motion } from "framer-motion";
 
 function MyPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -28,7 +29,12 @@ function MyPage() {
   }, [dispatch, status]);
 
   return (
-    <div style={styles.container}>
+    <motion.div
+      style={styles.container}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1.5 }}
+    >
       <div style={styles.backButtonWrapper}>
         <BackButton onClick={() => navigate("/home")} />
       </div>
@@ -65,7 +71,7 @@ function MyPage() {
       {/* <div style={styles.floatingAddButton}>
         <MySellerAddFlow />
       </div> */}
-    </div>
+    </motion.div>
   );
 }
 

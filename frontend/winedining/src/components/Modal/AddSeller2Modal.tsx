@@ -6,6 +6,7 @@ import redWineImage from "../../assets/types/red_wine.png";
 import whiteWineImage from "../../assets/types/white_wine.png";
 import roseWineImage from "../../assets/types/rose_wine.png";
 import sparklingWineImage from "../../assets/types/sparkling_wine.png";
+import { motion } from "framer-motion";
 
 interface AddSeller2ModalProps {
   isOpen: boolean;
@@ -100,7 +101,14 @@ const AddSeller2Modal = ({ isOpen, onClose, onPrev, onNext, wineInfo }: AddSelle
   };
 
   return (
-    <div style={styles.overlay} onClick={onClose}>
+    <motion.div
+      style={styles.overlay}
+      onClick={onClose}
+      // initial={{ opacity: 0, y: 30 }}
+      // animate={{ opacity: 1, y: 0 }}
+      // exit={{ opacity: 0, y: 30 }}
+      // transition={{ duration: 0.4, ease: "easeOut" }}
+    >
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
         <img src={closebutton} alt="닫기" style={styles.closeButton} onClick={onClose} />
 
@@ -207,7 +215,7 @@ const AddSeller2Modal = ({ isOpen, onClose, onPrev, onNext, wineInfo }: AddSelle
           </span>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

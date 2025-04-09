@@ -12,6 +12,7 @@ import BackButton from "../components/BackButton";
 import PixelTitle from "../components/PixcelTitle";
 import Wish from "../assets/images/background/Wish.png";
 import { trackEvent } from "../utils/analytics"; // GA 이벤트 트래커 추가
+import { motion } from "framer-motion";
 
 const WishList = () => {
   const navigate = useNavigate();
@@ -35,7 +36,12 @@ const WishList = () => {
   };
 
   return (
-    <div style={styles.container}>
+    <motion.div
+      style={styles.container}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1.5 }}
+    >
       <div style={styles.backButtonWrapper}>
         <BackButton onClick={() => navigate("/mypage")} />
       </div>
@@ -72,7 +78,7 @@ const WishList = () => {
           fromPage="wishlist" // 담기 이벤트 시 from: "wishlist" 로 구분
         />
       )}
-    </div>
+    </motion.div>
   );
 };
 

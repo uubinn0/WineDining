@@ -16,6 +16,7 @@ import { vh } from "../utils/vh";
 // GA 이벤트 헬퍼 (유틸리티 함수)
 // utils/analytics.ts 에 정의되어 있다고 가정합니다.
 import { trackEvent } from "../utils/analytics";
+import { motion } from "framer-motion";
 
 function Home() {
   const dispatch = useDispatch<AppDispatch>();
@@ -62,7 +63,7 @@ function Home() {
   if (status === "loading") return null;
 
   return (
-    <div style={homeContainer}>
+    <motion.div style={homeContainer} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.5 }}>
       <h3 style={logoutbutton} onClick={handleLogout}>
         로그아웃
       </h3>
@@ -111,7 +112,7 @@ function Home() {
         style={questStyle}
         onClick={() => handleNavigationClick("/recommendflow", "recommendflow_quest")}
       />
-    </div>
+    </motion.div>
   );
 }
 

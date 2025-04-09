@@ -12,6 +12,7 @@ import whiteWineImage from "../assets/types/white_wine.png";
 import roseWineImage from "../assets/types/rose_wine.png";
 import sparklingWineImage from "../assets/types/sparkling_wine.png";
 import { Wine } from "../types/wine";
+import { motion } from "framer-motion";
 
 interface WineWishCardProps {
   wish: WishItem;
@@ -62,7 +63,14 @@ const WineWishCard = ({ wish, wine }: WineWishCardProps) => {
 
   return (
     <>
-      <div style={styles.card}>
+      <motion.div
+        style={styles.card}
+        whileHover={{
+          scale: 1.05,
+          boxShadow: "0 0 1.5vh rgba(255, 255, 255, 0.3)",
+        }}
+        transition={{ type: "spring", stiffness: 300 }}
+      >
         <img src={wineImage} alt={wish.wine.name} style={styles.image} />
 
         <button style={styles.button} onClick={() => setIsOpen(true)}>
@@ -74,7 +82,7 @@ const WineWishCard = ({ wish, wine }: WineWishCardProps) => {
         <button onClick={handleRemoveWish} style={styles.heartButton}>
           ❤️
         </button>
-      </div>
+      </motion.div>
 
       {isOpen && selectedDetail && (
         <WineDetailModal isOpen={isOpen} onClose={() => setIsOpen(false)} wine={selectedDetail} />

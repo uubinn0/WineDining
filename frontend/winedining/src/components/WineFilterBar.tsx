@@ -629,7 +629,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   priceRangeLabel: {
     color: "white",
     fontSize: "1.3vh", // 12px ≒ 1.3vh
-    minWidth: "13.3vh", // 120px ≒ 13.3vh
+    minWidth: "10vh", // 120px ≒ 13.3vh
     margin: "0px 1.1vh", // 0px 10px ≒ 0 1.1vh
   },
   numberInput: {

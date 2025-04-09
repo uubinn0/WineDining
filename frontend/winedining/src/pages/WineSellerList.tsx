@@ -14,6 +14,7 @@ import BestWineFlipCard from "../components/BestWineFlipCard";
 import PixelTitle from "../components/PixcelTitle";
 import { fetchWineNotes } from "../api/noteApi";
 import { useMemo } from "react";
+import { motion } from "framer-motion";
 
 const WineSellerList = () => {
   const navigate = useNavigate();
@@ -103,7 +104,12 @@ const WineSellerList = () => {
   };
 
   return (
-    <div style={styles.container}>
+    <motion.div
+      style={styles.container}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1.5 }}
+    >
       <div style={styles.backButtonWrapper}>
         <BackButton onClick={() => navigate("/mypage")} />
       </div>
@@ -185,7 +191,7 @@ const WineSellerList = () => {
       {selectedBottle && isDetailOpen && (
         <WineSellerDetailModal bottle={selectedBottle} isOpen={isDetailOpen} onClose={closeDetailModal} />
       )}
-    </div>
+    </motion.div>
   );
 };
 
@@ -204,8 +210,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   backButtonWrapper: {
     position: "absolute",
-    top: vh(2),
-    left: vh(2),
+    top: "1.8vh",
+    left: "3vh",
   },
   /* best wine 부분 */
   bestWinesSection: {
