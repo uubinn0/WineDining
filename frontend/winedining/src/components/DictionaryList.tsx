@@ -63,13 +63,7 @@ const KnowledgeList: React.FC = () => {
 <div style={styles.gridScrollWrapper}>
   
 
-      {user?.rank === "초보자" ? (
-        <div style={styles.messageContainer}>
-          <div style={styles.message}>
-            입문자 이상만 <br />열람 가능합니다.
-          </div>
-        </div>
-      ) : (
+
         <div style={styles.cardContainer}>
           {cardsToDisplay.map((knowledge, index) => (
             <KnowledgeCard
@@ -81,7 +75,7 @@ const KnowledgeList: React.FC = () => {
             />
           ))}
         </div>
-      )}
+
 
       {/* 클릭된 카드에 대한 정보 모달 */}
       {isModalOpen && selectedInfo && (
@@ -110,7 +104,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   messageContainer: {
     paddingTop : "50%",
     textAlign: "center",
-    height: "100vh",
   },
   message: {
     fontSize: "2.5vh",
