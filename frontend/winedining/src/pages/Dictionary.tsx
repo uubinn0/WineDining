@@ -47,6 +47,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   content :{
     height: "100%",
+    position : "relative",
+    zIndex : 1,
   },
   container: {
     backgroundImage: `url(${DictionaryBackground})`,
@@ -68,7 +70,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: "center",
     marginTop: "6dvh",
     position: "sticky",
-    zIndex: 2,
+    // zIndex: 2,
   },
   image: {
     width: "2vh",
