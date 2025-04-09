@@ -47,7 +47,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 1000,
+    zIndex: 100,
 
   },
   modal: {
@@ -68,6 +68,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     transition: "transform 0.5s ease",
     display: "flex",
     flexDirection: "column",
+    zIndex: 1000,
   },
   closeButton: {
     position: "absolute",
