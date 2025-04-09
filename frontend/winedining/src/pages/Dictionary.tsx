@@ -67,7 +67,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     gap: "2vh", // 번개 이미지와 간격 조정
     textAlign: "center",
     marginTop: "6dvh",
-    // position: "sticky",
+    position: "sticky",
     zIndex: 1000,
   },
   image: {
