@@ -18,6 +18,7 @@ import p1 from "../assets/tutorial/p1.png";
 import p2 from "../assets/tutorial/p2.png";
 import p3 from "../assets/tutorial/p3.png";
 import p4 from "../assets/tutorial/p4.png";
+import p5 from "../assets/tutorial/p5.png";
 
 import { vh } from "../utils/vh";
 // GA 이벤트 헬퍼 (유틸리티 함수)
@@ -33,6 +34,11 @@ function Home() {
   const [firstButtonClicked, setFirstButtonClicked] = useState(false);
 
   const testCompleted = useSelector((state: RootState) => state.test.testCompleted);
+
+  // 이 부분을 useEffect 위에 추가해줘!
+  const [isTutorialOpen, setIsTutorialOpen] = useState(false);
+  const [tutorialPage, setTutorialPage] = useState(0);
+  const tutorialImages = [p1, p2, p3, p4, p5];
 
   useEffect(() => {
     if (status === "idle") {
@@ -303,19 +309,32 @@ const tutorialImageStyle: React.CSSProperties = {
 };
 
 const tutorialButtonGroup: React.CSSProperties = {
-  marginTop: "1vh",
+  marginTop: "16px",
   display: "flex", // 가운데 정렬 추가
   justifyContent: "center", // 버튼을 수평 중앙에
 };
 
-const tutorialNextButton: React.CSSProperties = {
-  padding: "10px 20px",
-  fontSize: "14px",
-  borderRadius: "6px",
-  backgroundColor: "#d4b27a",
-  color: "#2a0e35",
+const tutorialPositionStyle: React.CSSProperties = {
+  position: "absolute",
+  bottom: "5%",
+  left: "5%",
+  width: vh(6), // 버튼 전체 크기
+  height: vh(6),
+  backgroundColor: "#000", // 검정 배경
+  borderRadius: "50%", // 완전 동그라미
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  padding: 0,
   border: "none",
+  zIndex: 999,
   cursor: "pointer",
+};
+
+const tutorialIconStyle: React.CSSProperties = {
+  width: vh(3.5), // 이미지 자체는 더 작게
+  height: vh(3.5),
+  objectFit: "contain",
 };
 
 export default Home;
