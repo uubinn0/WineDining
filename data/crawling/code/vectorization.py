@@ -35,6 +35,7 @@ wines = cursor.fetchall()
 columns = ['id', 'acidity', 'alcohol_content', 'body',
            'sweetness', 'tannin', 'type_id']
 wine_data = pd.DataFrame(wines, columns=columns)
+print(wine_data.info())
 
 # Convert categorical variables to numerical using one-hot encoding
 categorical_columns = ['type_id']
@@ -47,7 +48,7 @@ def create_wine_vector(row):
         float(row['acidity']) / 6,  # 0 ~ 6
         float(row['alcohol_content']) / 100,  # 0 ~ 100
         float(row['body']) / 6,  # 0 ~ 6
-        float(row['sweetness']) / 5,  # 0 ~ 5
+        float(row['sweetness']) / 6,  # 0 ~ 6
         float(row['tannin']) / 6  # 0 ~ 6
     ]
     
@@ -81,25 +82,40 @@ for idx, row in wine_data_encoded.iterrows():
 # print(wine_ids[10])
 print(wine_vectors[10])
 
-### 벡터화 데이터를 DB에 저장 ###
+## 벡터화 데이터를 DB에 저장 ###
 # 테이블이 이미 존재한다면 제거 후 다시 생성
-# cursor.execute("""
-#     DROP TABLE IF EXISTS preference_wine_vectors;
-#     CREATE TABLE preference_wine_vectors (
-#         wine_id INTEGER PRIMARY KEY REFERENCES wines(id),
-#         feature_vector vector(%s) 
-#     )
-# """, (len(wine_vectors[0]),))
+cursor.execute("""
+    DROP TABLE IF EXISTS preference_wine_vectors;
+    CREATE TABLE preference_wine_vectors (
+        wine_id INTEGER PRIMARY KEY REFERENCES wines(id),
+        vector vector(%s) 
+    )
+""", (len(wine_vectors[0]),))
 
-# Insert vectors into database
-for wine_id, vector in zip(wine_ids, wine_vectors):
-    cursor.execute("""
-        INSERT INTO preference_wine_vectors (wine_id, feature_vector)
-        VALUES (%s, %s)
+# Insert vectors into database in batches
+batch_size = 100
+for i in range(0, len(wine_ids), batch_size):
+    batch_wine_ids = wine_ids[i:i+batch_size]
+    batch_vectors = wine_vectors[i:i+batch_size]
+    
+    # Prepare batch data
+    batch_data = []
+    for wine_id, vector in zip(batch_wine_ids, batch_vectors):
+        vector_array = np.array(vector, dtype=np.float32)
+        vector_str = '[' + ','.join(map(str, vector_array)) + ']'
+        batch_data.append((wine_id, vector_str))
+    
+    # Execute batch insert
+    execute_values(cursor, """
+        INSERT INTO preference_wine_vectors (wine_id, vector)
+        VALUES %s
         ON CONFLICT (wine_id) DO UPDATE 
-        SET feature_vector = EXCLUDED.feature_vector
-    """, (wine_id, Binary(vector)))
+        SET vector = EXCLUDED.vector
+    """, batch_data)
+    
+    # Commit after each batch
+    conn.commit()
+    print(f"Processed batch {i//batch_size + 1} of {(len(wine_ids) + batch_size - 1)//batch_size}")
 
-conn.commit()
 cursor.close()
 conn.close()

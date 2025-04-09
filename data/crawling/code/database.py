@@ -4,8 +4,9 @@ import os
 from dotenv import load_dotenv
 
 # CSV 파일 로드
-csv_file = "../data/preprocessed_wine_data.csv"
+csv_file = "../data/preprocessed_wine_dataset_6.csv"
 df = pd.read_csv(csv_file)
+print(df.info())
 
 load_dotenv('../../.env')
 
