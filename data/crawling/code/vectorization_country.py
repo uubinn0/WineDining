@@ -24,21 +24,27 @@ cursor.execute("CREATE EXTENSION IF NOT EXISTS vector")
 # Get wine data from database
 query = """
     SELECT id, acidity, alcohol_content, body, 
-           sweetness, tannin, type_id 
+           sweetness, tannin, country, type_id 
     FROM wines
-    WHERE acidity IS NOT NULL AND alcohol_content IS NOT NULL AND body IS NOT NULL AND
-           sweetness IS NOT NULL AND tannin IS NOT NULL AND type_id IS NOT NULL
+    WHERE acidity IS NOT NULL 
+        AND body IS NOT NULL 
+        AND country IS NOT NULL
+        AND sweetness IS NOT NULL
+        AND tannin IS NOT NULL 
+        AND type_id IS NOT NULL
 """
 
 cursor.execute(query)
 wines = cursor.fetchall()
 columns = ['id', 'acidity', 'alcohol_content', 'body',
-           'sweetness', 'tannin', 'type_id']
+           'sweetness', 'tannin', 'country', 'type_id']
 wine_data = pd.DataFrame(wines, columns=columns)
+wine_data['alcohol_content_was_na'] = wine_data['alcohol_content'].isna()
+wine_data['alcohol_content'].fillna(round(wine_data['alcohol_content'].mean(), 1), inplace=True)
 print(wine_data.info())
 
 # Convert categorical variables to numerical using one-hot encoding
-categorical_columns = ['type_id']
+categorical_columns = ['country', 'type_id']
 wine_data_encoded = pd.get_dummies(wine_data, columns=categorical_columns)
 
 def create_wine_vector(row):
@@ -55,18 +61,18 @@ def create_wine_vector(row):
     # Get one-hot encoded categorical features
     categorical_features = [
         float(value) for key, value in row.items() 
-        if key.startswith(('type_id_'))
+        if key.startswith(('country_', 'type_id_'))
     ]
     
     # Combine all features into a single vector
-    return numerical_features + categorical_features
+    return numerical_features + categorical_features + [float(row['alcohol_content_was_na'])]
     # return numerical_features
 
-# 희소 벡터화
-def to_sparse_vector(vector):
-    # 벡터에서 0이 아닌 값들의 인덱스와 값을 튜플로 묶어 리스트로 반환
-    sparse_vector = [{str(i): value} for i, value in enumerate(vector) if value != 0]
-    return sparse_vector
+# # 밀집 벡터화
+# def to_sparse_vector(vector):
+#     # 벡터에서 0이 아닌 값들의 인덱스와 값을 튜플로 묶어 리스트로 반환
+#     sparse_vector = [{str(i): value} for i, value in enumerate(vector) if value != 0]
+#     return sparse_vector
 
 
 # Create vectors for each wine
@@ -74,6 +80,7 @@ wine_vectors = []
 wine_ids = []
 for idx, row in wine_data_encoded.iterrows():
     vector = create_wine_vector(row)
+    # print(vector)
     # vector = to_sparse_vector(vector)
     # print(vector)
     wine_vectors.append(vector)
@@ -82,11 +89,13 @@ for idx, row in wine_data_encoded.iterrows():
 # print(wine_ids[10])
 print(wine_vectors[10])
 
+# quit()
+
 ## 벡터화 데이터를 DB에 저장 ###
 # 테이블이 이미 존재한다면 제거 후 다시 생성
 cursor.execute("""
-    DROP TABLE IF EXISTS preference_wine_vectors;
-    CREATE TABLE preference_wine_vectors (
+    DROP TABLE IF EXISTS country_wine_vectors;
+    CREATE TABLE country_wine_vectors (
         wine_id INTEGER PRIMARY KEY REFERENCES wines(id),
         vector vector(%s) 
     )
@@ -107,7 +116,7 @@ for i in range(0, len(wine_ids), batch_size):
     
     # Execute batch insert
     execute_values(cursor, """
-        INSERT INTO preference_wine_vectors (wine_id, vector)
+        INSERT INTO country_wine_vectors (wine_id, vector)
         VALUES %s
         ON CONFLICT (wine_id) DO UPDATE 
         SET vector = EXCLUDED.vector
