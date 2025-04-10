@@ -1,21 +1,26 @@
 from sqlmodel import Session
 from app.db.models.wine import Wine
 from app.schemas.recommendDto import RecommendByPreferenceDto, RecommendationResponse
+from app.services.recommend_rating import recommend_by_rating
 from sqlalchemy import text
+
+# 반영됨?
 
 def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) -> RecommendationResponse:
     print("🚀 recommend_by_preference 호출됨")
     print("user_id", data.userId)
     print("foodIds",   data.foodIds)
 
+    no_data = 0 # 위시리스트 또는 
 
     # 0. 사용자 입력값 전처리
     # 당도 조정
-    sweetness_init = [data.sweetness, data.sweetness+1]  # 데이터 불균형 조정용 sql 쿼리 변수
+    sweetness_init = [data.sweetness-1, data.sweetness, data.sweetness+1]  # 데이터 불균형 조정용 sql 쿼리 변수
     sweetness_map = {1: 1, 2: 3, 3: 5}
     data.sweetness = sweetness_map.get(data.sweetness, data.sweetness)
 
     # 산도 조정
+    acidity_init = [data.acidity-1, data.acidity, data.acidity+1]
     acidity_map = {1: 0.5, 2: 2.5, 3: 4.5}
     data.acidity = acidity_map.get(data.acidity, data.acidity)
 
@@ -31,7 +36,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
     alcohol_map = {1: 9, 2: 13, 3: 15}
     data.alcoholContent = alcohol_map.get(data.alcoholContent, data.alcoholContent)
 
-    # 1. 사용자 벡터 생성 (numerical features + type one-hot encoding)
+    # 사용자 벡터 생성 (numerical features + type one-hot encoding)
     user_vector = [
         data.acidity / 6,  
         data.alcoholContent / 100,
@@ -46,7 +51,8 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
     print("🚀 사용자 벡터:", user_vector)
 
 
-   # 2. PostgreSQL에서 와인 벡터 조회 
+   # 1. 취향 데이터 기반 추천
+   # PostgreSQL에서 와인 벡터 조회 
     if not data.foodIds:
         print("🚀 음식 ID가 없음 → 기본 추천 수행")
         query = text("""
@@ -90,7 +96,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
     # 쿼리 실행
     result = session.execute(query, params)
 
-    # 3. 결과가 3개 미만인 경우 추가 쿼리 실행
+    # 결과가 3개 미만인 경우 추가 쿼리 실행
     rows = list(result)
     print(len(rows))
     if len(rows) < 3:
@@ -137,7 +143,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
 
     result = rows
 
-    # 4. 위시리스트 추천
+    # 2. 위시리스트 추천
     # 위시리스트 데이터 조회 및 벡터화
     wish_query = text("""
             SELECT 
@@ -156,7 +162,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
     wish_result = session.execute(wish_query, wish_params)
     wish_rows = list(wish_result)
 
-    # 위시리스트 데이터 벡터화
+    # 위시리스트 데이터가 있는 경우 벡터화
     if wish_rows and wish_rows[0]:
         row = wish_rows[0]
         # 기본 특성 벡터화
@@ -177,33 +183,111 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
                 
         # 최종 벡터 (기본 특성 + 원핫 인코딩)
         wish_vector.extend(type_one_hot)
-    else:
-        # 위시리스트가 비어있는 경우 0으로 채운 벡터 생성
-        wish_vector = [0] * 9  # 5개 기본 특성 + 4개 와인 타입
 
-    print("🚀 위시리스트 벡터:", wish_vector)
-    # 위시리스트 벡터와 preference_wine_vectors 테이블의 벡터 비교
-    wish_vector_query = text("""
-        SELECT wine_id, vector <=> CAST(:wish_vector AS vector) AS cos
-        FROM preference_wine_vectors
-        WHERE wine_id IN (SELECT id 
-                          FROM wines
-                          WHERE price <= 100000)
-        ORDER BY cos DESC
-        LIMIT 1
+        print("🚀 위시리스트 벡터:", wish_vector)
+        # 위시리스트 벡터와 preference_wine_vectors 테이블의 벡터 비교
+        wish_vector_query = text("""
+            SELECT wine_id, vector <=> CAST(:wish_vector AS vector) AS cos
+            FROM preference_wine_vectors
+            WHERE wine_id IN (SELECT id 
+                            FROM wines
+                            WHERE price <= 100000)
+            ORDER BY cos DESC
+            LIMIT 1
+        """)
+
+        wish_vector_params = {
+            "wish_vector" : wish_vector,
+            "user_id": data.userId
+        }
+
+        wish_vector_result = session.execute(wish_vector_query, wish_vector_params)
+        wish_result = list(wish_vector_result)
+    else:
+        # 위시리스트가 비어있는 경우 체크
+        no_data += 1 
+        
+    
+    # 3. 사용자의 최근 높은 평점 와인 조회
+    recent_rating_query = text("""
+        SELECT w.id, w.acidity, w.alcohol_content, w.body, w.sweetness, w.tannin, w.type_id, w.wine_group_id
+        FROM wines w
+        WHERE w.id IN (
+            SELECT b.wine_id
+            FROM wine_notes wn
+            INNER JOIN bottles b ON b.id = wn.bottle_id
+            WHERE b.wine_id IS NOT NULL
+                AND b.user_id = :user_id
+            ORDER BY rating DESC, created_at DESC
+            LIMIT 1
+        )
     """)
 
-    wish_vector_params = {
-        "wish_vector" : wish_vector,
+    rating_params = {
         "user_id": data.userId
     }
 
-    wish_vector_result = session.execute(wish_vector_query, wish_vector_params)
-    wish_result = list(wish_vector_result)
+    rating_result = session.execute(recent_rating_query, rating_params)
+    rating_row = rating_result.fetchone()
 
-    # 선호도 기반 추천과 위시리스트 기반 추천 결과 합치기
-    combined_results = rows + wish_result
-    recommended_ids = [row[0] for row in combined_results]
-    print("🚀 추천 와인 ID 목록:", recommended_ids)
+    # 평점 데이터가 있는 경우
+    if rating_row:
+        # 평점 데이터 벡터화
+        rating_vector = [
+            rating_row.acidity / 6 if rating_row.acidity is not None else 0,
+            rating_row.alcohol_content / 100 if rating_row.alcohol_content is not None else 0,
+            rating_row.body / 6 if rating_row.body is not None else 0,
+            rating_row.sweetness / 6 if rating_row.sweetness is not None else 0,
+            rating_row.tannin / 6 if rating_row.tannin is not None else 0
+        ]
+
+        # type_id 원핫 인코딩
+        type_one_hot = [0] * 4
+        if rating_row.type_id:
+            type_idx = rating_row.type_id - 1
+            if 0 <= type_idx < 4:
+                type_one_hot[type_idx] = 1
+
+        rating_vector.extend(type_one_hot)
+
+        # 동일한 wine_group_id를 가진 와인들 중 코사인 유사도 계산
+        rating_vector_query = text("""
+            SELECT wine_id, vector <=> CAST(:rating_vector AS vector) AS cos
+            FROM preference_wine_vectors
+            WHERE wine_id IN (
+                SELECT id 
+                FROM wines 
+                WHERE wine_group_id = :wine_group_id
+                AND id != :wine_id
+                AND price <= 100000
+            )
+            ORDER BY cos DESC
+            LIMIT 1
+        """)
+
+        rating_vector_params = {
+            "rating_vector": rating_vector,
+            "wine_group_id": rating_row.wine_group_id,
+            "wine_id": rating_row.id
+        }
+
+        rating_vector_result = session.execute(rating_vector_query, rating_vector_params)
+        rating_result = list(rating_vector_result)
+    else:
+        no_data += 1
+
+    
+    # 위시리스트나 평점 데이터가 없는 경우 체크
+    if not no_data:
+        print("🚀 위시리스트나 평점 데이터가 있음 → 각 추천 1개 반환")
+        print(rows)
+        combined_results = rows + wish_result + rating_result
+        recommended_ids = [row[0] for row in combined_results]
+        print("🚀 추천 와인 ID 목록:", recommended_ids)
+    else:
+        print("🚀 위시리스트나 평점 데이터가 없음 → 취향 추천 3개 반환")
+        combined_results = rows
+        recommended_ids = [row[0] for row in combined_results]
+        print("🚀 추천 와인 ID 목록:", recommended_ids)
 
     return RecommendationResponse(recommended_wine_ids=recommended_ids)
