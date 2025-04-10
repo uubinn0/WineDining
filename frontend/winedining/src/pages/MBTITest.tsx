@@ -81,7 +81,7 @@ const MBTITest = () => {
 
   return (
     <div style={styles.container}>
-      <BackButton onClick={() => navigate("/")} />
+      <BackButton onClick={() => navigate(from === "mypage" ? "/mypage" : "/")} />
       <div style={styles.mainContent}>
         {/* <div> */}
         <div style={styles.speechBubbleContainer}>
