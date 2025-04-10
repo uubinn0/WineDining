@@ -10,10 +10,18 @@ import { fetchUserProfile } from "../store/slices/authSlice";
 import { RootState, AppDispatch } from "../store/store";
 import { setCameFromRecommendFlow } from "../store/slices/testSlice";
 import { motion } from "framer-motion";
+import { useLocation } from "react-router-dom"; // 추가
 
 function MyPage() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const from = location.state?.from; // "mypage" or undefined
+
+  const handleMBTITestClick = () => {
+    navigate("/MBTITest");
+  };
 
   const goToRecommendTest = () => {
     dispatch(setCameFromRecommendFlow("mypage")); // 마이페이지에서 넘어갔음을 설정
@@ -89,6 +97,7 @@ function MyPage() {
         <PixelButton onClick={() => navigate("/winesellerlist")}>MY WINE CELLAR</PixelButton>
         <PixelButton onClick={() => navigate("/wishlist")}>WISH LIST</PixelButton>
         <PixelButton onClick={goToRecommendTest}>WINE TEST</PixelButton>
+        <PixelButton onClick={() => navigate("/MBTITest", { state: { from: "mypage" } })}>WINE MBTI TEST</PixelButton>
       </div>
 
       {/* <div style={styles.floatingAddButton}>

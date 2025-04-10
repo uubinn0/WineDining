@@ -5,11 +5,10 @@ import google from "../assets/icons/google.png";
 import PixelButton from "../components/PixelButton";
 import { trackEvent } from "../utils/analytics";
 import { motion } from "framer-motion";
+import { vh } from "../utils/vh"; // vh 함수 사용
 
 const MainPage = () => {
   const navigate = useNavigate();
-  // const baseUrl = window.location.origin;
-  //"https://j12b202.p.ssafy.io/api/v1/auth/oauth2/authorization/kakao";
 
   const handleKakaoLogin = () => {
     trackEvent("mainpage_kakao_login_click", { provider: "KAKAO" });
@@ -47,14 +46,17 @@ const MainPage = () => {
       <div style={styles.imageWrapper}>
         <img src="/main_page/mainwine.png" alt="mainwine" style={styles.mainImage} />
 
-        <div style={styles.buttonOverlay}>
-          <button onClick={handleKakaoLogin} style={styles.loginBtn}>
-            <img src={kakao} alt="카카오" style={styles.icon} />
+        <div style={styles.loginOverlay}>
+          <button onClick={handleKakaoLogin} style={styles.kakaoButton}>
+            <img src={kakao} alt="카카오" style={styles.kakaoIcon} />
+            카카오 로그인
           </button>
-          <button onClick={handleGoogleLogin} style={styles.loginBtn}>
-            <img src={google} alt="구글" style={styles.icon} />
+          <button onClick={handleGoogleLogin} style={styles.googleButton}>
+            <img src={google} alt="구글" style={styles.googleIcon} />
+            Google로 시작하기
           </button>
         </div>
+
         <div style={styles.mbtiBtn}>
           <PixelButton onClick={handleMBTITestClick}>WINE MBTI TEST</PixelButton>
         </div>
@@ -79,57 +81,79 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   titleSection: {
     textAlign: "center",
-    marginTop: "50px",
-    marginBottom: "0px",
+    marginTop: vh(6.5),
+    marginBottom: 0,
   },
   logoTitle: {
-    fontSize: "24px",
-    marginBottom: "10px",
+    fontSize: vh(3),
+    marginBottom: vh(1),
   },
   subText: {
     fontFamily: "Galmuri9",
-    fontSize: "14px",
+    fontSize: vh(1.7),
     lineHeight: "1.6",
   },
   imageWrapper: {
     position: "relative",
     display: "flex",
-    justifyContent: "center",
+    flexDirection: "column",
     alignItems: "center",
+    marginTop: vh(2),
   },
   mainImage: {
-    width: "350px",
-    paddingRight: "13px",
+    width: vh(38),
     zIndex: 0,
   },
-  buttonOverlay: {
+  loginOverlay: {
     position: "absolute",
-    bottom: "180px", // 이미지 기준 버튼 위치 조절
+    top: "60%", // 이미지 중간보다 살짝 위
+    transform: "translateY(-50%)",
     display: "flex",
-    gap: "20px",
+    flexDirection: "column",
+    gap: vh(1.2),
     zIndex: 2,
   },
-  loginBtn: {
-    width: "42px",
-    height: "42px",
-    borderRadius: "50%",
+  kakaoButton: {
+    width: vh(32),
+    height: vh(6),
+    backgroundColor: "#FEE500",
     border: "none",
-    backgroundColor: "#fff",
+    borderRadius: vh(0.8),
+    fontFamily: "Galmuri9",
+    fontSize: vh(1.8),
+    color: "#000",
     display: "flex",
-    justifyContent: "center",
     alignItems: "center",
+    justifyContent: "center",
+    gap: vh(1),
     cursor: "pointer",
   },
-  mbtiBtn: {
-    position: "absolute",
-    bottom: "100px", // 이미지 기준 버튼 위치 조절
+  googleButton: {
+    width: vh(32),
+    height: vh(6),
+    backgroundColor: "#fff",
+    border: "1px solid #ccc",
+    borderRadius: vh(0.8),
+    fontFamily: "Galmuri9",
+    fontSize: vh(1.8),
+    color: "#000",
     display: "flex",
-    gap: "20px",
-    zIndex: 2,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: vh(1),
+    cursor: "pointer",
   },
-  icon: {
-    width: "45px",
-    height: "45px",
+  kakaoIcon: {
+    width: vh(2.6),
+    height: vh(2.6),
+  },
+  googleIcon: {
+    width: vh(2.4),
+    height: vh(2.4),
+  },
+  mbtiBtn: {
+    marginBottom: vh(4), // 너무 바닥에 붙지 않도록 여유
+    zIndex: 2,
   },
 };
 

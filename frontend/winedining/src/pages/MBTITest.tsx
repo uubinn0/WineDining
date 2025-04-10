@@ -6,8 +6,12 @@ import questions from "../data/MBTIQuestion";
 import speechbubble from "../assets/icons/speechbubble.png";
 import { vh } from "../utils/vh";
 import { trackEvent } from "../utils/analytics";
+import { useLocation } from "react-router-dom"; // 추가
 
 const MBTITest = () => {
+  const location = useLocation();
+  const from = location.state?.from;
+
   const navigate = useNavigate();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -66,7 +70,7 @@ const MBTITest = () => {
         // 테스트 완료 이벤트 추적
         trackEvent("mbti_test_completed", { scores });
         // 마지막 질문에 도달하면 결과 페이지로 이동
-        navigate("/MBTIresults", { state: scores });
+        navigate("/MBTIresults", { state: { scores, from } });
       }
     }, 100); // 선택 후 약간의 딜레이 후 다음 질문으로 이동
   };
@@ -74,8 +78,6 @@ const MBTITest = () => {
   const currentQuestion = questions[currentQuestionIndex];
 
   const [hoveredOption, setHoveredOption] = useState<number | null>(null); // 현재 호버된 옵션을 추적
-
-
 
   return (
     <div style={styles.container}>
@@ -104,7 +106,6 @@ const MBTITest = () => {
                   onClick={() => handleOptionSelect(option)} // 옵션 텍스트 선택
                   onMouseEnter={() => setHoveredOption(index)} // 마우스가 올라간 버튼 인덱스 설정
                   onMouseLeave={() => setHoveredOption(null)} // 마우스가 벗어난 버튼 인덱스 초기화
-                
                 >
                   {option.option}
                 </button>
