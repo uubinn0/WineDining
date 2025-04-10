@@ -8,6 +8,11 @@ pipeline {
         JAVA_VERSION = 'jdk17'
         APP_NAME = 'react-container'
         DOCKER_IMAGE = 'react-container:latest'
+        // FastAPI 관련 환경 변수
+        // PYTHON_VERSION = 'python3.10'  // 사용할 Python 버전
+        FASTAPI_APP_NAME = 'recommendation-api'
+        FASTAPI_DOCKER_IMAGE = 'recommendation-api:latest'
+        FASTAPI_PORT = '8000'  // FastAPI가 사용할 포트
     }
 
     stages {
@@ -152,6 +157,69 @@ pipeline {
                 }
                 failure {
                     echo '프론트엔드 빌드 및 배포 실패'
+                }
+            }
+        }
+
+        stage('Recommendation API Build & Deploy') {
+            when {
+                expression { BRANCH_NAME == 'origin/recommendation' }
+            }
+            steps {
+                dir('fastapi') {  // FastAPI 코드가 있는 디렉토리로 변경하세요
+                    script {
+                        sh '''
+                            echo "===== Build Environment ====="
+                            echo "Python Version:"
+                            python3 --version
+                            echo "Pip Version:"
+                            pip --version
+                            echo "Docker Version:"
+                            docker --version
+                            echo "Current Directory:"
+                            pwd
+                            ls -la
+                        '''
+
+                        // 가상환경 설정 및 의존성 설치
+                        sh '''
+                            python3 -m venv venv
+                            . venv/bin/activate
+                            pip install --upgrade pip
+                            pip install -r requirements.txt
+                        '''
+
+                        // 환경 변수 파일 설정 (필요한 경우)
+                        withCredentials([
+                            file(credentialsId: 'fastapi-env', variable: 'envFile')
+                        ]) {
+                            sh '''
+                                cp "$envFile" .env
+                                chmod 644 .env
+                            '''
+                        }
+
+                        // Docker 이미지 빌드 및 배포
+                        sh '''
+                            docker rm -f ${FASTAPI_APP_NAME} || true
+                            docker rmi ${FASTAPI_DOCKER_IMAGE} || true
+                            docker build -t ${FASTAPI_DOCKER_IMAGE} .
+                            docker run -d \\
+                                --name ${FASTAPI_APP_NAME} \\
+                                --network my-network \\
+                                --restart unless-stopped \\
+                                -p ${FASTAPI_PORT}:${FASTAPI_PORT} \\
+                                ${FASTAPI_DOCKER_IMAGE}
+                        '''
+                    }
+                }
+            }
+            post {
+                success {
+                    echo '추천 API 빌드 및 배포 성공'
+                }
+                failure {
+                    echo '추천 API 빌드 및 배포 실패'
                 }
             }
         }
