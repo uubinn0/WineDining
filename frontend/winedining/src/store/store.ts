@@ -1,13 +1,21 @@
 import { configureStore } from "@reduxjs/toolkit";
-// import userReducer from "./slices/userSlice";
-// import cartReducer from "./slices/wishSlice";
+import authReducer from "./slices/authSlice";
+import wishReducer from "./slices/wishSlice";
 import wineReducer from "./slices/wineSlice";
+import testReducer from "./slices/testSlice";
+import noteReducer from "./slices/noteSlice";
+import sellarReducer from "./slices/sellarSlice";
+import infoReducer from "./slices/infoSlice";
 
 export const store = configureStore({
   reducer: {
-    // user: useReducer,
+    auth: authReducer,
     wine: wineReducer,
-    // wish: wishReducer,
+    wish: wishReducer,
+    test: testReducer,
+    note: noteReducer,
+    cellar: sellarReducer,
+    info: infoReducer,
   },
 });
 

@@ -1,26 +1,116 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { fetchWines } from "../store/slices/wineSlice";
 import { RootState, AppDispatch } from "../store/store";
+import { useNavigate } from "react-router-dom";
+import { fetchWines, resetWines, fetchWineDetailThunk } from "../store/slices/wineSlice";
+import { fetchWishes } from "../store/slices/wishSlice";
 import WineInfoCard from "../components/WineInfoCard";
+import WineFilterBar from "../components/WineFilterBar";
 import WineDetailModal from "../components/Modal/WineDetailModal";
-import { Wine } from "../types/wine";
+import { Wine, WineDetail, WineFilter } from "../types/wine";
+import BackButton from "../components/BackButton";
+import PixelTitle from "../components/PixcelTitle";
+import { trackEvent } from "../utils/analytics"; // GA 이벤트 트래커
+import { vh } from "../utils/vh";
+import { motion } from "framer-motion";
 
 const WineList = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { wines, status, error } = useSelector((state: RootState) => state.wine);
-  const [selectedWine, setSelectedWine] = useState<Wine | null>(null);
+
+  // wineSlice 상태
+  const { wines, status, page, hasMore, totalCount } = useSelector((state: RootState) => state.wine);
+
+  // 모달
+  const [selectedWine, setSelectedWine] = useState<WineDetail | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    if (status === "idle") dispatch(fetchWines());
-  }, [dispatch, status]);
+  // 검색
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const handleWineClick = (wine: Wine) => {
-    setSelectedWine(wine);
-    setIsModalOpen(true);
+  // 필터 상태
+  const [filter, setFilter] = useState<WineFilter>({
+    keyword: "",
+    filters: {
+      type: [],
+      grape: [],
+      country: [],
+      minPrice: 0,
+      maxPrice: 1500000,
+      minSweetness: 0,
+      maxSweetness: 5,
+      minAcidity: 0,
+      maxAcidity: 5,
+      minTannin: 0,
+      maxTannin: 5,
+      minBody: 0,
+      maxBody: 5,
+      pairing: [],
+    },
+    sort: { field: "krName", order: "desc" },
+    page: 1,
+    limit: 20,
+  });
+
+  // 무한 스크롤 옵저버
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastWineRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (status === "loading") return;
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          const nextPage = page + 1;
+          setFilter((prev) => ({ ...prev, page: nextPage }));
+          dispatch(fetchWines({ ...filter, page: nextPage }));
+        }
+      });
+
+      if (node) observer.current.observe(node);
+    },
+    [status, hasMore, page, filter, dispatch]
+  );
+
+  // 초기 로드
+  useEffect(() => {
+    dispatch(resetWines());
+    dispatch(fetchWishes());
+    dispatch(fetchWines(filter));
+  }, [dispatch]);
+
+  // 검색어 입력 시 이벤트
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const keyword = e.target.value;
+    setSearchTerm(keyword);
+
+    // 이벤트 태깅: 검색어 입력
+    trackEvent("wine_search_input", { query: keyword });
+
+    const newFilter = { ...filter, keyword, page: 1 };
+    setFilter(newFilter);
+
+    dispatch(resetWines());
+    dispatch(fetchWines(newFilter));
+  };
+
+  // 필터 변경 (WineFilter 통째로)
+  const handleFilterChange = (newFilter: WineFilter) => {
+    setFilter(newFilter);
+    dispatch(resetWines());
+    dispatch(fetchWines(newFilter));
+  };
+
+  // 와인 카드 클릭 시 상세 정보
+  const handleWineClick = async (wine: Wine) => {
+    // 이벤트 태깅: 와인 카드 클릭
+    trackEvent("wine_click", { wineId: wine.wineId, wineName: wine.name });
+
+    const result = await dispatch(fetchWineDetailThunk(wine.wineId));
+    if (fetchWineDetailThunk.fulfilled.match(result)) {
+      setSelectedWine(result.payload);
+      setIsModalOpen(true);
+    }
   };
 
   const handleCloseModal = () => {
@@ -28,47 +118,98 @@ const WineList = () => {
     setSelectedWine(null);
   };
 
-  if (status === "loading") {
-    return <div>로딩 중</div>;
-  }
-
-  if (status === "failed") {
-    return <div>오류 {error} </div>;
-  }
-
   return (
-    <div style={styles.container}>
-      <button onClick={() => navigate("/home")}>홈으로가기</button>
-      <h2>🍷 와인 리스트</h2>
+    <motion.div
+      style={styles.container}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1.5 }}
+    >
+      <div style={styles.backButtonWrapper}>
+        <BackButton onClick={() => navigate("/home")} />
+      </div>
+      <PixelTitle
+        text="WINE"
+        imageSrc="/sample_image/yellow_lightning.png"
+        fontSize="1.8vh"
+        color="#fefefe"
+        imageSize="2.8vh"
+      />
 
-      <div style={styles.grid}>
-        {wines.map((wine) => (
-          <WineInfoCard key={wine.id} wine={wine} onClick={handleWineClick} />
+      {/* 검색 */}
+      <div style={styles.searchBox}>
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          placeholder="와인을 검색하세요"
+          style={styles.searchInput}
+        />
+      </div>
+
+      {/* 필터 바 */}
+      <WineFilterBar filter={filter} onChange={handleFilterChange} />
+
+      {totalCount > 0 && <div style={styles.totalCountText}>총 {totalCount.toLocaleString()}개의 와인 검색</div>}
+
+      {/* 와인 카드 리스트 + 무한 스크롤 */}
+      <div style={styles.wineListContainer}>
+        {wines.map((wine, index) => (
+          <div key={`${wine.wineId}-${index}`} ref={index === wines.length - 1 ? lastWineRef : null}>
+            <WineInfoCard wine={wine} onClick={handleWineClick} />
+          </div>
         ))}
       </div>
 
-      {selectedWine && <WineDetailModal isOpen={isModalOpen} onClose={handleCloseModal} wine={selectedWine} />}
-    </div>
+      {/* 상세 모달 */}
+      {selectedWine && (
+        <WineDetailModal isOpen={isModalOpen} onClose={handleCloseModal} wine={selectedWine} fromPage="winelist" />
+      )}
+    </motion.div>
   );
 };
 
-// style 명시해줘야 한다넹? 타입 스크립트에서는?
-// 위나 아래 둘 중 편한거 쓰면 될듯 (모르면 물어보삼)
-// const styles: Record<string, React.CSSProperties> = { /* 스타일 객체 */ };
+export default WineList;
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
-    padding: "20px",
-    textAlign: "center",
+    backgroundColor: "#2a0e35",
+    color: "white",
+    minHeight: "100vh",
+    padding: "2.2vh",
+    position: "relative",
   },
-
-  /* 와인 리스트 두개 씩 정렬 */
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-    gap: "16px",
-    marginTop: "20px",
+  backButtonWrapper: {
+    // position: "absolute",
+    top: "1.8vh",
+    left: "3vh",
+  },
+  searchBox: {
+    display: "flex",
+    justifyContent: "center",
+    margin: "1.1vh 0",
+  },
+  searchInput: {
+    backgroundColor: "#381837",
+    border: "0.22vh solid #D6BA91",
+    color: "white",
+    width: "100%",
+    maxWidth: "320px",
+    padding: "1.1vh",
+    fontSize: "2vh",
+    borderRadius: "1.8vh",
+  },
+  totalCountText: {
+    textAlign: "right",
+    fontSize: "1.8vh",
+    color: "#ccc",
+    marginRight: "2vh",
+    marginTop: "-2vh",
+  },
+  wineListContainer: {
+    maxHeight: "60vh",
+    overflowY: "auto",
+    paddingRight: "0.9vh",
+    marginTop: "2vh",
   },
 };
-
-export default WineList;

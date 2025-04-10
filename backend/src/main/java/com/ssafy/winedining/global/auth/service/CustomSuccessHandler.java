@@ -13,6 +13,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -24,11 +25,11 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     @Value("${jwt.access-token-expiration}")
     private long accessTokenExpiration;
 
-    @Value("${frontend.url}")
-    private String frontendUrl;
-
-    @Value("${server.domain}")
-    private String serverDomain;
+//    @Value("${frontend.url}")
+//    private String frontendUrl;
+//
+//    @Value("${server.domain}")
+//    private String serverDomain;
 
     public CustomSuccessHandler(JWTUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
@@ -36,41 +37,61 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        //OAuth2User
         CustomOAuth2User customUserDetails = (CustomOAuth2User) authentication.getPrincipal();
 
         String username = customUserDetails.getUsername();
-        Long userId = customUserDetails.getUserId(); // userId 가져오기
+        Long userId = customUserDetails.getUserId();
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
-        // userId를 포함한 토큰 생성
+        // 요청 헤더에서 원래 도메인 추출
+        String requestDomain = request.getHeader("X-Forwarded-Host");
+        if (requestDomain == null) {
+            requestDomain = request.getHeader("Host");
+        }
+        if (requestDomain == null) {
+            requestDomain = request.getServerName();
+        }
+
+        // 토큰 생성
         String token = jwtUtil.createJwt(username, role, userId, accessTokenExpiration);
 
-        // 쿠키 만료 시간도 동일하게 설정 (초 단위로 변환 필요)
-        response.addCookie(createCookie("Authorization", token));
-        response.sendRedirect("/home");
+        // 쿠키 생성 시 도메인 전달
+        Cookie cookie = createCookie("Authorization", token, requestDomain);
+        response.addCookie(cookie);
+
+        // 동적 리다이렉트 URL 생성
+        String redirectUrl = "https://" + requestDomain + "/home";
+        response.sendRedirect(redirectUrl);
+
+        System.out.println("Detected domain: " + requestDomain);
+        System.out.println("X-Forwarded-Host: " + request.getHeader("X-Forwarded-Host"));
+        System.out.println("Host Header: " + request.getHeader("Host"));
+        System.out.println("Server Name: " + request.getServerName());
     }
 
-    private Cookie createCookie(String key, String value) {
+    private Cookie createCookie(String key, String value, String domain) {
         Cookie cookie = new Cookie(key, value);
-        // 밀리초를 초로 변환 (쿠키의 maxAge는 초 단위)
         cookie.setMaxAge((int)(accessTokenExpiration / 1000));
 
-        // 서버 도메인에 따라 secure 설정
-        if (!serverDomain.equals("localhost")) {
+        // localhost가 아닌 경우 secure 설정
+        if (!domain.equals("localhost")) {
             cookie.setSecure(true);
         }
 
         cookie.setPath("/");
         cookie.setHttpOnly(true);
 
-        // 서버 도메인이 localhost가 아닐 경우 도메인 설정
-        if (!serverDomain.equals("localhost")) {
-            cookie.setDomain(serverDomain);
+        // localhost가 아닌 경우 도메인 설정
+        if (!domain.equals("localhost")) {
+            // 도메인 시작에 점(.)이 있으면 제거
+            if (domain.startsWith(".")) {
+                domain = domain.substring(1);
+            }
+            cookie.setDomain(domain);
         }
 
         return cookie;

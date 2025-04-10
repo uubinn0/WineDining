@@ -3,7 +3,9 @@ package com.ssafy.winedining.domain.collection.service;
 import com.ssafy.winedining.domain.collection.dto.*;
 import com.ssafy.winedining.domain.collection.entity.Bottle;
 import com.ssafy.winedining.domain.collection.repository.BottleRepository;
+import com.ssafy.winedining.domain.user.entity.Rank;
 import com.ssafy.winedining.domain.user.entity.User;
+import com.ssafy.winedining.domain.user.repository.RankRepository;
 import com.ssafy.winedining.domain.user.repository.UserRepository;
 import com.ssafy.winedining.domain.wine.entity.CustomWine;
 import com.ssafy.winedining.domain.wine.entity.Wine;
@@ -29,6 +31,7 @@ public class CellarService {
     private final CustomWineRepository customWineRepository;
     private final WineTypeRepository wineTypeRepository;
     private final UserRepository userRepository;
+    private final RankRepository rankRepository;
 
     /**
      * 기존 와인을 사용자 셀러에 추가
@@ -53,6 +56,20 @@ public class CellarService {
                 .build();
 
         Bottle savedBottle = bottleRepository.save(bottle);
+
+        // 사용자의 총 병 개수 계산
+        int totalBottles = bottleRepository.findByUserId(userId).size();
+
+        // 현재 병 개수에 맞는 등급 찾기
+//        Rank newRank = rankRepository.findRankByBottleCount(totalBottles);
+
+        Rank newRank = rankRepository.findTopByConditionLessThanEqualOrderByConditionDesc(totalBottles);
+
+        // 사용자 등급 업데이트
+        if (newRank != null && (user.getRank() == null || !user.getRank().getId().equals(newRank.getId()))) {
+            user.setRank(newRank);
+            userRepository.save(user);
+        }
 
         // 와인 타입 이름 가져오기
         String typeName = wine.getWineType().getTypeName();
@@ -108,6 +125,19 @@ public class CellarService {
                 .build();
 
         Bottle savedBottle = bottleRepository.save(bottle);
+
+        // 사용자의 총 병 개수 계산
+        int totalBottles = bottleRepository.findByUserId(userId).size();
+
+        // 현재 병 개수에 맞는 등급 찾기
+        Rank newRank = rankRepository.findRankByBottleCount(totalBottles);
+
+        // 사용자 등급 업데이트
+        if (newRank != null && (user.getRank() == null || !user.getRank().getId().equals(newRank.getId()))) {
+            user.setRank(newRank);
+            userRepository.save(user);
+        }
+
         // 응답 DTO 생성
         return CustomBottleResponseDTO.builder()
                 .bottleId(savedBottle.getId())
