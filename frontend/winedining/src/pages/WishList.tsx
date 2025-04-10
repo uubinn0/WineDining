@@ -11,7 +11,7 @@ import { WineDetail } from "../types/wine";
 import BackButton from "../components/BackButton";
 import PixelTitle from "../components/PixcelTitle";
 import Wish from "../assets/images/background/Wish.png";
-import { trackEvent } from "../utils/analytics"; // GA 이벤트 트래커 추가
+import { trackEvent } from "../utils/analytics";
 import { motion } from "framer-motion";
 
 const WishList = () => {
@@ -26,11 +26,8 @@ const WishList = () => {
     dispatch(fetchWishes());
   }, [dispatch]);
 
-  // 위시 아이템 클릭 시
   const handleWishClick = (wineId: number) => {
-    // 이벤트 추가
     trackEvent("wishlist_item_click", { wineId });
-
     dispatch(fetchWineDetailThunk(wineId));
     setIsModalOpen(true);
   };
@@ -46,24 +43,23 @@ const WishList = () => {
         <BackButton onClick={() => navigate("/mypage")} />
       </div>
 
-      <div style={styles.title}>
-        <PixelTitle
-          text="WISH LIST"
-          imageSrc="/sample_image/yellow_lightning.png"
-          fontSize="1.8vh"
-          color="#fefefe"
-          imageSize="2.8vh"
-        />
-      </div>
-      <div style={styles.gridScrollWrapper}>
+      <PixelTitle
+        text="MY WINE CELLAR"
+        imageSrc="/sample_image/yellow_lightning.png"
+        fontSize="1.8vh"
+        color="#fefefe"
+        imageSize="2.8vh"
+      />
+
+      <div style={styles.content}>
         {status === "loading" && <p>위시리스트를 불러오는 중...</p>}
         {status === "failed" && <p>위시리스트를 불러오는 데 실패했습니다.</p>}
 
         {items.length === 0 ? (
-          <p>위시리스트가 비어 있습니다.</p>
+          <p style={styles.emptyMessage}>위시리스트가 비어 있습니다.</p>
         ) : (
           <div style={styles.grid}>
-            {items.map((wish) => (
+            {items.map((wish, index) => (
               <div key={wish.id} onClick={() => handleWishClick(wish.wine.wineId)}>
                 <WineWishCard wish={wish} wine={wish.wine} />
               </div>
@@ -77,7 +73,7 @@ const WishList = () => {
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           wine={wineDetail}
-          fromPage="wishlist" // 담기 이벤트 시 from: "wishlist" 로 구분
+          fromPage="wishlist"
         />
       )}
     </motion.div>
@@ -87,40 +83,59 @@ const WishList = () => {
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
     backgroundImage: `url(${Wish})`,
-    backgroundRepeat: "repeat-y", // 세로로 배경 반복
     backgroundSize: "cover",
+    backgroundRepeat: "repeat-y",
     backgroundPosition: "center",
-    textAlign: "center",
-    minHeight: "100vh", // 최소 높이 보장 (이미 vh 단위)
-    overflow: "hidden",
-    // overflowY: "auto",
     width: "100%",
+    height: "100dvh",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    position: "relative",
+    padding: "2.2vh 0",
   },
-  gridScrollWrapper: {
-    maxHeight: "75vh", // 카드 영역의 스크롤 한계 높이
+  backButtonWrapper: {
+    position: "absolute",
+    top: "1.8vh",
+    left: "3vh",
+  },
+  header: {
+    fontFamily: "PressStart2P",
+    fontSize: "2vh",
+    color: "white",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "2vh",
+    marginBottom: "0.5vh",
+  },
+  icon: {
+    width: "2vh",
+    height: "3vh",
+  },
+  content: {
+    flex: 1,
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
     overflowY: "auto",
-    paddingBottom: "3vh",
-    paddingTop: "1vh",
-    WebkitOverflowScrolling: "touch", // iOS 부드러운 스크롤
+    WebkitOverflowScrolling: "touch",
   },
   grid: {
     display: "grid",
     gridTemplateColumns: "repeat(2, 1fr)",
-    gap: "1.5vh", // 12px / 8 = 1.5vh
-    justifyContent: "center",
-    padding: "2.5vh", // 20px / 8 = 2.5vh
+    gap: "1.5vh",
+    padding: "2.5vh",
+    width: "90%",
+    maxWidth: "80vh",
+    justifyItems: "center", // 각 아이템을 셀 내부에서 가운데 정렬
+    justifyContent: "center", // 그리드 전체를 가운데 정렬
+    alignContent: "start",
   },
-  image: {
-    width: "2.25vh", // 18px / 8 = 2.25vh
-    height: "2.5vh", // 20px / 8 = 2.5vh
-  },
-  backButtonWrapper: {
-    position: "absolute",
-    top: "2vh", // 16px / 8 = 2vh
-    left: "2vh", // 16px / 8 = 2vh
-  },
-  title: {
-    marginTop: "2.375vh", // 19px / 8 ≈ 2.375vh
+  emptyMessage: {
+    fontSize: "1.8vh",
+    color: "#fff",
+    fontFamily: "Galmuri9",
   },
 };
 

@@ -27,9 +27,9 @@ const KnowledgeList: React.FC = () => {
         type: 'info/setSelectedInfo', // selectedInfo 설정하는 액션
         payload: {
           id: -1,
-          title: "???",
+          title: "미공개 정보",
           image: DeactiveBook,
-          content: "아직 레벨이 부족하군요. \n와인기록을 통해 레벨을 올려보세요.",
+          content: "5월 1일 공개 예정",
         }
       });
       setIsModalOpen(true); // 모달 열기
@@ -53,7 +53,7 @@ const KnowledgeList: React.FC = () => {
       id: -1,
       title: "???",
       image: DeactiveBook,
-      content: "아직 레벨이 부족하군요. \n와인기록을 통해 레벨을 올려보세요.",
+      content: "",
     }),
   ];
 
