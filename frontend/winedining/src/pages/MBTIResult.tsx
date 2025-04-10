@@ -258,7 +258,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     padding: `${vh(1.5)} ${vh(3)}`,
     backgroundColor: "#fff",
     minWidth: "20vh",
-    marginTop: "2.5vh",
+    marginTop: "2.0vh",
     border: "none",
     borderRadius: vh(1),
     fontFamily: "Galmuri7",
