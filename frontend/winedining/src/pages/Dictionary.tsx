@@ -33,16 +33,8 @@ function Dictionary() {
         <img src={"/sample_image/yellow_lightning.png"} alt={"번개 이미지"} style={styles.image} />
       </div>
 
-      {user?.rank === "초보자" ? (
-        <div style={styles.messageContainer}>
-          <div style={styles.message}>
-            입문자 이상만 <br />열람 가능합니다.
-          </div>
-        </div>
-      ) : (
       <DictionaryList />
 
-    )}
               
       </div>
     </motion.div>
