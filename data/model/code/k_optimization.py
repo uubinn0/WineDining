@@ -11,6 +11,8 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.impute import SimpleImputer
 from scipy.stats import chi2_contingency
 from sklearn.decomposition import PCA
+import os
+os.environ['LOKY_MAX_CPU_COUNT'] = '4'  # 원하는 코어 수로 설정
 
 load_dotenv('../../.env')
 
@@ -28,45 +30,45 @@ query = "SELECT * FROM wines"
 df = pd.read_sql_query(query, conn)
 conn.close()
 
+# 도수 결측값 평균 처리
+df['alcohol_content_was_na'] = df['alcohol_content'].isna()   # 결측치 여부 컬럼
+df['alcohol_content'].fillna(round(df['alcohol_content'].mean(), 1), inplace=True)
+
 # Select features for clustering
-features = ['acidity', 'sweetness', 'alcohol_content', 'body', 'tannin', 'country', 'type_id']
+features = ['acidity', 'alcohol_content', 'sweetness', 'body', 'tannin', 'country', 'type_id', 'alcohol_content_was_na']
 X = df[features]
-
-# 결측값 -1로 처리
-X['alcohol_content'] = X['alcohol_content'].fillna(-1)
-
-# 알콜값 결측 여부 컬럼 추가
-# X['is_alcohol_data'] = (X['alcohol_content'] != -1).astype(int)
 
 # 원-핫 인코딩
 # X = pd.get_dummies(X, columns=['country', 'type_id', 'is_alcohol_data'], prefix=['country','type_id', 'is_alcohol_data'])
 X = pd.get_dummies(X, columns=['country', 'type_id'], prefix=['country','type_id'])
 
-print(X)
+print(X.info())
 
-# 가중치 설정
-weights = np.ones(X.shape[1])  # 기본 가중치 1로 초기화
+# # 가중치 설정
+# weights = np.ones(X.shape[1])  # 기본 가중치 1로 초기화
 
-# 특정 컬럼에 대한 가중치 설정
-for i, col in enumerate(X.columns):
-    if 'alcohol_content' in col:
-        weights[i] = 0.3  # alcohol 관련 특성의 가중치 낮춤
-    elif 'is_alcohol_data' in col:
-        weights[i] = 0.3  # alcohol 관련 특성의 가중치 낮춤 
+# # 특정 컬럼에 대한 가중치 설정
+# for i, col in enumerate(X.columns):
+#     if 'alcohol_content' in col:
+#         weights[i] = 0.3  # alcohol 관련 특성의 가중치 낮춤
+#     elif 'is_alcohol_data' in col:
+#         weights[i] = 0.3  # alcohol 관련 특성의 가중치 낮춤 
 
-# 가중치 적용
-X_weighted = X * weights
+# # 가중치 적용
+# X_weighted = X * weights
 
 # Standardize features
 scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X_weighted)
+# X_scaled = scaler.fit_transform(X_weighted)
+X_scaled = scaler.fit_transform(X)
 
 # Calculate silhouette scores for different numbers of clusters
 silhouette_scores = []
 inertias = []
-K = range(2, 100)
+K = range(2, 50)
 
 for k in K:
+    print(f"k: {k}")
     kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
     kmeans.fit(X_scaled)
     
