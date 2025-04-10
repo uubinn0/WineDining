@@ -2,6 +2,10 @@ package com.ssafy.winedining.domain.recommend.dto;
 
 import com.ssafy.winedining.domain.preference.entity.Preference;
 import lombok.Data;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class RecommendByPreferenceDto {
@@ -16,6 +20,7 @@ public class RecommendByPreferenceDto {
     private boolean white;
     private boolean sparkling;
     private boolean rose;
+    private List<Long> foodIds = new ArrayList<>(); // 새로 추가된 필드
 
     public RecommendByPreferenceDto(Preference preference){
         this.userId = preference.getUserId();
@@ -30,4 +35,10 @@ public class RecommendByPreferenceDto {
         this.rose = preference.getRose();
     }
 
+    // 음식 ID 목록을 설정하는 메서드
+    public void setFoodIds(List<Long> foodIds) {
+        if (foodIds != null) {
+            this.foodIds = foodIds;
+        }
+    }
 }

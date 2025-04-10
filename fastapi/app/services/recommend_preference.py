@@ -4,8 +4,6 @@ from app.schemas.recommendDto import RecommendByPreferenceDto, RecommendationRes
 from app.services.recommend_rating import recommend_by_rating
 from sqlalchemy import text
 
-# 반영됨?
-
 def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) -> RecommendationResponse:
     print("🚀 recommend_by_preference 호출됨")
     print("user_id", data.userId)

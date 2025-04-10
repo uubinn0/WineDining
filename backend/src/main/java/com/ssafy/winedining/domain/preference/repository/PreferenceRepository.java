@@ -12,4 +12,5 @@ public interface PreferenceRepository extends JpaRepository<Preference, Long> {
 //    Optional<Preference> findByUserId(Long userId);
     List<Preference> findByUserId(Long userId);
     List<Preference> findByUserIdOrderByCreatedAtDesc(Long userId);
+    void deleteByUserId(Long userId);
 }

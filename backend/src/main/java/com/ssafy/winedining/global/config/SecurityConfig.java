@@ -96,14 +96,15 @@ public class SecurityConfig {
             CorsConfiguration configuration = new CorsConfiguration();
 
             configuration.setAllowedOrigins(Arrays.asList(
-                    frontendUrl,
                     "http://localhost:3000",
                     "https://localhost:3000",
                     "http://localhost:8080",
                     "https://localhost:8080",
                     "https://localhost:5432",
                     "https://localhost:5432",
-                    "https://j12b202.p.ssafy.io"
+                    "https://j12b202.p.ssafy.io",
+                    "https://winedining.store",
+                    "https://www.winedining.store"
             ));
             configuration.setAllowedHeaders(Collections.singletonList("*"));
             configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
