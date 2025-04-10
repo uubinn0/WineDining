@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="509dd3ba-c2ed-4411-8b23-9e879fa9f321" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradlew" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradlew.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/WinediningApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/collection/entity/Bottle.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/collection/entity/WineNote.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/collection/entity/WishItem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/food/entity/Food.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/info/entity/Info.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/info/entity/InfoDetail.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/pairing/entity/PairingSet.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/preference/entity/FoodPreference.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/preference/entity/Preference.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/recommend/controller/RecommController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/recommend/dto/RecommendByFoodDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/recommend/dto/RecommendByPersonDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/recommend/dto/RecommendByPreferenceDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/recommend/service/RecommendService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/recommend/service/moduleService/RecommendDomainService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/recommend/service/moduleService/RecommendFastApiService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/user/controller/UserController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/user/dto/UserDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/user/entity/Rank.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/user/entity/User.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/user/entity/UserGroup.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/user/repository/UserRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/user/service/UserService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/wine/entity/CustomWine.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/wine/entity/Wine.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/wine/entity/WineGroup.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/domain/wine/entity/WineType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/global/auth/controller/MainController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/global/auth/controller/MyController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/global/auth/dto/CustomOAuth2User.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/global/auth/dto/GoogleResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/global/auth/dto/KakaoResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/global/auth/dto/OAuth2Response.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/global/auth/service/CustomOAuth2UserService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/global/auth/service/CustomSuccessHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/global/config/CorsMvcConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/global/config/SecurityConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/global/config/WebClientConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/global/jwt/JWTFilter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssafy/winedining/global/jwt/JWTUtil.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/ssafy/winedining/WinediningApplicationTests.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 4
+}]]></component>
+  <component name="ProjectId" id="2vW80REdeowkM3X6VDvRMppHRcy" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration name="WinediningApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="winedining.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.ssafy.winedining.WinediningApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fdfe4dae3a2d-intellij.indexing.shared.core-IU-243.22562.218" />
+        <option value="bundled-js-predefined-d6986cc7102b-deb605915726-JavaScript-IU-243.22562.218" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="애플리케이션 수준" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="디폴트 작업">
+      <changelist id="509dd3ba-c2ed-4411-8b23-9e879fa9f321" name="변경" comment="" />
+      <created>1744249246538</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1744249246538</updated>
+      <workItem from="1744249248476" duration="889000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
