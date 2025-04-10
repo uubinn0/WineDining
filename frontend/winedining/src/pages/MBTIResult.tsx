@@ -27,7 +27,9 @@ declare global {
 }
 
 function MBTIResults() {
-  const location = useLocation(); // useLocation을 통해 location 객체 가져오기
+  const location = useLocation();
+  const from = location.state?.from;
+
   const { E, I, S, N, F, T, P, J }: Scores = location.state || {};
   // 성격 유형 계산
   const personalityType = `${E > I ? "E" : "I"}${S > N ? "S" : "N"}${F > T ? "F" : "T"}${P > J ? "P" : "J"}`;
@@ -149,8 +151,8 @@ function MBTIResults() {
         </div>
 
         {/* 홈으로 이동 버튼 (기존처럼 fixed 중앙) */}
-        <button style={styles.shareButton} onClick={() => nav("/")}>
-          홈으로 이동
+        <button style={styles.shareButton} onClick={() => nav(from === "mypage" ? "/mypage" : "/")}>
+          {from === "mypage" ? "마이페이지" : "홈으로 이동"}
         </button>
 
         {/* 카카오 공유 버튼 (오른쪽에 붙음) */}
