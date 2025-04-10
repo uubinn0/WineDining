@@ -21,8 +21,6 @@ import p4 from "../assets/tutorial/p4.png";
 import p5 from "../assets/tutorial/p5.png";
 
 import { vh } from "../utils/vh";
-// GA 이벤트 헬퍼 (유틸리티 함수)
-// utils/analytics.ts 에 정의되어 있다고 가정합니다.
 import { trackEvent } from "../utils/analytics";
 import { motion } from "framer-motion";
 
@@ -31,7 +29,6 @@ function Home() {
   const navigate = useNavigate();
   const { user, status } = useSelector((state: RootState) => state.auth);
   const [isPreferenceModalVisible, setIsPreferenceModalVisible] = useState(false);
-  // 최초 클릭 여부를 기록할 상태
   const [firstButtonClicked, setFirstButtonClicked] = useState(false);
 
   const testCompleted = useSelector((state: RootState) => state.test.testCompleted);
@@ -41,6 +38,10 @@ function Home() {
 
   const tutorialImages = [p1, p2, p3, p4, p5];
 
+  const [autoTutorialStarted, setAutoTutorialStarted] = useState(false);
+  const [showModalAfterTutorial, setShowModalAfterTutorial] = useState(false);
+  const [countdown, setCountdown] = useState(5);
+
   useEffect(() => {
     if (status === "idle") {
       dispatch(fetchUserProfile());
@@ -48,15 +49,13 @@ function Home() {
   }, [status, dispatch]);
 
   useEffect(() => {
-    if (user && user.preference === false && testCompleted === false) {
-      dispatch(setCameFromRecommendFlow("home")); // 홈에서 넘어갔음을 설정
-      setIsPreferenceModalVisible(true);
-      const timer = setTimeout(() => {
-        navigate("/recommendtest");
-      }, 3000);
-      return () => clearTimeout(timer);
+    if (user && user.preference === false && testCompleted === false && !autoTutorialStarted) {
+      setAutoTutorialStarted(true);
+      setIsTutorialOpen(true);
+      setTutorialPage(0);
+      dispatch(setCameFromRecommendFlow("home"));
     }
-  }, [user, navigate, dispatch, testCompleted]);
+  }, [user, testCompleted, dispatch, autoTutorialStarted]);
 
   const handleLogout = () => {
     dispatch(logoutUser()).then(() => {
@@ -64,13 +63,33 @@ function Home() {
     });
   };
 
-  // 공통 클릭 핸들러: 최초 클릭일 경우 이벤트 추적 후 이동
   const handleNavigationClick = (destination: string, targetName: string) => {
     if (!firstButtonClicked) {
       trackEvent("home_first_click", { target: targetName });
       setFirstButtonClicked(true);
     }
     navigate(destination);
+  };
+
+  const closeTutorial = () => {
+    setIsTutorialOpen(false);
+    setTutorialPage(0);
+
+    if (autoTutorialStarted) {
+      setShowModalAfterTutorial(true);
+      setIsPreferenceModalVisible(true);
+
+      let sec = 5;
+      setCountdown(sec);
+      const timer = setInterval(() => {
+        sec -= 1;
+        setCountdown(sec);
+        if (sec <= 0) {
+          clearInterval(timer);
+          navigate("/recommendtest");
+        }
+      }, 1000);
+    }
   };
 
   if (status === "loading") return null;
@@ -88,8 +107,7 @@ function Home() {
                 if (tutorialPage < tutorialImages.length - 1) {
                   setTutorialPage(tutorialPage + 1);
                 } else {
-                  setIsTutorialOpen(false);
-                  setTutorialPage(0);
+                  closeTutorial();
                 }
               }}
             />
@@ -99,12 +117,11 @@ function Home() {
                   if (tutorialPage < tutorialImages.length - 1) {
                     setTutorialPage(tutorialPage + 1);
                   } else {
-                    setIsTutorialOpen(false);
-                    setTutorialPage(0);
+                    closeTutorial();
                   }
                 }}
                 width="10vh"
-                height="3vh"
+                height="3.5vh"
                 backgroundColor="#d4b27a"
                 textColor="#2a0e35"
                 fontSize="1.8vh"
@@ -116,20 +133,21 @@ function Home() {
         </div>
       )}
 
-      <h3 style={logoutbutton} onClick={handleLogout}>
-        로그아웃
-      </h3>
-
-      {isPreferenceModalVisible && user && !user.preference && (
+      {isPreferenceModalVisible && user && !user.preference && showModalAfterTutorial && (
         <div style={modalOverlay}>
           <div style={modalContent}>
-            <p style={{ marginBottom: "8px" }}>
-              <strong>{user.nickname}</strong>님, <br />
-              아직 취향을 모르겠어요!
+            <p style={{ marginBottom: "12px" }}>
+              <span style={{ textDecoration: "underline" }}>
+                <strong>{user.nickname}</strong>
+              </span>
+              님, <br />
+              아직 취향 정보가 없어요!
             </p>
-            <p>간단한 질문만 답해주시면</p>
-            <p>더 잘 맞는 와인을 추천드릴게요 🍷</p>
-            <p style={{ fontSize: "14px", marginTop: "12px", color: "#d4b27a" }}>곧 취향 테스트로 이동합니다...</p>
+            <p>간단한 질문에 답해주시면</p>
+            <p>더 잘 맞는 와인을 추천해드릴게요 🍷</p>
+            <p style={{ fontSize: "2vh", marginTop: "12px", color: "#d4b27a" }}>
+              <span style={{ color: "#9A001A" }}>{countdown}</span>초 후 테스트로 이동합니다...
+            </p>
           </div>
         </div>
       )}
@@ -270,9 +288,9 @@ const modalContent: React.CSSProperties = {
   position: "relative",
   backgroundColor: "#2a0e35",
   border: "4px solid #d4b27a",
-  padding: "12px 6px",
-  width: "90%",
-  maxWidth: "500px",
+  padding: "6px",
+  maxWidth: "95%",
+  width: "48vh",
   borderRadius: "12px",
   textAlign: "center",
   color: "white",
@@ -295,21 +313,22 @@ const tutorialModalOverlay: React.CSSProperties = {
 
 const tutorialModalContent: React.CSSProperties = {
   backgroundColor: "#111",
-  padding: "16px",
-  borderRadius: "12px",
-  maxWidth: "90%",
-  width: "40vh",
+  padding: "2px",
+  borderRadius: "2x",
+  maxWidth: "95%",
+  width: "48vh",
   textAlign: "center",
 };
 
 const tutorialImageStyle: React.CSSProperties = {
   width: "100%",
   height: "auto",
-  borderRadius: "8px",
+  maxHeight: "90vh",
+  borderRadius: "12px",
 };
 
 const tutorialButtonGroup: React.CSSProperties = {
-  marginTop: "1vh",
+  margin: "1vh",
   display: "flex", // 가운데 정렬 추가
   justifyContent: "center", // 버튼을 수평 중앙에
 };
@@ -332,7 +351,7 @@ const tutorialPositionStyle: React.CSSProperties = {
 };
 
 const tutorialIconStyle: React.CSSProperties = {
-  width: vh(2.2),
+  width: vh(2.5),
   height: vh(3.5),
   objectFit: "contain",
 };
