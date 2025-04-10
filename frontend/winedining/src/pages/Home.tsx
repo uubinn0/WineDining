@@ -15,7 +15,7 @@ import quest from "../assets/icons/questicon.png";
 import PixelButton from "../components/PixelButton";
 
 import p1 from "../assets/tutorial/p1.png";
-import p2 from "../assets/tutorial/p2.png";
+import p2 from "../assets/tutorial/p3.png";
 import p3 from "../assets/tutorial/p3.png";
 import p4 from "../assets/tutorial/p4.png";
 import p5 from "../assets/tutorial/p5.png";
@@ -137,6 +137,9 @@ function Home() {
         <div style={modalOverlay}>
           <div style={modalContent}>
             <p style={{ marginBottom: "12px" }}>
+              <p style={{ fontSize: "2vh", marginTop: "12px", color: "#d4b27a" }}>
+                <span style={{ color: "#9A001A" }}>{countdown}</span>초 후 테스트로 이동합니다...
+              </p>
               <span style={{ textDecoration: "underline" }}>
                 <strong>{user.nickname}</strong>
               </span>
@@ -145,9 +148,6 @@ function Home() {
             </p>
             <p>간단한 질문에 답해주시면</p>
             <p>더 잘 맞는 와인을 추천해드릴게요 🍷</p>
-            <p style={{ fontSize: "2vh", marginTop: "12px", color: "#d4b27a" }}>
-              <span style={{ color: "#9A001A" }}>{countdown}</span>초 후 테스트로 이동합니다...
-            </p>
           </div>
         </div>
       )}
@@ -294,7 +294,7 @@ const modalContent: React.CSSProperties = {
   borderRadius: "12px",
   textAlign: "center",
   color: "white",
-  fontSize: "16px",
+  fontSize: "14px",
   lineHeight: "1.6",
 };
 
