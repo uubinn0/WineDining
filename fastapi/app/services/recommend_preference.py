@@ -14,7 +14,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
     # 0. 사용자 입력값 전처리
     # 당도 조정
     sweetness_init = [data.sweetness-1, data.sweetness, data.sweetness+1]  # 데이터 불균형 조정용 sql 쿼리 변수
-    sweetness_map = {1: 1, 2: 3, 3: 5}
+    sweetness_map = {1: 0.5, 2: 2.5, 3: 4.5}
     data.sweetness = sweetness_map.get(data.sweetness, data.sweetness)
 
     # 산도 조정
@@ -59,6 +59,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
             WHERE wine_id IN (SELECT id
                               FROM wines
                               WHERE sweetness = ANY(:sweetness)
+                              AND acidity = ANY(:acidity)
                               AND price <= 100000)
             AND vector <-> CAST(:user_vector AS vector) >= 0.5
             ORDER BY cos DESC
@@ -66,7 +67,8 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
         """)
         params = {
             "user_vector": user_vector,
-            "sweetness": sweetness_init
+            "sweetness": sweetness_init,
+            "acidity": acidity_init
         }
 
     else:
@@ -80,6 +82,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
                                            FROM pairing_sets 
                                            WHERE food_id = ANY(:food_ids))
 						      AND sweetness = ANY(:sweetness)
+                              AND acidity = ANY(:acidity)
                               AND price <= 100000)
             AND vector <=> CAST(:user_vector AS vector) >= 0.5
             ORDER BY similarity DESC
@@ -88,7 +91,8 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
         params = {
             "user_vector": user_vector,
             "food_ids": data.foodIds,  # PostgreSQL의 `ANY()` 함수가 리스트를 받도록 그대로 전달
-            "sweetness": sweetness_init
+            "sweetness": sweetness_init,
+            "acidity": acidity_init 
         }
 
     # 쿼리 실행
@@ -109,6 +113,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
                 FROM preference_wine_vectors 
                 AND wine_id NOT IN (SELECT wine_id FROM unnest(:existing_ids) AS wine_id
                                     WHERE sweetness = ANY(:sweetness)
+                                    AND acidity = ANY(:acidity)
                                     AND price <= 100000)
                 ORDER BY cos DESC
                 LIMIT :needed_count
@@ -117,7 +122,8 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
                 "user_vector": user_vector,
                 "existing_ids": existing_ids,
                 "needed_count": 3 - len(rows),
-                "sweetness": sweetness_init
+                "sweetness": sweetness_init,
+                "acidity": acidity_init
             }
         else:
             # 추천 데이터가 하나도 없는 경우 
@@ -126,6 +132,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
                 FROM preference_wine_vectors 
                 WHERE wine_id IN (SELECT id FROM wines
                                     WHERE sweetness = ANY(:sweetness)
+                                    AND acidity = ANY(:acidity)
                                     AND price <= 100000)
                 ORDER BY cos DESC
                 LIMIT :needed_count
@@ -133,7 +140,8 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
             additional_params = {
                 "user_vector": user_vector,
                 "needed_count": 3 - len(rows),
-                "sweetness": sweetness_init
+                "sweetness": sweetness_init,
+                "acidity": acidity_init
             }
         
         additional_result = session.execute(additional_query, additional_params)
