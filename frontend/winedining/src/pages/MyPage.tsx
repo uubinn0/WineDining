@@ -138,7 +138,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     left: "1.6vh",
   },
   buttonGroup: {
-    padding: "7vh 0",
+    padding: "4vh 0",
     display: "flex",
     justifyContent: "center",
     gap: "3.8vh",

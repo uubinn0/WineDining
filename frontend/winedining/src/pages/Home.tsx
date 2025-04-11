@@ -133,6 +133,9 @@ function Home() {
         </div>
       )}
 
+      <h3 style={logoutbutton} onClick={handleLogout}>
+        로그아웃
+      </h3>
       {isPreferenceModalVisible && user && !user.preference && showModalAfterTutorial && (
         <div style={modalOverlay}>
           <div style={modalContent}>
