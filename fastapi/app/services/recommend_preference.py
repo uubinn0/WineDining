@@ -14,20 +14,20 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
     # 0. 사용자 입력값 전처리
     # 당도 조정
     sweetness_init = [data.sweetness-1, data.sweetness, data.sweetness+1]  # 데이터 불균형 조정용 sql 쿼리 변수
-    sweetness_map = {1: 0.5, 2: 2.5, 3: 4.5}
+    sweetness_map = {1: 0.5, 2: 2.985, 3: 4.4321}
     data.sweetness = sweetness_map.get(data.sweetness, data.sweetness)
 
     # 산도 조정
-    acidity_init = [data.acidity-1, data.acidity, data.acidity+1]
-    acidity_map = {1: 0.5, 2: 2.5, 3: 4.5}
+    acidity_init = [data.acidity-1, data.acidity]
+    acidity_map = {1: 1.654, 2: 3.01, 3: 4.66}
     data.acidity = acidity_map.get(data.acidity, data.acidity)
 
     # 바디감 조정
-    body_map = {1: 0.5, 2: 2.5, 3: 4.5}
+    body_map = {1: 1.12, 2: 3.33, 3: 4.22}
     data.body = body_map.get(data.body, data.body)
 
     # 타닌 조정
-    tannin_map = {1: 1, 2: 4}
+    tannin_map = {1: 1, 2: 3.333}
     data.tannin = tannin_map.get(data.tannin, data.tannin)
 
     # 와인 도수 조정
