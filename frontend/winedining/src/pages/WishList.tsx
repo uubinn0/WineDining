@@ -44,7 +44,7 @@ const WishList = () => {
       </div>
 
       <PixelTitle
-        text="MY WINE CELLAR"
+        text="WISH LIST"
         imageSrc="/sample_image/yellow_lightning.png"
         fontSize="1.8vh"
         color="#fefefe"
