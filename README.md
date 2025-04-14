@@ -29,15 +29,15 @@
 <table>
     <tr>
         <td height="140px" align="center"> <a href="https://github.com/[github-id]">
-            <img src="https://avatars.githubusercontent.com/[github-id]" width="140px" /> <br><br> 👑 정다인 <br>(Team Leader, Front-End) </a> <br></td>
+            <img src="https://i.namu.wiki/i/aevBPR8WhZoEmnoaiJUqosD1u2N510Ebolj19vN08Bho0YG5P-M6scrWPyINOVt01RcwjVDAtRG5pmpZmuxf7Q.webp" width="140px" /> <br><br> 👑 정다인 <br>(Team Leader, Front-End) </a> <br></td>
         <td height="140px" align="center"> <a href="https://github.com/[github-id]">
             <img src="https://i.namu.wiki/i/ifkzEGZR51bAJbRIvHEPo_WTv8LXzabItIijFjrdwVwYjb6Bexu-5nT5KvqU5mzrMOSnv7CsnHZkr8L24PB2lg.webp" width="140px" /> <br><br> 👶🏻 오승열 <br>(Front-End Leader) </a> <br></td>
         <td height="140px" align="center"> <a href="https://github.com/[github-id]">
-            <img src="https://avatars.githubusercontent.com/[github-id]" width="140px" /> <br><br> 👶🏻 류현 <br>(Front-End) </a> <br></td>
+            <img src="https://static.wikia.nocookie.net/pokemon/images/2/25/%EB%B9%A0%EB%AA%A8_%EA%B3%B5%EC%8B%9D_%EC%9D%BC%EB%9F%AC%EC%8A%A4%ED%8A%B8.png/revision/latest?cb=20230113172514&path-prefix=ko" width="140px" /> <br><br> 👶🏻 류현 <br>(Front-End) </a> <br></td>
         <td height="140px" align="center"> <a href="https://github.com/[github-id]">
             <img src="https://avatars.githubusercontent.com/dwshin-dev" width="140px" /> <br><br> 👶🏻 신동운 <br>(Back-End, Infra) </a> <br></td>
         <td height="140px" align="center"> <a href="https://github.com/dwshin-dev">
-            <img src="https://avatars.githubusercontent.com/[github-id]" width="140px" /> <br><br> 👶🏻 나유빈 <br>(AI, Data) </a> <br></td>
+            <img src="https://static.wikia.nocookie.net/pokemon/images/0/03/%EB%AA%A8%EB%8B%A4%ED%94%BC_%EA%B3%B5%EC%8B%9D_%EC%9D%BC%EB%9F%AC%EC%8A%A4%ED%8A%B8.png/revision/latest?cb=20170405013619&path-prefix=ko" width="140px" /> <br><br> 👶🏻 나유빈 <br>(AI, Data) </a> <br></td>
     </tr>
     <tr>
          <td>
