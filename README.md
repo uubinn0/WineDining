@@ -30,14 +30,14 @@
     <tr>
         <td height="140px" align="center"> <a href="https://github.com/[github-id]">
             <img src="https://i.namu.wiki/i/aevBPR8WhZoEmnoaiJUqosD1u2N510Ebolj19vN08Bho0YG5P-M6scrWPyINOVt01RcwjVDAtRG5pmpZmuxf7Q.webp" width="140px" /> <br><br> 👑 정다인 <br>(Team Leader, Front-End) </a> <br></td>
-        <td height="140px" align="center"> <a href="https://github.com/[github-id]">
+        <td height="140px" align="center"> <a href="https://github.com/kwo9827">
             <img src="https://i.namu.wiki/i/ifkzEGZR51bAJbRIvHEPo_WTv8LXzabItIijFjrdwVwYjb6Bexu-5nT5KvqU5mzrMOSnv7CsnHZkr8L24PB2lg.webp" width="140px" /> <br><br> 👶🏻 오승열 <br>(Front-End Leader) </a> <br></td>
         <td height="140px" align="center"> <a href="https://github.com/[github-id]">
-            <img src="https://static.wikia.nocookie.net/pokemon/images/2/25/%EB%B9%A0%EB%AA%A8_%EA%B3%B5%EC%8B%9D_%EC%9D%BC%EB%9F%AC%EC%8A%A4%ED%8A%B8.png/revision/latest?cb=20230113172514&path-prefix=ko" width="140px" /> <br><br> 👶🏻 류현 <br>(Front-End) </a> <br></td>
+            <img src="https://i.namu.wiki/i/waw6CdkdFsocIT-LB9T4DqEhht9AtKx9ypKZK_uVJFwDmknxzMRf1HjXtjwzsJnicTXyHtD-9Qz2VwIyk10WDzDbpS9SpP_ZShRfnlHfSXQBNYs_qwvgtOWoC11gW0w3QIHQlLWVkVf448J54WwLiw.webp" width="140px" /> <br><br> 👶🏻 류현 <br>(Front-End) </a> <br></td>
         <td height="140px" align="center"> <a href="https://github.com/[github-id]">
-            <img src="https://avatars.githubusercontent.com/dwshin-dev" width="140px" /> <br><br> 👶🏻 신동운 <br>(Back-End, Infra) </a> <br></td>
+            <img src="https://i.namu.wiki/i/Ee89R5AFVQgi80iw3W4QAHiFaOc4RApF10MQwkRxPrQCM9XSLzErm83MNfzkeKmRjWkIcRlrjmCFQhXyjQB0WoZPtEKZ52yaDHGk3f1kPqo8WpT21g377giYrxONuad9JyuXWL4HvFm7dHtIp2OgMw.webp" width="140px" /> <br><br> 👶🏻 신동운 <br>(Back-End, Infra) </a> <br></td>
         <td height="140px" align="center"> <a href="https://github.com/dwshin-dev">
-            <img src="https://static.wikia.nocookie.net/pokemon/images/0/03/%EB%AA%A8%EB%8B%A4%ED%94%BC_%EA%B3%B5%EC%8B%9D_%EC%9D%BC%EB%9F%AC%EC%8A%A4%ED%8A%B8.png/revision/latest?cb=20170405013619&path-prefix=ko" width="140px" /> <br><br> 👶🏻 나유빈 <br>(AI, Data) </a> <br></td>
+            <img src="https://i.namu.wiki/i/cQTtB27XjUT70XHhBWPNeauGNXhPdEYo3B7pG_lTS4pHMEGlvp61PHJr6Ebc1S76TU82o3CquWdCBCzDE-l3pGobSTCAQO06b4R4tbsQ_k3jE0Z-mhgmW3cxIRrssC_56RUrYivder207wEHrTXs0Q.webp" width="140px" /> <br><br> 👶🏻 나유빈 <br>(AI, Data) </a> <br></td>
     </tr>
     <tr>
          <td>
