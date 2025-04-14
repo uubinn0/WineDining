@@ -29,7 +29,7 @@
 <table>
     <tr>
         <td height="140px" align="center"> <a href="https://github.com/[github-id]">
-            <img src="https://i.namu.wiki/i/ushoHF9TZUSWoo7O5PVf2sK16dTeaa200r2KBB_pZ6CfdkRSQ17HBS6wzSmrSUstgcyyqBHsEiV6QIplWwlXydI0Ucplb7VAQTuK6uULMUCXaVZUG7vmlBqXi1Qm9huHisF5k7WRGRok4iPAzVwtTA.webp" width="140px" /> <br><br> 👑 정다인 <br>(Team Leader, Front-End) </a> <br></td>
+            <img src="https://i.namu.wiki/i/GwX8Wk7-rK9fDayTLJybEg9uVLS3OqP0BywzeHjDYfOqSfqE26GOXzl5CSIjYpXcbMsW3qkuZVgdV54YTsxynjINquNOAZhBT3596-myDT8zFkLijQgU8lpnSDwNfG-r-IhSgSaqw0br4C6Vz14rNA.webp" width="140px" /> <br><br> 👑 정다인 <br>(Team Leader, Front-End) </a> <br></td>
         <td height="140px" align="center"> <a href="https://github.com/kwo9827">
             <img src="https://i.namu.wiki/i/ifkzEGZR51bAJbRIvHEPo_WTv8LXzabItIijFjrdwVwYjb6Bexu-5nT5KvqU5mzrMOSnv7CsnHZkr8L24PB2lg.webp" width="140px" /> <br><br> 👶🏻 오승열 <br>(Front-End Leader) </a> <br></td>
         <td height="140px" align="center"> <a href="https://github.com/[github-id]">
