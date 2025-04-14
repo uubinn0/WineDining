@@ -31,7 +31,7 @@
         <td height="140px" align="center"> <a href="https://github.com/[github-id]">
             <img src="https://avatars.githubusercontent.com/[github-id]" width="140px" /> <br><br> 👑 정다인 <br>(Team Leader, Front-End) </a> <br></td>
         <td height="140px" align="center"> <a href="https://github.com/[github-id]">
-            <img src="https://avatars.githubusercontent.com/[github-id]" width="140px" /> <br><br> 👶🏻 오승열 <br>(Front-End Leader) </a> <br></td>
+            <img src="https://i.namu.wiki/i/ifkzEGZR51bAJbRIvHEPo_WTv8LXzabItIijFjrdwVwYjb6Bexu-5nT5KvqU5mzrMOSnv7CsnHZkr8L24PB2lg.webp" width="140px" /> <br><br> 👶🏻 오승열 <br>(Front-End Leader) </a> <br></td>
         <td height="140px" align="center"> <a href="https://github.com/[github-id]">
             <img src="https://avatars.githubusercontent.com/[github-id]" width="140px" /> <br><br> 👶🏻 류현 <br>(Front-End) </a> <br></td>
         <td height="140px" align="center"> <a href="https://github.com/[github-id]">
