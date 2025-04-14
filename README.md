@@ -37,7 +37,7 @@
         <td height="140px" align="center"> <a href="https://github.com/[github-id]">
             <img src="https://i.namu.wiki/i/Ee89R5AFVQgi80iw3W4QAHiFaOc4RApF10MQwkRxPrQCM9XSLzErm83MNfzkeKmRjWkIcRlrjmCFQhXyjQB0WoZPtEKZ52yaDHGk3f1kPqo8WpT21g377giYrxONuad9JyuXWL4HvFm7dHtIp2OgMw.webp" width="140px" /> <br><br> 👶🏻 신동운 <br>(Back-End, Infra) </a> <br></td>
         <td height="140px" align="center"> <a href="https://github.com/dwshin-dev">
-            <img src="https://i.namu.wiki/i/cQTtB27XjUT70XHhBWPNeauGNXhPdEYo3B7pG_lTS4pHMEGlvp61PHJr6Ebc1S76TU82o3CquWdCBCzDE-l3pGobSTCAQO06b4R4tbsQ_k3jE0Z-mhgmW3cxIRrssC_56RUrYivder207wEHrTXs0Q.webp" width="140px" /> <br><br> 👶🏻 나유빈 <br>(AI, Data) </a> <br></td>
+            <img src="https://i.namu.wiki/i/2z_IXelZknQx9-cyd9wu3CPdomqg4y2TMlCuzVifxnGgAXyCCVt9jSF8MerHY0zHXxI0Mro7Fqf_LvOmekTuzA6OpQIZZaCHK7fTnKJ_lmmL5W069TM5fiFOWc6HOpqhvpi5AyqhJen2hhTTtqQ9Jw.webp" width="140px" /> <br><br> 👶🏻 나유빈 <br>(AI, Data) </a> <br></td>
     </tr>
     <tr>
          <td>
