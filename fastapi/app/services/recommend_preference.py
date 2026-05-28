@@ -61,7 +61,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
                               WHERE sweetness = ANY(:sweetness)
                               AND acidity = ANY(:acidity)
                               AND price <= 100000)
-            AND vector <-> CAST(:user_vector AS vector) >= 0.5
+            AND vector <-> CAST(:user_vector AS vector) <= 0.5
             ORDER BY cos ASC
             LIMIT 3
         """)
@@ -84,7 +84,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
 						      AND sweetness = ANY(:sweetness)
                               AND acidity = ANY(:acidity)
                               AND price <= 100000)
-            AND vector <=> CAST(:user_vector AS vector) >= 0.5
+            AND vector <=> CAST(:user_vector AS vector) <= 0.5
             ORDER BY similarity ASC
             LIMIT 3;
         """)
@@ -110,8 +110,10 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
         if existing_ids:
             additional_query = text("""
                 SELECT wine_id, vector <=> CAST(:user_vector AS vector) AS cos
-                FROM preference_wine_vectors 
-                AND wine_id NOT IN (SELECT wine_id FROM unnest(:existing_ids) AS wine_id
+                FROM preference_wine_vectors
+				WHERE wine_id NOT IN (
+					SELECT unnest(:existing_ids)
+                AND wine_id NOT IN (SELECT id FROM wines
                                     WHERE sweetness = ANY(:sweetness)
                                     AND acidity = ANY(:acidity)
                                     AND price <= 100000)
@@ -169,7 +171,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
     wish_rows = list(wish_result)
 
     # 위시리스트 데이터가 있는 경우 벡터화
-    if wish_rows and wish_rows[0]:
+    if wish_rows and wish_rows[0].acidity_avg is not None:
         row = wish_rows[0]
         # 기본 특성 벡터화
         wish_vector = [
