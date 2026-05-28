@@ -62,7 +62,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
                               AND acidity = ANY(:acidity)
                               AND price <= 100000)
             AND vector <-> CAST(:user_vector AS vector) >= 0.5
-            ORDER BY cos DESC
+            ORDER BY cos ASC
             LIMIT 3
         """)
         params = {
@@ -85,7 +85,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
                               AND acidity = ANY(:acidity)
                               AND price <= 100000)
             AND vector <=> CAST(:user_vector AS vector) >= 0.5
-            ORDER BY similarity DESC
+            ORDER BY similarity ASC
             LIMIT 3;
         """)
         params = {
@@ -115,7 +115,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
                                     WHERE sweetness = ANY(:sweetness)
                                     AND acidity = ANY(:acidity)
                                     AND price <= 100000)
-                ORDER BY cos DESC
+                ORDER BY cos ASC
                 LIMIT :needed_count
             """)
             additional_params = {
@@ -134,7 +134,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
                                     WHERE sweetness = ANY(:sweetness)
                                     AND acidity = ANY(:acidity)
                                     AND price <= 100000)
-                ORDER BY cos DESC
+                ORDER BY cos ASC
                 LIMIT :needed_count
             """)
             additional_params = {
@@ -198,7 +198,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
             WHERE wine_id IN (SELECT id 
                             FROM wines
                             WHERE price <= 100000)
-            ORDER BY cos DESC
+            ORDER BY cos ASC
             LIMIT 1
         """)
 
@@ -267,7 +267,7 @@ def recommend_by_preference(data: RecommendByPreferenceDto, session: Session) ->
                 AND id != :wine_id
                 AND price <= 100000
             )
-            ORDER BY cos DESC
+            ORDER BY cos ASC
             LIMIT 1
         """)
 
